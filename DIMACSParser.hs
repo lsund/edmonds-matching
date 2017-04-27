@@ -1,5 +1,5 @@
 
-module Parser (fileToGraph) where
+module DIMACSParser (fileToGraph) where
 
 import Data.Char
 import Data.List
