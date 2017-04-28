@@ -38,5 +38,3 @@ fileToGraph path    = do
         bounds      = (1, nvertices dimacsSize)
     return $ buildG bounds edges
 
-
-
