@@ -43,4 +43,4 @@ edmonds graph =
                         [(x, y) | x <- [1..nVertices], y <- replicate 10 False]
     in
         scannedInit
-        
+

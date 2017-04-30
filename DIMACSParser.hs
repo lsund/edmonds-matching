@@ -5,17 +5,14 @@ import Data.Char
 import Data.List
 import Data.Graph
 
-data DimacsEntry = DimacsSize 
-    { nvertices :: Int
-    , nedges    :: Int
-    }
-                 | DimacsEdge 
-    { first     :: Int
-    , second    :: Int
-    }
-                 | DimacsComment 
-    { content   :: String
-    } deriving (Show, Eq)
+data DimacsEntry = DimacsSize { nvertices :: Int
+                              , nedges    :: Int
+                              }
+                 | DimacsEdge { first     :: Int
+                              , second    :: Int
+                              }
+                 | DimacsComment { content   :: String } 
+                 deriving (Show, Eq)
 
 parseLine :: [String] -> DimacsEntry
 parseLine ["p", "edge", x, y] = DimacsSize (read x) (read y)
