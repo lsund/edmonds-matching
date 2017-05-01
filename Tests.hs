@@ -3,6 +3,7 @@ module Tests where
 
 import Test.HUnit
 
+import Tree
 import DIMACSParser
 import Data.Graph
 import Data.Array
@@ -28,6 +29,15 @@ test04 = TestCase (do x <- fileToGraph "data/K4.dmx"
                           "Should be 6 edges"
                           6 $
                           length $ edges x)
+
+----------------------------------------------------------------------------
+-- Tree
+
+test05 = TestCase (do x <- fileToGraph "data/Tree.dmx"
+                      assertEqual
+                        "Should be [1,4,5]"
+                        [1,4,5] $
+                        outer x)
 
 tests = TestList [test01, test02, test03, test04]
 
