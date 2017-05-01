@@ -1,10 +1,13 @@
 module Tree where
 
-import qualified Data.Map as Map
 import Data.Array
+
+import qualified Data.Map as Map
 import qualified Data.Set as Set
+import qualified Data.Graph as Graph
 
 type Tree = Map.Map Int [Int]
+type Graph = Graph.Graph
 
 ----------------------------------------------------------------------------
 -- dummy values
@@ -19,10 +22,8 @@ dummy = insert 4 2 $
 ----------------------------------------------------------------------------
 -- Conversion
 
-
--- graphToTree :: Graph -> Tree
+graphToTree :: Graph -> Tree
 graphToTree graph = Map.fromList $ assocs graph
-
 
 ----------------------------------------------------------------------------
 -- Construction

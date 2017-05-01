@@ -7,6 +7,15 @@ import Tree
 import DIMACSParser
 import Data.Graph
 import Data.Array
+import Data.List
+
+----------------------------------------------------------------------------
+-- utilities
+
+sameElements xs ys = null $ xs \\ ys
+
+----------------------------------------------------------------------------
+-- DIMACS parser
 
 test01 = TestCase (do x <- fileToGraph "data/K2.dmx"
                       assertEqual 
@@ -36,8 +45,8 @@ test04 = TestCase (do x <- fileToGraph "data/K4.dmx"
 test05 = TestCase (do x <- fileToGraph "data/Tree.dmx"
                       assertEqual
                         "Should be [1,4,5]"
-                        [1,4,5] $
-                        outer x)
+                        True $
+                        sameElements [1,4,5] (outer (graphToTree x)))
 
-tests = TestList [test01, test02, test03, test04]
+tests = TestList [test01, test02, test03, test04, test05]
 

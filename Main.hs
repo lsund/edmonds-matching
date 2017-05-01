@@ -9,5 +9,4 @@ main :: IO ()
 main = do
     let file = "data/K4.dmx"
     graph <- fileToGraph file
-    print graph
-    -- print $ edmonds graph
+    print $ edmonds graph
