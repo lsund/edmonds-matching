@@ -7,26 +7,32 @@ import Data.Array
 import Data.Maybe
 import Data.List hiding (lookup)
 import Control.Monad
+import qualified Data.Set as Set
 import qualified Data.Map as Map
 
 type Map   = Map.Map
+type Set   = Set.Set
 type VertexAssoc = Map Vertex Vertex
 data State = State { fa      :: VertexAssoc
                    , ga     :: VertexAssoc
                    , ra      :: VertexAssoc
                    , sa :: Map Vertex Bool } deriving (Show)
 
-applyEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
-applyEveryOther = applyEveryOther' True
+iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
+iterateEveryOther = iterateEveryOther' True
     where
-        applyEveryOther' True f g x = x : applyEveryOther' False f g (f x) 
-        applyEveryOther' False f g x = x :  applyEveryOther' True f g (g x)
+        iterateEveryOther' True f g x  = x : iterateEveryOther' False f g (f x)
+        iterateEveryOther' False f g x = x :  iterateEveryOther' True f g (g x)
+
+areDisjoint :: Ord a => Set a -> Set a -> Bool
+areDisjoint xs = Set.null . Set.intersection xs
 
 lookup :: VertexAssoc -> (Vertex -> Vertex)
 lookup m x = fromJust $ Map.lookup x m 
 
-p :: State -> Vertex -> [Vertex]
-p (State f g _ _) = applyEveryOther (lookup f) (lookup g)
+pathToRoot :: State -> Vertex -> [Vertex]
+pathToRoot (State f g _ _) v = v : takeWhile (/= v) (iterateFG v)
+    where iterateFG = iterateEveryOther (lookup f) (lookup g)
 
 isOuter :: State -> Vertex -> Bool
 isOuter (State fa ga _ _) x = f x == x || g (f x) /= f x
@@ -72,14 +78,22 @@ findXY graph state@(State fa ga ra sa) =
                         in findXY graph (State fa ga ra sa')
                     Just y -> (x, y, state)
 
-grow x y graph state@(State fa ga ra sa) = 
+grow :: Graph -> (Int, Int, State) -> (Int, Int, State)
+grow graph (x, y, state@(State fa ga ra sa)) = 
     if isOutOfForest state y
         then let ga' = Map.adjust (const x) y ga
              in  findXY graph (State fa ga' ra sa)
         else (x, y, state)
 
+-- augment :: Graph -> (Int, Int, State) -> something???
+augment graph (x, y, state) = 
+    let px = Set.fromList $ pathToRoot state x 
+        py = Set.fromList $ pathToRoot state y
+    in areDisjoint px py
+
 edmonds graph =
     let state = initializeState graph
         (x, y, state') = findXY graph state
-    in grow x y graph state'
+        (x', y', state'') = grow graph (x, y, state')
+    in augment graph (x', y', state'')
 
