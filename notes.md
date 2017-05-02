@@ -1,4 +1,13 @@
 
+### An alternating forest has the following properties:
+
+1. The forest contains all vertices not covered by the matching. Each connected
+   component of F contains exactly one vertex not covered by M, its root.
+2. A vertex in the forest with even resp odd distance to the root is called
+   outer or inner vertex. (roots are outer vertices) All inner vertices have
+   degree 2.
+3. For any vertex in the root, the unique path to the root is M-alternating
+
 ### Data Structures
 To store a special blossom forest F, we introduce the following data
 structures:

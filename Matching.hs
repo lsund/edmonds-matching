@@ -1,5 +1,5 @@
 
-module Matching (edmonds) where
+module Matching where
 
 import Prelude hiding (lookup)
 import Data.Graph
@@ -14,7 +14,7 @@ type VertexAssoc = Map Vertex Vertex
 data State = State { fa      :: VertexAssoc
                    , ga     :: VertexAssoc
                    , ra      :: VertexAssoc
-                   , sa :: Map Vertex Bool }
+                   , sa :: Map Vertex Bool } deriving (Show)
 
 applyEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 applyEveryOther = applyEveryOther' True
@@ -29,21 +29,21 @@ p :: State -> Vertex -> [Vertex]
 p (State f g _ _) = applyEveryOther (lookup f) (lookup g)
 
 isOuter :: State -> Vertex -> Bool
-isOuter (State f g _ _) v = fv == v || lookup g fv /= fv
-    where fv = lookup f v 
+isOuter (State fa ga _ _) x = f x == x || g (f x) /= f x
+    where f = lookup fa
+          g = lookup ga
 
 isInner :: State -> Vertex -> Bool
-isInner (State f g _ _) v = lookup g fv == fv && gv /= v
+isInner (State fa ga _ _) x = g (f x) == f x && g x /= x
     where 
-        fv  = lookup f v
-        gv = lookup g v
+        f  = lookup fa
+        g = lookup ga
 
 isOutOfForest :: State -> Vertex -> Bool
-isOutOfForest (State f g _ _) v = fv /= v && gv == v && gfv == fv
+isOutOfForest (State fa ga _ _) x = f x /= x && g x == x && g (f x)== f x
     where
-        fv  = lookup f v
-        gv = lookup g v
-        gfv = lookup g fv
+        f  = lookup fa
+        g = lookup ga
 
 neighbours :: Graph -> Vertex -> [Vertex]
 neighbours graph v = graph ! v
@@ -57,20 +57,29 @@ initializeState graph =
     in State idMap idMap idMap sInit
 
 -- Map.assocs has RT O(n)
-findXY :: Graph -> State -> (Int, Int)
-findXY graph state@(State _ fa _ sa) = 
+findXY :: Graph -> State -> (Int, Int, State)
+findXY graph state@(State fa ga ra sa) = 
     let mx = find (\(_, y) -> not y) (Map.assocs sa)
     in case mx of 
             Nothing -> undefined
             Just (x, _) -> 
                 let pred y = isOutOfForest state y || 
-                             isOuter state y && (lookup fa y /= lookup fa x)
+                             isOuter state y && (lookup ga y /= lookup ga x)
                     my = find pred (neighbours graph x)
                 in case my of
-                    Nothing -> undefined
-                    Just y -> (x, y)
+                    Nothing -> 
+                        let sa' = Map.adjust (const True) x sa
+                        in findXY graph (State fa ga ra sa')
+                    Just y -> (x, y, state)
+
+grow x y graph state@(State fa ga ra sa) = 
+    if isOutOfForest state y
+        then let ga' = Map.adjust (const x) y ga
+             in  findXY graph (State fa ga' ra sa)
+        else (x, y, state)
 
 edmonds graph =
     let state = initializeState graph
-    in print $ findXY graph state
+        (x, y, state') = findXY graph state
+    in grow x y graph state'
 
