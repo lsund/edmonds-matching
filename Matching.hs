@@ -6,14 +6,15 @@ import Data.Graph
 import Data.Array
 import Data.Maybe
 import Data.List hiding (lookup)
+import Control.Monad
 import qualified Data.Map as Map
 
 type Map   = Map.Map
 type VertexAssoc = Map Vertex Vertex
-data State = State { mu      :: VertexAssoc
-                   , phi     :: VertexAssoc
-                   , ro      :: VertexAssoc
-                   , scanned :: Map Vertex Bool }
+data State = State { fa      :: VertexAssoc
+                   , ga     :: VertexAssoc
+                   , ra      :: VertexAssoc
+                   , sa :: Map Vertex Bool }
 
 applyEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 applyEveryOther = applyEveryOther' True
@@ -55,12 +56,21 @@ initializeState graph =
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in State idMap idMap idMap sInit
 
+-- Map.assocs has RT O(n)
+findXY :: Graph -> State -> (Int, Int)
+findXY graph state@(State _ fa _ sa) = 
+    let mx = find (\(_, y) -> not y) (Map.assocs sa)
+    in case mx of 
+            Nothing -> undefined
+            Just (x, _) -> 
+                let pred y = isOutOfForest state y || 
+                             isOuter state y && (lookup fa y /= lookup fa x)
+                    my = find pred (neighbours graph x)
+                in case my of
+                    Nothing -> undefined
+                    Just y -> (x, y)
+
 edmonds graph =
     let state = initializeState graph
-        -- Map.assocs has RT O(n)
-    in case find (\(_, y) -> not y) (Map.assocs (scanned state)) of 
-            Nothing -> print "No unscanned outer edges. Terminating"
-            Just (x, _) -> 
-                let nbs = neighbours graph x
-                in print nbs
+    in print $ findXY graph state
 
