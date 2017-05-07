@@ -1,9 +1,8 @@
 
 module Main where
 
-import Matching
+import Edmonds
 import DIMACSParser
-import Tree
 
 main :: IO ()
 main = do
