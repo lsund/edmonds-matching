@@ -47,24 +47,35 @@ grow graph ((x, y), state) =
              in  findGrowth graph $ state { phi = makeAssoc phi' }
         else ((x, y), state)
 
--- augment :: Graph -> (Edge, State) -> something???
+augment :: Graph -> (Edge, State) -> State
 augment graph ((x, y), state) = 
-    let px = Set.fromList $ pathToRoot state x 
-        py = Set.fromList $ pathToRoot state y
+    let px = pathToRoot state x
+        py = pathToRoot state y
+        spx = Set.fromList px       -- converting to set to be able to call
+        spy = Set.fromList py       -- areDisjoint. Bad??
     in 
-        if areDisjoint px py 
+        if areDisjoint spx spy
             then
-                let pUnion = Set.toList $ px `Set.union` py
-                in adjustMapFor (map (muf . phif) pUnion) pUnion mud
-        else undefined
+                let oddxs = every 2 px
+                    oddys = every 2 py
+                    pUnion = oddxs ++ oddys
+                    keys = [f x, f y] ++ map (f . g) pUnion
+                    vals = [y, x] ++ pUnion
+                    state' = state { mu = makeAssoc (adjustMapFor keys vals m) }
+                in State.resetButMu (lv graph) (le graph) state'
+            else
+                undefined
     where
-        muf = (fun . mu) state
-        mud = (dict . mu) state
-        phif = (fun . phi) state
-
+        m = (dict . mu) state
+        f = (fun . mu) state
+        g = (fun . phi) state
+        lv = length . vertices
+        le = length . edges
 
 edmonds graph =
-    let state = State.initialize graph
+    let lv = length . vertices
+        le = length . edges
+        state = State.initialize (lv graph) (le graph)
         ((x, y), state') = findGrowth graph state
         ((x', y'), state'') = grow graph ((x, y), state')
     in augment graph ((x', y'), state'')

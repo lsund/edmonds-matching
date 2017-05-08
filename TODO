@@ -8,4 +8,8 @@ constructor function for VertexAssoc [done]
 
 format lines [done]
 
-replace string with bytestring DIMACSParser []
+replace string with bytestring DIMACSParser [done]
+
+finish augment [done]
+
+finish shrink []

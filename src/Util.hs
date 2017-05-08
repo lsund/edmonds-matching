@@ -20,3 +20,7 @@ adjustMap k v = Map.adjust (const v) k
 adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
 adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 
+every :: Int -> [a] -> [a]
+every n xs = case drop (n-1) xs of
+                (y:ys) -> y : every n ys
+                [] -> []
