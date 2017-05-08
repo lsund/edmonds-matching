@@ -4,6 +4,7 @@ initialize mu, phi and ro in edmonds   [done]
 
 rename phiMap etc [done]
 
-format lines []
+constructor function for VertexAssoc [done]
 
-constructor function for VertexAssoc []
+format lines [done]
+

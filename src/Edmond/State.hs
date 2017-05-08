@@ -6,17 +6,31 @@ import Data.Graph
 import Data.Maybe
 import qualified Data.Map as Map
 
+-- Structures for holding the state of the edmonds algorithm.
+--
+-- An Assoc is an association between two enteties. It exists to couple the two
+-- associations: a dictionary and a function. The dictionary is a map from the
+-- first to the second entity. The function is the map applied as a function
+-- from the first to the second entity.
 data Assoc a b = Assoc { dict :: Map a b
                        , fun :: a -> b }
 
+-- Given a dictionary, creates a function
+assocToFun :: Ord a => Map a b -> (a -> b)
+assocToFun m x = fromJust $ Map.lookup x m 
+
+-- Given a map, creates an association
+makeAssoc :: Ord a => Map a b -> Assoc a b
+makeAssoc m = Assoc m (assocToFun m)
+
+-- The structure holding the state of the algorithm. mu, phi, ro and scanned are
+-- associations, defined as of the specification.
 data State = State { mu :: Assoc Vertex Vertex
                    , phi :: Assoc Vertex Vertex
                    , ro :: Assoc Vertex Vertex
                    , scanned :: Assoc Vertex Bool }
 
-assocToFun :: Ord a => Map a b -> (a -> b)
-assocToFun m x = fromJust $ Map.lookup x m 
-
+-- Initializes the state as of the specification
 initialize :: Graph -> State
 initialize graph = 
     let nv    = (length . vertices) graph
@@ -28,4 +42,3 @@ initialize graph =
              (makeAssoc idMap)
              (makeAssoc sInit)
 
-makeAssoc m = Assoc m (assocToFun m)
