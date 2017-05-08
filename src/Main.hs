@@ -1,7 +1,8 @@
 
 module Main where
 
-import Edmonds
+import Protolude
+import Edmond.Algorithm
 import DIMACSParser
 
 main :: IO ()

@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 
-module Edmonds where
+module Edmond.Algorithm where
 
+import Util
 import Edmond.Vertex
 import Edmond.State as State
 import Graph
@@ -12,9 +12,6 @@ import Data.Graph
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.List as List
-
-areDisjoint :: Ord a => Set a -> Set a -> Bool
-areDisjoint xs = Set.null . Set.intersection xs
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.

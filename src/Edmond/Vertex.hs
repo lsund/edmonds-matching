@@ -1,6 +1,7 @@
 
 module Edmond.Vertex where
 
+import Protolude hiding (State)
 import Util
 import Data.Graph
 import Edmond.State

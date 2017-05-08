@@ -1,8 +1,8 @@
 
 module DIMACSParser (fileToGraph) where
 
+import Prelude
 import Data.Char
-import Data.List
 import Data.Graph
 
 data DimacsEntry = DimacsSize { nvertices :: Int

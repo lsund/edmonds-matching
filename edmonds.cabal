@@ -3,7 +3,7 @@ name:                edmonds
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             1.0.3.3
+version:             1.0.3.4
 
 -- synopsis:         TBD
 
