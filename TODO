@@ -2,7 +2,7 @@ maybe add error checking to DIMACSParser.hs []
 
 initialize mu, phi and ro in edmonds   [done]
 
-rename phiMap etc []
+rename phiMap etc [done]
 
 format lines []
 
