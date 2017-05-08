@@ -43,12 +43,6 @@ findGrowth graph state =
     where
         unscanned = List.find (\(_, y) -> not y)
 
-adjustMap :: Ord a =>  a -> b -> Map a b -> Map a b
-adjustMap k v = Map.adjust (const v) k
-
-adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
-adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
-
 grow :: Graph -> (Edge, State) -> (Edge, State)
 grow graph ((x, y), state) = 
     if isOutOfForest state y
