@@ -23,18 +23,21 @@ areDisjoint xs = Set.null . Set.intersection xs
 -- phi(x) =/ phi(y)
 findGrowth :: Graph -> State -> (Int, Int, State)
 findGrowth graph state = 
-    let mx = unscanned (Map.assocs (scanned state))
+    let mx = unscanned (Map.assocs ((dict . scanned) state))
     in case mx of 
             Nothing -> undefined -- Stop if reached here
             Just (x, _) -> 
-                let pred y = isOutOfForest state y || 
-                             isOuter state y && (fun (phi state) y /= fun (phi state ) x)
+                let pred' y = isOuter state y && 
+                              (fun . phi) state y /= (fun . phi) state  x
+                    pred'' = isOutOfForest state 
+                    pred y = pred'' y || pred' y
                     my = List.find pred (neighbours graph x)
                 in case my of
                     Nothing -> 
                         let f = const True
-                            scanned' = Map.adjust f x (scanned state)
-                        in findGrowth graph $ state { scanned = scanned' }
+                            scanned' = Map.adjust f x ((dict . scanned) state)
+                        in findGrowth graph $ 
+                                      state { scanned = makeAssoc scanned' }
                     Just y -> (x, y, state)
     where
         unscanned = List.find (\(_, y) -> not y)
@@ -42,8 +45,8 @@ findGrowth graph state =
 grow :: Graph -> (Int, Int, State) -> (Int, Int, State)
 grow graph (x, y, state) = 
     if isOutOfForest state y
-        then let phi' = Map.adjust (const x) y (State.map (phi state))
-             in  findGrowth graph $ state { phi = VertexAssoc phi' (assocToFun phi') }
+        then let phi' = Map.adjust (const x) y ((dict . phi) state)
+             in  findGrowth graph $ state { phi = makeAssoc phi' }
         else (x, y, state)
 
 -- augment :: Graph -> (Int, Int, State) -> something???

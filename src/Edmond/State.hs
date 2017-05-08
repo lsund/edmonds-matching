@@ -6,18 +6,15 @@ import Data.Graph
 import Data.Maybe
 import qualified Data.Map as Map
 
-data VertexAssoc = VertexAssoc { map :: Map Vertex Vertex
-                   , fun :: Vertex -> Vertex }
+data Assoc a b = Assoc { dict :: Map a b
+                       , fun :: a -> b }
 
+data State = State { mu :: Assoc Vertex Vertex
+                   , phi :: Assoc Vertex Vertex
+                   , ro :: Assoc Vertex Vertex
+                   , scanned :: Assoc Vertex Bool }
 
-data EdmondFunction = Mu | Phi | Ro
-
-data State = State { mu :: VertexAssoc
-                   , phi :: VertexAssoc
-                   , ro :: VertexAssoc
-                   , scanned :: Map Vertex Bool }
-
-assocToFun :: Map Vertex Vertex -> (Vertex -> Vertex)
+assocToFun :: Ord a => Map a b -> (a -> b)
 assocToFun m x = fromJust $ Map.lookup x m 
 
 initialize :: Graph -> State
@@ -26,8 +23,9 @@ initialize graph =
         ne    = (length . edges) graph
         idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
-    in State (VertexAssoc idMap (assocToFun idMap))
-             (VertexAssoc idMap (assocToFun idMap))
-             (VertexAssoc idMap (assocToFun idMap))
-             sInit
+    in State (makeAssoc idMap)
+             (makeAssoc idMap)
+             (makeAssoc idMap)
+             (makeAssoc sInit)
 
+makeAssoc m = Assoc m (assocToFun m)
