@@ -8,6 +8,7 @@ import Edmond.State as State
 import Graph
 import Protolude hiding (State)
 
+import Data.Maybe
 import Data.Graph
 import qualified Data.Map as Map
 import qualified Data.Set as Set
@@ -47,20 +48,24 @@ grow graph ((x, y), state) =
              in  findGrowth graph $ state { phi = makeAssoc phi' }
         else ((x, y), state)
 
+rootPaths state x y = 
+    let (px, py) = (pathToRoot state x, pathToRoot state y)
+    in (px, py, Set.fromList px, Set.fromList py)
+        -- converting to set to be able to call
+        -- areDisjoint. Bad??
+
+odds px py = (every 2 px, every 2 py)
+
 augment :: Graph -> (Edge, State) -> State
 augment graph ((x, y), state) = 
-    let px = pathToRoot state x
-        py = pathToRoot state y
-        spx = Set.fromList px       -- converting to set to be able to call
-        spy = Set.fromList py       -- areDisjoint. Bad??
+    let (px, py, spx, spy) = rootPaths state x y
     in 
         if areDisjoint spx spy
             then
-                let oddxs = every 2 px
-                    oddys = every 2 py
-                    pUnion = oddxs ++ oddys
-                    keys = [f x, f y] ++ map (f . g) pUnion
-                    vals = [y, x] ++ pUnion
+                let (oddpx, oddpy) = odds px py
+                    union = oddpx ++ oddpy
+                    keys = [f x, f y] ++ map (f . g) union
+                    vals = [y, x] ++ union
                     state' = state { mu = makeAssoc (adjustMapFor keys vals m) }
                 in State.resetButMu (lv graph) (le graph) state'
             else
@@ -71,6 +76,29 @@ augment graph ((x, y), state) =
         g = (fun . phi) state
         lv = length . vertices
         le = length . edges
+
+shrink graph ((x, y), state) = 
+    let (px, py, spx, spy) = rootPaths state x y
+        isect    = spx `Set.intersection` spy
+        r        = fromJust $ find (\x -> h x == x) isect
+        (oddpx, oddpy) = odds px py
+        union    = oddpx ++ oddpy
+        union'   = filter (\v -> (h . g) v /= r) union
+        keys     = map (g . g) union'
+        vals     = union'
+        keys'    = if h x /= r then g x : keys else keys
+        keys''   = if h y /= r then g y : keys' else keys'
+        vals'    = if h x /= r then y   : vals else vals
+        vals''   = if h y /= r then x   : vals' else vals'
+        state'   = state { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
+        xs       = filter (\x -> inUnion (h x) spx spy) (vertices graph)
+        state''  = state' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
+    in r
+    where
+        m = (dict . phi) state
+        h = (fun . ro) state
+        g = (fun . phi) state
+        inUnion x spx spy = x `Set.member` (spx `Set.union` spy)
 
 edmonds graph =
     let lv = length . vertices

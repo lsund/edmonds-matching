@@ -12,4 +12,7 @@ replace string with bytestring DIMACSParser [done]
 
 finish augment [done]
 
-finish shrink []
+finish shrink [done]
+
+test augment []
+
