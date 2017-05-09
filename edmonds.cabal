@@ -5,9 +5,11 @@ name:                edmonds
 --                   | | | +--- code changes with no API change
 version:             1.0.3.7
 
--- synopsis:         TBD
+category:            Algorithms
 
--- description:      TBD 
+synopsis:            cabal run
+
+description:         A matching algorithm
 
 license:             BSD3
 
@@ -48,3 +50,6 @@ executable edmonds
 
   default-extensions: NoImplicitPrelude
   
+source-repository head
+  type:              github
+  location:          https://github.com/lsund/edmonds-matching

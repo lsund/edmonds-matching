@@ -106,5 +106,6 @@ edmonds graph =
         state = State.initialize (lv graph) (le graph)
         ((x, y), state') = findGrowth graph state
         ((x', y'), state'') = grow graph ((x, y), state')
-    in augment graph ((x', y'), state'')
+    -- in augment graph ((x', y'), state'')
+    in graph
 
