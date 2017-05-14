@@ -2,8 +2,11 @@
 module Edmond.State where
 
 import Protolude hiding (State)
-import Data.Graph
+import Types
+
+import qualified Data.Graph as Graph
 import Data.Maybe
+import Data.Array
 import qualified Data.Map as Map
 
 -- Structures for holding the state of the edmonds algorithm.
@@ -44,6 +47,12 @@ resetButMu :: Int -> Int -> State -> State
 resetButMu nv ne (State mu _ _ _ ) =
     let State _ phi ro scanned = initialize nv ne
     in State mu phi ro scanned
+
+----------------------------------------------------------------------------
+-- 'Usual' Graph properties
+
+neighbours :: Graph -> Vertex -> [Vertex]
+neighbours graph v = graph ! v
 
 edges :: State -> [(Int, Int)]
 edges state = zip (Map.keys m) (Map.elems m)

@@ -58,5 +58,8 @@ test05 = TestCase (do
     let edges = State.edges $ augmentedOnceState graph
     assertEqual "Should be augmented" True ((1,4) `elem` edges))
 
+----------------------------------------------------------------------------
+-- All Tests
+
 tests = TestList [test01, test02, test03, test04, test05]
 

@@ -3,19 +3,16 @@
 module Edmond.Algorithm where
 
 import Util
-import Graph
+import Types
 import Edmond.Vertex
 import Edmond.State as State
-import Protolude hiding (State)
 
+import Protolude hiding (State)
 import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.List as List
 import qualified Data.Graph as Graph
-
-type Edge = Graph.Edge
-type Graph = Graph.Graph
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
@@ -30,7 +27,7 @@ findGrowth graph state =
             Nothing -> undefined -- Stop if reached here
             Just (x, _) -> 
                 let pred' y = isOuter state y && 
-                              (fun . phi) state y /= (fun . phi) state  x
+                              (fun . ro) state y /= (fun . ro) state  x
                     pred'' = isOutOfForest state 
                     pred y = pred'' y || pred' y
                     my = List.find pred (neighbours graph x)
