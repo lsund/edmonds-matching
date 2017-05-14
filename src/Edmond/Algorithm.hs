@@ -6,6 +6,7 @@ import Util
 import Types
 import Edmond.Vertex
 import Edmond.State as State
+import Edmond.Assoc
 
 import Protolude hiding (State)
 import Data.Maybe

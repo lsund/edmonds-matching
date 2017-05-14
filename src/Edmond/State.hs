@@ -1,31 +1,19 @@
+{-# OPTIONS_GHC -fwarn-unused-imports #-}
 
 module Edmond.State where
 
 import Protolude hiding (State)
 import Types
+import Edmond.Assoc
 
-import qualified Data.Graph as Graph
-import Data.Maybe
 import Data.Array
 import qualified Data.Map as Map
 
 -- Structures for holding the state of the edmonds algorithm.
+
+----------------------------------------------------------------------------
+-- State
 --
--- An Assoc is an association between two enteties. It exists to couple the two
--- associations: a dictionary and a function. The dictionary is a map from the
--- first to the second entity. The function is the map applied as a function
--- from the first to the second entity.
-data Assoc a b = Assoc { dict :: Map a b
-                       , fun :: a -> b }
-
--- Given a dictionary, creates a function
-assocToFun :: Ord a => Map a b -> (a -> b)
-assocToFun m x = fromJust $ Map.lookup x m 
-
--- Given a map, creates an association
-makeAssoc :: Ord a => Map a b -> Assoc a b
-makeAssoc m = Assoc m (assocToFun m)
-
 -- The structure holding the state of the algorithm. mu, phi, ro and scanned are
 -- associations, defined as of the specification.
 data State = State { mu :: Assoc Vertex Vertex

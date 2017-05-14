@@ -16,5 +16,8 @@ finish shrink [done]
 
 test augment [done]
 
-merge graph with State []
+merge graph with State [done]
+
+test algorithm on a couple of bipartite graph []
+
 

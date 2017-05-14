@@ -5,6 +5,7 @@ import Protolude hiding (State)
 import Util
 import Data.Graph
 import Edmond.State
+import Edmond.Assoc
 
 pathToRoot :: State -> Vertex -> [Vertex]
 pathToRoot state v = v : takeWhile (/= v) (iterateFG v)
