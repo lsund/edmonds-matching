@@ -45,3 +45,7 @@ resetButMu nv ne (State mu _ _ _ ) =
     let State _ phi ro scanned = initialize nv ne
     in State mu phi ro scanned
 
+edges :: State -> [(Int, Int)]
+edges state = zip (Map.keys m) (Map.elems m)
+    where m = (dict . mu) state
+

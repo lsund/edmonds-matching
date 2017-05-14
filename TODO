@@ -14,5 +14,7 @@ finish augment [done]
 
 finish shrink [done]
 
-test augment []
+test augment [done]
+
+merge graph with State []
 

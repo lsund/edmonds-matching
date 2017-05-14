@@ -3,16 +3,19 @@
 module Edmond.Algorithm where
 
 import Util
+import Graph
 import Edmond.Vertex
 import Edmond.State as State
-import Graph
 import Protolude hiding (State)
 
 import Data.Maybe
-import Data.Graph
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.List as List
+import qualified Data.Graph as Graph
+
+type Edge = Graph.Edge
+type Graph = Graph.Graph
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
@@ -74,8 +77,8 @@ augment graph ((x, y), state) =
         m = (dict . mu) state
         f = (fun . mu) state
         g = (fun . phi) state
-        lv = length . vertices
-        le = length . edges
+        lv = length . Graph.vertices
+        le = length . Graph.edges
 
 shrink graph ((x, y), state) = 
     let (px, py, spx, spy) = rootPaths state x y
@@ -91,7 +94,7 @@ shrink graph ((x, y), state) =
         vals'    = if h x /= r then y   : vals else vals
         vals''   = if h y /= r then x   : vals' else vals'
         state'   = state { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
-        xs       = filter (\x -> inUnion (h x) spx spy) (vertices graph)
+        xs       = filter (\x -> inUnion (h x) spx spy) (Graph.vertices graph)
         state''  = state' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
     in r
     where
@@ -100,12 +103,13 @@ shrink graph ((x, y), state) =
         g = (fun . phi) state
         inUnion x spx spy = x `Set.member` (spx `Set.union` spy)
 
+-- the edges are given as {x, mu(x)}
 edmonds graph =
-    let lv = length . vertices
-        le = length . edges
+    let lv = length . Graph.vertices
+        le = length . Graph.edges
         state = State.initialize (lv graph) (le graph)
         ((x, y), state') = findGrowth graph state
         ((x', y'), state'') = grow graph ((x, y), state')
-    -- in augment graph ((x', y'), state'')
-    in graph
+        augmented =  augment graph ((x', y'), state'')
+    in ((dict . mu) augmented, (dict . mu) state)
 
