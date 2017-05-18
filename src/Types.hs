@@ -5,5 +5,4 @@ import qualified Data.Graph as Graph
 
 type Vertex = Graph.Vertex
 type Edge = Graph.Edge
-type Graph = Graph.Graph
 

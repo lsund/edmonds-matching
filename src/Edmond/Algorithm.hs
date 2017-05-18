@@ -5,15 +5,15 @@ module Edmond.Algorithm where
 import Util
 import Types
 import Edmond.Vertex
-import Edmond.State as State
+import Edmond.Graph as Graph
 import Edmond.Assoc
 
-import Protolude hiding (State)
+import Protolude
 import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.List as List
-import qualified Data.Graph as Graph
+import qualified Data.Graph
 
 odds px py = (every 2 px, every 2 py)
 
@@ -23,7 +23,7 @@ rootPaths state x y =
         -- converting to set to be able to call
         -- areDisjoint. Bad??
 
-findRoot :: Graph -> State -> (Edge, State)
+findRoot :: Data.Graph.Graph -> Graph -> (Edge, Graph)
 findRoot graph state =
     let mx = unscannedOuter state (Map.assocs ((dict . scanned) state))
     in case mx of 
@@ -38,7 +38,7 @@ findRoot graph state =
 -- false, y is a neighbour of x such that y is out-of-forest or y is outer and
 -- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
 -- tree
-findGrowth :: Graph -> State -> Vertex -> (Edge, State)
+findGrowth :: Data.Graph.Graph -> Graph -> Vertex -> (Edge, Graph)
 findGrowth graph state x = 
     let pred' y = isOuter state y && 
                     (fun . ro) state y /= (fun . ro) state x
@@ -52,14 +52,14 @@ findGrowth graph state x =
             in findRoot graph (state { scanned = makeAssoc scanned' })
         Just y -> grow graph ((x, y), state)
 
-grow :: Graph -> (Edge, State) -> (Edge, State)
+grow :: Data.Graph.Graph -> (Edge, Graph) -> (Edge, Graph)
 grow graph ((x, y), state)  = 
     if isOutOfForest state y
         then let phi' = adjustMap y x $ (dict . phi) state
             in findGrowth graph (state { phi = makeAssoc phi' }) x
         else augment graph ((x, y), state)
 
-augment :: Graph -> (Edge, State) -> (Edge, State)
+augment :: Data.Graph.Graph -> (Edge, Graph) -> (Edge, Graph)
 augment graph ((x, y), state) = 
     let (px, py, spx, spy) = rootPaths state x y
     in 
@@ -70,15 +70,15 @@ augment graph ((x, y), state) =
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
                     state' = state { mu = makeAssoc (adjustMapFor keys vals m) }
-                in ((x, y), State.resetButMu (lv graph) (le graph) state')
+                in ((x, y), Graph.resetButMu (lv graph) (le graph) state')
             else
                 undefined
     where
         m = (dict . mu) state
         f = (fun . mu) state
         g = (fun . phi) state
-        lv = length . Graph.vertices
-        le = length . Graph.edges
+        lv = length . Data.Graph.vertices
+        le = length . Data.Graph.edges
 
 shrink graph ((x, y), state) = 
     let (px, py, spx, spy) = rootPaths state x y
@@ -94,7 +94,7 @@ shrink graph ((x, y), state) =
         keys''   = appendIf (h y /= r) (g y) keys'
         vals''   = appendIf (h y /= r) x vals'
         state'   = state { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
-        xs       = filter (\x -> inUnion (h x) spx spy) (Graph.vertices graph)
+        xs       = filter (\x -> inUnion (h x) spx spy) (Data.Graph.vertices graph)
         state''  = state' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
     in r
     where
@@ -114,9 +114,9 @@ shrink graph ((x, y), state) =
 
 -- the edges are given as {x, mu(x)}
 edmonds graph =
-    let lv = length . Graph.vertices
-        le = length . Graph.edges
-        init = State.initialize (lv graph) (le graph)
+    let lv = length . Data.Graph.vertices
+        le = length . Data.Graph.edges
+        init = Graph.initialize (lv graph) (le graph)
         (es, state) = findRoot graph state
     -- in (outers graph state,
     --     inners graph state,
