@@ -21,11 +21,11 @@ import qualified Data.Graph as Graph
 -- false, y is a neighbour of x such that y is out-of-forest or y is outer and
 -- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
 -- tree
-findGrowth :: Graph -> State -> (Edge, State)
+findGrowth :: Graph -> State -> Maybe (Edge, State)
 findGrowth graph state = 
-    let mx = unscanned (Map.assocs ((dict . scanned) state))
+    let mx = unscanned state (Map.assocs ((dict . scanned) state))
     in case mx of 
-            Nothing -> undefined -- Stop if reached here
+            Nothing -> Nothing
             Just (x, _) -> 
                 let pred' y = isOuter state y && 
                               (fun . ro) state y /= (fun . ro) state  x
@@ -38,16 +38,19 @@ findGrowth graph state =
                             scanned' = adjustMap x True $ (dict . scanned) state
                         in findGrowth graph $ 
                                       state { scanned = makeAssoc scanned' }
-                    Just y -> ((x, y), state)
+                    Just y -> Just ((x, y), state)
     where
-        unscanned = List.find (\(_, y) -> not y)
+        unscanned state = List.find (\(x, y) -> not y && isOuter state x)
 
-grow :: Graph -> (Edge, State) -> (Edge, State)
-grow graph ((x, y), state) = 
-    if isOutOfForest state y
-        then let phi' = adjustMap y x $ (dict . phi) state 
-             in  findGrowth graph $ state { phi = makeAssoc phi' }
-        else ((x, y), state)
+grow :: Graph -> State -> Maybe (Edge, State)
+grow graph state = 
+    case findGrowth graph state of 
+        Nothing -> Nothing
+        Just ((x, y), state) ->
+            if isOutOfForest state y
+                then let phi' = adjustMap y x $ (dict . phi) state 
+                    in  findGrowth graph $ state { phi = makeAssoc phi' }
+                else Just ((x, y), state)
 
 rootPaths state x y = 
     let (px, py) = (pathToRoot state x, pathToRoot state y)
@@ -87,10 +90,10 @@ shrink graph ((x, y), state) =
         union'   = filter (\v -> (h . g) v /= r) union
         keys     = map (g . g) union'
         vals     = union'
-        keys'    = if h x /= r then g x : keys else keys
-        keys''   = if h y /= r then g y : keys' else keys'
-        vals'    = if h x /= r then y   : vals else vals
-        vals''   = if h y /= r then x   : vals' else vals'
+        keys'     = appendIf (h x /= r) (g y) keys
+        vals'    = appendIf (h y /= r) y vals
+        keys''   = appendIf (h y /= r) (g y) keys'
+        vals''   = appendIf (h y /= r) x vals'
         state'   = state { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
         xs       = filter (\x -> inUnion (h x) spx spy) (Graph.vertices graph)
         state''  = state' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
@@ -105,9 +108,27 @@ shrink graph ((x, y), state) =
 edmonds graph =
     let lv = length . Graph.vertices
         le = length . Graph.edges
-        state = State.initialize (lv graph) (le graph)
-        ((x, y), state') = findGrowth graph state
-        ((x', y'), state'') = grow graph ((x, y), state')
-        augmented =  augment graph ((x', y'), state'')
-    in ((dict . mu) augmented, (dict . mu) state)
+        init = State.initialize (lv graph) (le graph)
+    in 
+        case grow graph init of
+            Nothing -> undefined
+            Just ((x, y), grown1) ->
+                let augmented1 = augment graph ((x, y), grown1)
+                in case grow graph augmented1 of
+                    Nothing -> undefined
+                    Just ((x2, y2), grown2) -> 
+                        let augmented2 = augment graph ((x2, y2), grown2)
+                        in case grow graph augmented2 of
+                            Nothing -> undefined
+                            Just ((x3, y3), grown3) ->
+                                let augmented3 = augment graph ((x3, y3), grown3)
+                                in matching augmented3
+                                -- in case grow graph augmented3 of
+                                --     Nothing -> undefined
+                                --     Just ((x4, y4), grown4) -> 
+                                --         let augmented4 = augment graph ((x4, y4), grown4)
+                                --         in matching augmented4
+                                --         -- in case grow graph augmented4 of
+                                --         -- [(x, y), (x2, y2), (x3, y3), (x4, y4)]
+
 

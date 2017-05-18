@@ -42,7 +42,7 @@ resetButMu nv ne (State mu _ _ _ ) =
 neighbours :: Graph -> Vertex -> [Vertex]
 neighbours graph v = graph ! v
 
-edges :: State -> [(Int, Int)]
-edges state = zip (Map.keys m) (Map.elems m)
+matching :: State -> [(Int, Int)]
+matching state = zip (Map.keys m) (Map.elems m)
     where m = (dict . mu) state
 

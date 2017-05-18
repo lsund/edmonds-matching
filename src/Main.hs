@@ -5,8 +5,9 @@ import Protolude
 import Edmond.Algorithm
 import DIMACSParser
 
+path = "data/bipartite.dmx"
+
 main :: IO ()
 main = do
-    let file = "data/K4.dmx"
-    graph <- fileToGraph file
+    graph <- fileToGraph path
     print $ edmonds graph
