@@ -3,7 +3,7 @@ module Edmond.Vertex where
 
 import Protolude hiding (State)
 import Util
-import Data.Graph
+import Data.Graph as Graph
 import Edmond.State
 import Edmond.Assoc
 
@@ -28,3 +28,9 @@ isOutOfForest state x = f x /= x && g x == x && g (f x)== f x
     where f = fun $ mu state
           g = fun $ phi state
 
+
+outers graph state = filter (isOuter state) (Graph.vertices graph)
+
+inners graph state = filter (isInner state) (Graph.vertices graph)
+
+outOfForests graph state = filter (isOutOfForest state) (Graph.vertices graph)

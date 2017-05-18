@@ -46,3 +46,9 @@ is the root of the tree containing v.
     * Outer iff mu(x) = x  or phi(mu(x)) \= mu(x)
     * Inner iff phi(mu(x)) == mu(x) and phi(x) \= x
     * out-of-forest iff mu(x) \= x and phi(x) == x and phi(mu(x)) == mu(x)
+
+
+Each vertex is either inner or outer or out-of-forest. A vertex v can only be
+out-of-forest if it is covered by M. This can happen when we augment a tree in
+the forest.
+

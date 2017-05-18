@@ -5,7 +5,7 @@ import Protolude
 import Edmond.Algorithm
 import DIMACSParser
 
-path = "data/bipartite.dmx"
+path = "data/bipartite-simple.dmx"
 
 main :: IO ()
 main = do

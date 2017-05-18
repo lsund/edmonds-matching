@@ -18,5 +18,9 @@ test augment [done]
 
 merge graph with State [done]
 
-test algorithm on a couple of bipartite graph []
+test and get algorithm to work on a couple of bipartite graphs []
+
+the algorithm should find \y\y
+
+
 
