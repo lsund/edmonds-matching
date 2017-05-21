@@ -6,7 +6,8 @@ import Util
 import Types
 import Edmond.Vertex
 import Edmond.Graph as Graph
-import Edmond.Assoc
+import Edmond.Data.Assoc
+import qualified Edmond.Data.AlternatingForest as AlternatingForest
 
 import Protolude
 import Data.Maybe
@@ -41,7 +42,8 @@ findRoot graph =
 findGrowth :: Graph -> Vertex -> (Edge, Graph)
 findGrowth graph x = 
     let pred' y = isOuter graph y && 
-                    (fun . ro) graph y /= (fun . ro) graph x
+                       (fun . AlternatingForest.ro . forest) graph y 
+                    /= (fun . AlternatingForest.ro . forest) graph x
         pred'' = isOutOfForest graph 
         pred y = pred'' y || pred' y
         my = List.find pred (neighbours (representation graph) x)
@@ -55,9 +57,12 @@ findGrowth graph x =
 grow :: (Edge, Graph) -> (Edge, Graph)
 grow ((x, y), graph)  = 
     if isOutOfForest graph y
-        then let phi' = adjustMap y x $ (dict . phi) graph
-            in findGrowth (graph { phi = makeAssoc phi' }) x
+        then let phi' = adjustMap y x m
+                 forest' = (forest graph) { AlternatingForest.phi = makeAssoc phi' }
+            in findGrowth (graph { forest = forest' }) x
         else augment ((x, y), graph)
+    where
+        m = (dict . AlternatingForest.phi . forest) graph
 
 augment :: (Edge, Graph) -> (Edge, Graph)
 augment ((x, y), graph) = 
@@ -69,16 +74,21 @@ augment ((x, y), graph) =
                     union = oddpx ++ oddpy
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
-                    graph' = graph { mu = makeAssoc (adjustMapFor keys vals m) }
-                in ((x, y), Graph.resetButMu nv ne graph')
+                    forest' = (forest graph) { AlternatingForest.mu = 
+                                        makeAssoc (adjustMapFor keys vals m) } 
+                    forest'' = AlternatingForest.resetButMu 
+                                    (representation graph) 
+                                    forest'
+                    graph' = graph { forest = forest'' }
+                in ((x, y), graph') 
             else
                 undefined
     where
         nv = (length . vertices) graph
         ne = (length . edges) graph
-        m = (dict . mu) graph
-        f = (fun . mu) graph
-        g = (fun . phi) graph
+        m = (dict . AlternatingForest.mu . forest) graph
+        f = (fun . AlternatingForest.mu . forest) graph
+        g = (fun . AlternatingForest.phi . forest) graph
 
 shrink ((x, y), graph) = 
     let (px, py, spx, spy) = rootPaths graph x y
@@ -93,16 +103,19 @@ shrink ((x, y), graph) =
         vals'    = appendIf (h y /= r) y vals
         keys''   = appendIf (h y /= r) (g y) keys'
         vals''   = appendIf (h y /= r) x vals'
-        graph'   = graph { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
         xs       = filter 
                     (\x -> inUnion (h x) spx spy)
                     (Data.Graph.vertices (representation graph'))
-        graph''  = graph' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
+        forest'  = (forest graph) { AlternatingForest.phi = 
+                                     makeAssoc (adjustMapFor keys'' vals'' m) 
+                                  , AlternatingForest.ro = 
+                                    makeAssoc (adjustMapFor xs (repeat r) m) }
+        graph'   = graph { forest = forest' }
     in r
     where
-        m = (dict . phi) graph
-        h = (fun . ro) graph
-        g = (fun . phi) graph
+        m = (dict . AlternatingForest.phi . forest) graph
+        h = (fun . AlternatingForest.ro . forest) graph
+        g = (fun . AlternatingForest.phi . forest) graph
         inUnion x spx spy = x `Set.member` (spx `Set.union` spy)
 
 

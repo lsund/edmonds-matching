@@ -4,7 +4,8 @@ module Edmond.Graph where
 
 import Protolude
 import Types
-import Edmond.Assoc
+import Edmond.Data.Assoc
+import qualified Edmond.Data.AlternatingForest as AlternatingForest
 
 import Data.Array
 import qualified Data.Graph
@@ -14,10 +15,12 @@ import qualified Data.Map as Map
 
 ----------------------------------------------------------------------------
 -- Graph
+
+type AlternatingForest = AlternatingForest.AlternatingForest
+
+-- todo wrap mu, phi, ro in AlternatingForest
 data Graph = Graph { representation :: Data.Graph.Graph
-                   , mu :: Assoc Vertex Vertex
-                   , phi :: Assoc Vertex Vertex
-                   , ro :: Assoc Vertex Vertex
+                   , forest :: AlternatingForest
                    , scanned :: Assoc Vertex Bool }
 
 -- Initializes the graph as of the specification
@@ -28,29 +31,22 @@ initialize rep =
         idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
-             (makeAssoc idMap)
-             (makeAssoc idMap)
-             (makeAssoc idMap)
+             (AlternatingForest.initialize rep)
              (makeAssoc sInit)
-
-resetButMu :: Int -> Int -> Graph -> Graph
-resetButMu nv ne (Graph rep mu _ _ _ ) =
-    let Graph _ _ phi ro scanned = initialize rep
-    in Graph rep mu phi ro scanned
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
-
-neighbours :: Data.Graph.Graph -> Vertex -> [Vertex]
-neighbours rep v = rep ! v
-
-matching :: Graph -> [(Int, Int)]
-matching graph = zip (Map.keys m) (Map.elems m)
-    where m = (dict . mu) graph
 
 edges :: Graph -> [Edge]
 edges = Data.Graph.edges . representation
 
 vertices :: Graph -> [Vertex]
 vertices = Data.Graph.vertices . representation
+
+neighbours :: Data.Graph.Graph -> Vertex -> [Vertex]
+neighbours rep v = rep ! v
+
+matching :: Graph -> [(Int, Int)]
+matching graph = zip (Map.keys m) (Map.elems m)
+    where m = (dict . AlternatingForest.mu . forest) graph
 

@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module Edmond.Assoc where
+module Edmond.Data.Assoc where
 
 import Protolude
 import qualified Data.Map as Map
