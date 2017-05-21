@@ -3,7 +3,6 @@
 module Edmond.Data.Graph where
 
 import Protolude
-import Types
 
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
@@ -17,6 +16,8 @@ import qualified Data.Map as Map
 ----------------------------------------------------------------------------
 -- Graph
 
+type Vertex = Data.Graph.Vertex
+type Edge = Data.Graph.Edge
 type AlternatingForest = AF.AlternatingForest
 
 -- todo wrap mu, phi, ro in AlternatingForest
@@ -29,7 +30,6 @@ initialize :: Data.Graph.Graph -> Graph
 initialize rep = 
     let nv = (length . Data.Graph.vertices) rep
         ne = (length . Data.Graph.edges) rep
-        idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
              (AF.initialize rep)

@@ -18,13 +18,13 @@ test augment [done]
 
 merge graph with State [done]
 
-test and get algorithm to work on a couple of bipartite graphs []
-
-build logger and integrate it with algorithm []
-
-create a universal graph/state object []
+create a universal graph/state object [done]
     Graph
     Mu/Phi/Ro/Scanned
     Logger
+
+test and get algorithm to work on a couple of bipartite graphs []
+
+build logger and integrate it with algorithm []
 
 

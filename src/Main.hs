@@ -2,7 +2,7 @@
 module Main where
 
 import Protolude
-import Edmond.Algorithm
+import Edmond.Algorithm.Core
 import DIMACSParser
 
 path = "data/bipartite-simple.dmx"

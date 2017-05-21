@@ -1,7 +1,6 @@
 
 module Edmond.Data.Vertex where
 
-import Types
 import Protolude
 import Util
 import Edmond.Data.Graph 

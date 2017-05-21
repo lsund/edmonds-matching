@@ -4,7 +4,7 @@ module Tests where
 import Test.HUnit
 
 import Edmond.Data.Graph as Graph
-import Edmond.Algorithm
+import Edmond.Algorithm.Core
 import Protolude
 import DIMACSParser
 import qualified Data.Graph

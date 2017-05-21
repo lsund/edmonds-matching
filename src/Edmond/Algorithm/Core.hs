@@ -1,28 +1,18 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module Edmond.Algorithm where
+module Edmond.Algorithm.Core where
 
 import Util
-import Types
 import Edmond.Data.Vertex
 import Edmond.Data.Graph as Graph
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
+import Edmond.Algorithm.Helpers
 
 import Protolude
 import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import qualified Data.List as List
-import qualified Data.Graph
-
-odds px py = (every 2 px, every 2 py)
-
-rootPaths graph x y = 
-    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-    in (px, py, Set.fromList px, Set.fromList py)
-        -- converting to set to be able to call
-        -- areDisjoint. Bad??
 
 findRoot :: Graph -> (Edge, Graph)
 findRoot graph =
@@ -31,7 +21,7 @@ findRoot graph =
             Nothing -> undefined
             Just (x, _) -> findGrowth graph x
     where
-        unscannedOuter graph = List.find (\(x, y) -> not y && isOuter graph x)
+        unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
@@ -46,7 +36,7 @@ findGrowth graph x =
                     /= (fun . AF.ro . forest) graph x
         pred'' = isOutOfForest graph 
         pred y = pred'' y || pred' y
-        my = List.find pred (neighbours (representation graph) x)
+        my = find pred (neighbours (representation graph) x)
     in case my of
         Nothing -> 
             let f = const True
@@ -105,7 +95,7 @@ shrink ((x, y), graph) =
         vals''   = appendIf (h y /= r) x vals'
         xs       = filter 
                     (\x -> inUnion (h x) spx spy)
-                    (Data.Graph.vertices (representation graph'))
+                    (vertices graph')
         forest'  = (forest graph) { AF.phi = 
                                      makeAssoc (adjustMapFor keys'' vals'' m) 
                                   , AF.ro = 
