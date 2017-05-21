@@ -9,29 +9,29 @@ import Edmond.Graph
 import Edmond.Assoc
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot state v = v : takeWhile (/= v) (iterateFG v)
+pathToRoot graph v = v : takeWhile (/= v) (iterateFG v)
     where iterateFG = iterateEveryOther f g
-          f = fun $ mu state
-          g = fun $ phi state
+          f = fun $ mu graph
+          g = fun $ phi graph
 
 isOuter :: Graph -> Vertex -> Bool
-isOuter state x = f x == x || g (f x) /= f x
-    where f = fun $ mu state
-          g = fun $ phi state
+isOuter graph x = f x == x || g (f x) /= f x
+    where f = fun $ mu graph
+          g = fun $ phi graph
 
 isInner :: Graph -> Vertex -> Bool
-isInner state x = g (f x) == f x && g x /= x
-    where f = fun $ mu state
-          g = fun $ phi state
+isInner graph x = g (f x) == f x && g x /= x
+    where f = fun $ mu graph
+          g = fun $ phi graph
 
 isOutOfForest :: Graph -> Vertex -> Bool
-isOutOfForest state x = f x /= x && g x == x && g (f x)== f x
-    where f = fun $ mu state
-          g = fun $ phi state
+isOutOfForest graph x = f x /= x && g x == x && g (f x)== f x
+    where f = fun $ mu graph
+          g = fun $ phi graph
 
 
-outers graph state = filter (isOuter state) (Data.Graph.vertices graph)
+outers graph = filter (isOuter graph) (Data.Graph.vertices (representation graph))
 
-inners graph state = filter (isInner state) (Data.Graph.vertices graph)
+inners graph = filter (isInner graph) (Data.Graph.vertices (representation graph))
 
-outOfForests graph state = filter (isOutOfForest state) (Data.Graph.vertices graph)
+outOfForests graph = filter (isOutOfForest graph) (Data.Graph.vertices (representation graph))

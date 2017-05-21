@@ -14,35 +14,35 @@ import qualified Data.Map as Map
 
 ----------------------------------------------------------------------------
 -- Graph
-data Graph = Graph { graph :: Data.Graph.Graph
+data Graph = Graph { representation :: Data.Graph.Graph
                    , mu :: Assoc Vertex Vertex
                    , phi :: Assoc Vertex Vertex
                    , ro :: Assoc Vertex Vertex
                    , scanned :: Assoc Vertex Bool }
 
--- Initializes the state as of the specification
+-- Initializes the graph as of the specification
 initialize :: Data.Graph.Graph -> Int -> Int -> Graph
-initialize graph nv ne = 
+initialize rep nv ne = 
     let idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
-    in Graph graph 
+    in Graph rep 
              (makeAssoc idMap)
              (makeAssoc idMap)
              (makeAssoc idMap)
              (makeAssoc sInit)
 
 resetButMu :: Int -> Int -> Graph -> Graph
-resetButMu nv ne (Graph graph mu _ _ _ ) =
-    let Graph _ _ phi ro scanned = initialize graph nv ne
-    in Graph graph mu phi ro scanned
+resetButMu nv ne (Graph rep mu _ _ _ ) =
+    let Graph _ _ phi ro scanned = initialize rep nv ne
+    in Graph rep mu phi ro scanned
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
 
 neighbours :: Data.Graph.Graph -> Vertex -> [Vertex]
-neighbours graph v = graph ! v
+neighbours rep v = rep ! v
 
 matching :: Graph -> [(Int, Int)]
-matching state = zip (Map.keys m) (Map.elems m)
-    where m = (dict . mu) state
+matching graph = zip (Map.keys m) (Map.elems m)
+    where m = (dict . mu) graph
 
