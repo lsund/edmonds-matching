@@ -1,11 +1,12 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module Edmond.Graph where
+module Edmond.Data.Graph where
 
 import Protolude
 import Types
+
 import Edmond.Data.Assoc
-import qualified Edmond.Data.AlternatingForest as AlternatingForest
+import qualified Edmond.Data.AlternatingForest as AF
 
 import Data.Array
 import qualified Data.Graph
@@ -16,7 +17,7 @@ import qualified Data.Map as Map
 ----------------------------------------------------------------------------
 -- Graph
 
-type AlternatingForest = AlternatingForest.AlternatingForest
+type AlternatingForest = AF.AlternatingForest
 
 -- todo wrap mu, phi, ro in AlternatingForest
 data Graph = Graph { representation :: Data.Graph.Graph
@@ -31,7 +32,7 @@ initialize rep =
         idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
-             (AlternatingForest.initialize rep)
+             (AF.initialize rep)
              (makeAssoc sInit)
 
 ----------------------------------------------------------------------------
@@ -48,5 +49,5 @@ neighbours rep v = rep ! v
 
 matching :: Graph -> [(Int, Int)]
 matching graph = zip (Map.keys m) (Map.elems m)
-    where m = (dict . AlternatingForest.mu . forest) graph
+    where m = (dict . AF.mu . forest) graph
 
