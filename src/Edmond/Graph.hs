@@ -21,9 +21,11 @@ data Graph = Graph { representation :: Data.Graph.Graph
                    , scanned :: Assoc Vertex Bool }
 
 -- Initializes the graph as of the specification
-initialize :: Data.Graph.Graph -> Int -> Int -> Graph
-initialize rep nv ne = 
-    let idMap = Map.fromList [(x, x) | x <- [1..nv]]
+initialize :: Data.Graph.Graph -> Graph
+initialize rep = 
+    let nv = (length . Data.Graph.vertices) rep
+        ne = (length . Data.Graph.edges) rep
+        idMap = Map.fromList [(x, x) | x <- [1..nv]]
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
              (makeAssoc idMap)
@@ -33,7 +35,7 @@ initialize rep nv ne =
 
 resetButMu :: Int -> Int -> Graph -> Graph
 resetButMu nv ne (Graph rep mu _ _ _ ) =
-    let Graph _ _ phi ro scanned = initialize rep nv ne
+    let Graph _ _ phi ro scanned = initialize rep
     in Graph rep mu phi ro scanned
 
 ----------------------------------------------------------------------------
@@ -45,4 +47,10 @@ neighbours rep v = rep ! v
 matching :: Graph -> [(Int, Int)]
 matching graph = zip (Map.keys m) (Map.elems m)
     where m = (dict . mu) graph
+
+edges :: Graph -> [Edge]
+edges = Data.Graph.edges . representation
+
+vertices :: Graph -> [Vertex]
+vertices = Data.Graph.vertices . representation
 

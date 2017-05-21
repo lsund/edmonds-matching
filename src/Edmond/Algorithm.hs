@@ -70,18 +70,15 @@ augment ((x, y), graph) =
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
                     graph' = graph { mu = makeAssoc (adjustMapFor keys vals m) }
-                in ((x, y), Graph.resetButMu 
-                                (lv (representation graph))
-                                (le (representation graph)) 
-                                graph')
+                in ((x, y), Graph.resetButMu nv ne graph')
             else
                 undefined
     where
+        nv = (length . vertices) graph
+        ne = (length . edges) graph
         m = (dict . mu) graph
         f = (fun . mu) graph
         g = (fun . phi) graph
-        lv = length . Data.Graph.vertices
-        le = length . Data.Graph.edges
 
 shrink ((x, y), graph) = 
     let (px, py, spx, spy) = rootPaths graph x y
@@ -111,14 +108,8 @@ shrink ((x, y), graph) =
 
 -- the edges are given as {x, mu(x)}
 edmonds rep =
-    let lv = length . Data.Graph.vertices
-        le = length . Data.Graph.edges
-        init = Graph.initialize rep (lv rep) (le rep)
+    let init = Graph.initialize rep
         (es, graph) = findRoot graph
-    -- in (outers rep graph,
-    --     inners rep graph,
-    --     outOfForests rep graph,
-    --     reverse es)
     in matching graph
 
         -- gets (4, 8) this iteration. 

@@ -4,7 +4,6 @@ module Edmond.Vertex where
 import Types
 import Protolude
 import Util
-import qualified Data.Graph
 import Edmond.Graph 
 import Edmond.Assoc
 
@@ -30,8 +29,8 @@ isOutOfForest graph x = f x /= x && g x == x && g (f x)== f x
           g = fun $ phi graph
 
 
-outers graph = filter (isOuter graph) (Data.Graph.vertices (representation graph))
+outers graph = filter (isOuter graph) (vertices graph)
 
-inners graph = filter (isInner graph) (Data.Graph.vertices (representation graph))
+inners graph = filter (isInner graph) (vertices graph)
 
-outOfForests graph = filter (isOutOfForest graph) (Data.Graph.vertices (representation graph))
+outOfForests graph = filter (isOutOfForest graph) (vertices graph)
