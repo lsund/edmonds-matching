@@ -22,5 +22,9 @@ test and get algorithm to work on a couple of bipartite graphs []
 
 build logger and integrate it with algorithm []
 
+create a universal graph/state object []
+    Graph
+    Mu/Phi/Ro/Scanned
+    Logger
 
 

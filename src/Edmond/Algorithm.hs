@@ -23,12 +23,12 @@ rootPaths state x y =
         -- converting to set to be able to call
         -- areDisjoint. Bad??
 
-findRoot :: Data.Graph.Graph -> Graph -> (Edge, Graph)
-findRoot graph state =
+findRoot :: Graph -> (Edge, Graph)
+findRoot state =
     let mx = unscannedOuter state (Map.assocs ((dict . scanned) state))
     in case mx of 
             Nothing -> undefined
-            Just (x, _) -> findGrowth graph state x
+            Just (x, _) -> findGrowth state x
     where
         unscannedOuter state = List.find (\(x, y) -> not y && isOuter state x)
 
@@ -38,29 +38,29 @@ findRoot graph state =
 -- false, y is a neighbour of x such that y is out-of-forest or y is outer and
 -- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
 -- tree
-findGrowth :: Data.Graph.Graph -> Graph -> Vertex -> (Edge, Graph)
-findGrowth graph state x = 
+findGrowth :: Graph -> Vertex -> (Edge, Graph)
+findGrowth state x = 
     let pred' y = isOuter state y && 
                     (fun . ro) state y /= (fun . ro) state x
         pred'' = isOutOfForest state 
         pred y = pred'' y || pred' y
-        my = List.find pred (neighbours graph x)
+        my = List.find pred (neighbours (graph state) x)
     in case my of
         Nothing -> 
             let f = const True
                 scanned' = adjustMap x True $ (dict . scanned) state
-            in findRoot graph (state { scanned = makeAssoc scanned' })
-        Just y -> grow graph ((x, y), state)
+            in findRoot (state { scanned = makeAssoc scanned' })
+        Just y -> grow ((x, y), state)
 
-grow :: Data.Graph.Graph -> (Edge, Graph) -> (Edge, Graph)
-grow graph ((x, y), state)  = 
+grow :: (Edge, Graph) -> (Edge, Graph)
+grow ((x, y), state)  = 
     if isOutOfForest state y
         then let phi' = adjustMap y x $ (dict . phi) state
-            in findGrowth graph (state { phi = makeAssoc phi' }) x
-        else augment graph ((x, y), state)
+            in findGrowth (state { phi = makeAssoc phi' }) x
+        else augment ((x, y), state)
 
-augment :: Data.Graph.Graph -> (Edge, Graph) -> (Edge, Graph)
-augment graph ((x, y), state) = 
+augment :: (Edge, Graph) -> (Edge, Graph)
+augment ((x, y), state) = 
     let (px, py, spx, spy) = rootPaths state x y
     in 
         if areDisjoint spx spy
@@ -70,7 +70,7 @@ augment graph ((x, y), state) =
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
                     state' = state { mu = makeAssoc (adjustMapFor keys vals m) }
-                in ((x, y), Graph.resetButMu (lv graph) (le graph) state')
+                in ((x, y), Graph.resetButMu (lv (graph state)) (le (graph state)) state')
             else
                 undefined
     where
@@ -80,7 +80,7 @@ augment graph ((x, y), state) =
         lv = length . Data.Graph.vertices
         le = length . Data.Graph.edges
 
-shrink graph ((x, y), state) = 
+shrink ((x, y), state) = 
     let (px, py, spx, spy) = rootPaths state x y
         isect    = spx `Set.intersection` spy
         r        = fromJust $ find (\x -> h x == x) isect
@@ -94,7 +94,9 @@ shrink graph ((x, y), state) =
         keys''   = appendIf (h y /= r) (g y) keys'
         vals''   = appendIf (h y /= r) x vals'
         state'   = state { phi = makeAssoc (adjustMapFor keys'' vals'' m) }
-        xs       = filter (\x -> inUnion (h x) spx spy) (Data.Graph.vertices graph)
+        xs       = filter 
+                    (\x -> inUnion (h x) spx spy)
+                    (Data.Graph.vertices (graph state'))
         state''  = state' { ro = makeAssoc (adjustMapFor xs (repeat r) m) }
     in r
     where
@@ -104,20 +106,12 @@ shrink graph ((x, y), state) =
         inUnion x spx spy = x `Set.member` (spx `Set.union` spy)
 
 
--- loop graph state 3 xs = (xs, state)
--- loop graph state i xs = 
---     case grow graph state of
---         Nothing -> undefined
---         Just ((x, y), state') -> 
---             loop graph (augment graph ((x, y), state')) (succ i) ((x, y) : xs)
-
-
 -- the edges are given as {x, mu(x)}
 edmonds graph =
     let lv = length . Data.Graph.vertices
         le = length . Data.Graph.edges
-        init = Graph.initialize (lv graph) (le graph)
-        (es, state) = findRoot graph state
+        init = Graph.initialize graph (lv graph) (le graph)
+        (es, state) = findRoot state
     -- in (outers graph state,
     --     inners graph state,
     --     outOfForests graph state,
