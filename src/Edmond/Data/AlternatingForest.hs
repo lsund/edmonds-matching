@@ -3,9 +3,11 @@ module Edmond.Data.AlternatingForest where
 
 import Protolude
 import Edmond.Data.Assoc
-import Types
 import qualified Data.Graph
 import Data.Map as Map
+
+type Vertex = Data.Graph.Vertex
+type Edge = Data.Graph.Edge
 
 data AlternatingForest = AlternatingForest { mu :: Assoc Vertex Vertex
                                            , phi :: Assoc Vertex Vertex

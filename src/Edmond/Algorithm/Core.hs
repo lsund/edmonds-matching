@@ -1,13 +1,16 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Edmond.Algorithm.Core where
 
+import Logger
 import Util
 import Edmond.Data.Vertex
 import Edmond.Data.Graph as Graph
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
+import Data.Text (append)
 
 import Protolude
 import Data.Maybe
@@ -18,8 +21,9 @@ findRoot :: Graph -> (Edge, Graph)
 findRoot graph =
     let mx = unscannedOuter graph (Map.assocs ((dict . scanned) graph))
     in case mx of 
-            Nothing -> undefined
-            Just (x, _) -> findGrowth graph x
+            Nothing -> ((-1, -1), graph) -- TODO change to something sensible
+            Just (x, _) -> 
+                findGrowth (Graph.log graph ("Found root: " `append` show x)) x
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
@@ -64,15 +68,17 @@ augment ((x, y), graph) =
                     union = oddpx ++ oddpy
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
-                    forest' = (forest graph) { AF.mu = 
-                                        makeAssoc (adjustMapFor keys vals m) } 
+                    forest' = 
+                        (forest graph) { 
+                            AF.mu = makeAssoc (adjustMapFor keys vals m) 
+                        }
                     forest'' = AF.resetButMu 
                                     (representation graph) 
                                     forest'
                     graph' = graph { forest = forest'' }
-                in ((x, y), graph') 
+                in findRoot graph' 
             else
-                undefined
+                findGrowth graph x
     where
         nv = (length . vertices) graph
         ne = (length . edges) graph
@@ -112,8 +118,8 @@ shrink ((x, y), graph) =
 -- the edges are given as {x, mu(x)}
 edmonds rep =
     let init = Graph.initialize rep
-        (es, graph) = findRoot graph
-    in matching graph
+        ((x, y), graph) = findRoot init
+    in putStrLn $ Logger.read (logger graph) 
 
         -- gets (4, 8) this iteration. 
 

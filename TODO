@@ -25,6 +25,7 @@ create a universal graph/state object [done]
 
 test and get algorithm to work on a couple of bipartite graphs []
 
-build logger and integrate it with algorithm []
+build logger and integrate it with algorithm [done]
 
+incoparate the Edge we are working on into graph []
 
