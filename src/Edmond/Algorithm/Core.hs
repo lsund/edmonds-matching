@@ -23,7 +23,7 @@ findRoot graph =
     in case mx of 
             Nothing -> ((-1, -1), graph) -- TODO change to something sensible
             Just (x, _) -> 
-                findGrowth (Graph.log graph ("Found root: " `append` show x)) x
+                findGrowth (Graph.log ("Found root: " `append` show x) graph) x
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
@@ -44,17 +44,23 @@ findGrowth graph x =
     in case my of
         Nothing -> 
             let f = const True
-                scanned' = adjustMap x True $ (dict . scanned) graph
-            in findRoot (graph { scanned = makeAssoc scanned' })
-        Just y -> grow ((x, y), graph)
+                logged = Graph.log "No growth found" graph
+                scanned' = adjustMap x True $ (dict . scanned) logged
+            in findRoot (logged { scanned = makeAssoc scanned' })
+        Just y -> 
+            let logged = Graph.log ("Found growth: " `append` show (x, y)) graph
+            in grow ((x, y), logged)
 
 grow :: (Edge, Graph) -> (Edge, Graph)
 grow ((x, y), graph)  = 
     if isOutOfForest graph y
-        then let phi' = adjustMap y x m
-                 forest' = (forest graph) { AF.phi = makeAssoc phi' }
+        then 
+            let phi' = adjustMap y x m
+                forest' = (forest graph) { AF.phi = makeAssoc phi' }
             in findGrowth (graph { forest = forest' }) x
-        else augment ((x, y), graph)
+        else
+            let logged = Graph.log ("Grew tree : " `append` show (x, y)) graph
+            in augment ((x, y), logged)
     where
         m = (dict . AF.phi . forest) graph
 
@@ -76,7 +82,10 @@ augment ((x, y), graph) =
                                     (representation graph) 
                                     forest'
                     graph' = graph { forest = forest'' }
-                in findRoot graph' 
+                    logged = Graph.log ("y root path: " `append` show py) $
+                                Graph.log ("x root path: " `append` show px) $
+                                Graph.log "Augmented" graph' 
+                in findRoot logged
             else
                 findGrowth graph x
     where

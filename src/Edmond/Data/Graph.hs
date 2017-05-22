@@ -40,8 +40,8 @@ initialize rep =
              (makeAssoc sInit)
              (Logger "")
 
-log :: Graph -> Text -> Graph
-log graph msg = graph { logger = Logger.write (logger graph) msg }
+log :: Text -> Graph -> Graph
+log msg graph = graph { logger = Logger.write (logger graph) msg }
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
