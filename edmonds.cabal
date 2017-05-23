@@ -3,7 +3,7 @@ name:                edmonds
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             1.0.3.27
+version:             1.0.3.28
 
 category:            Algorithms
 
@@ -42,9 +42,11 @@ executable edmonds
                        hashable >=1.2 && <1.3,
                        stm >=2.4 && <2.5,
                        async >=2.1 && <2.2,
-                       ghc-prim >=0.5 && <0.6
+                       ghc-prim >=0.5 && <0.6,
+                       split >=0.2 && <0.3
   
-  hs-source-dirs:      src, protolude/src
+  hs-source-dirs:      src, protolude/src, test
+
   
   default-language:    Haskell2010
 

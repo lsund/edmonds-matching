@@ -12,6 +12,7 @@ import qualified Edmond.Data.AlternatingForest as AF
 import Data.Array
 import qualified Data.Graph
 import qualified Data.Map as Map
+import qualified Data.List as List
 
 -- Structures for holding a graph and an associated alternating forest
 
@@ -23,7 +24,6 @@ type Edge = Data.Graph.Edge
 type GraphRepresentation = Data.Graph.Graph
 type AlternatingForest = AF.AlternatingForest
 
--- todo wrap mu, phi, ro in AlternatingForest
 data Graph = Graph { representation :: Data.Graph.Graph
                    , forest :: AlternatingForest
                    , scanned :: Assoc Vertex Bool 
@@ -61,6 +61,7 @@ neighbours rep v =
     in forward ++ reverse
 
 matching :: Graph -> [(Int, Int)]
-matching graph = zip (Map.keys m) (Map.elems m)
-    where m = (dict . AF.mu . forest) graph
+matching graph = fst $ List.splitAt (length xs `div` 2) xs
+    where xs = zip (Map.keys m) (Map.elems m)
+          m = (dict . AF.mu . forest) graph
 
