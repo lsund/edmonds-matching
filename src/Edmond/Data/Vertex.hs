@@ -8,7 +8,7 @@ import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = v : takeWhile (/= v) (iterateFG v)
+pathToRoot graph v = takeWhileDifferent (iterateFG v)
     where iterateFG = iterateEveryOther f g
           f = (fun . AF.mu . forest) graph
           g = (fun . AF.phi . forest) graph

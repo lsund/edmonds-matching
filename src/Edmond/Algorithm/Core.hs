@@ -10,7 +10,6 @@ import Edmond.Data.Graph as Graph
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
-import Data.Text (append)
 
 import Protolude
 import Data.Maybe
@@ -23,7 +22,7 @@ findRoot graph =
     in case mx of 
             Nothing -> ((-1, -1), graph) -- TODO change to something sensible
             Just (x, _) -> 
-                findGrowth (Graph.log ("Found root: " `append` show x) graph) x
+                findGrowth (Graph.log (appendShow "Found root: " x) graph) x
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
@@ -53,7 +52,7 @@ findGrowth graph x =
                 scanned' = adjustMap x True $ (dict . scanned) logged
             in findRoot (logged { scanned = makeAssoc scanned' })
         Just y -> 
-            let logged = Graph.log ("Found growth: " `append` show (x, y)) graph
+            let logged = Graph.log (appendShow "Found growth: " (x, y)) graph
             in grow ((x, y), logged)
 
 grow :: (Edge, Graph) -> (Edge, Graph)
@@ -64,14 +63,16 @@ grow ((x, y), graph)  =
                 forest' = (forest graph) { AF.phi = makeAssoc phi' }
             in findGrowth (graph { forest = forest' }) x
         else
-            let logged = Graph.log ("Grew tree : " `append` show (x, y)) graph
+            let logged = Graph.log (appendShow "Grew tree : " (x, y)) graph
             in augment ((x, y), logged)
     where
         m = (dict . AF.phi . forest) graph
 
 augment :: (Edge, Graph) -> (Edge, Graph)
 augment ((x, y), graph) = 
-    let (px, py, spx, spy) = rootPaths graph x y
+    let (px, py, spx, spy) = rootPaths logged x y
+        logged = Graph.log (appendShow "px " px) $ 
+                    Graph.log (appendShow "mu x " (f x)) graph
     in 
         if areDisjoint spx spy
             then
@@ -80,19 +81,19 @@ augment ((x, y), graph) =
                     keys = [f x, f y] ++ map (f . g) union
                     vals = [y, x] ++ union
                     forest' = 
-                        (forest graph) { 
+                        (forest logged) { 
                             AF.mu = makeAssoc (adjustMapFor keys vals m) 
                         }
                     forest'' = AF.resetButMu 
-                                    (representation graph) 
+                                    (representation logged) 
                                     forest'
-                    graph' = graph { forest = forest'' }
-                    logged = Graph.log ("y root path: " `append` show py) $
-                                Graph.log ("x root path: " `append` show px) $
+                    graph' = logged { forest = forest'' }
+                    logged' = Graph.log (appendShow "y root path: " py) $
+                                Graph.log (appendShow "x root path: " px) $
                                 Graph.log "Augmented" graph' 
-                in findRoot logged
+                in findRoot logged'
             else
-                findGrowth graph x
+                findGrowth logged x
     where
         nv = (length . vertices) graph
         ne = (length . edges) graph
@@ -133,7 +134,7 @@ shrink ((x, y), graph) =
 edmonds rep =
     let init = Graph.initialize rep
         ((x, y), graph) = findRoot init
-        logged = Graph.log ("matching: " `append` show (matching graph)) graph
+        logged = Graph.log (appendShow "matching: " (matching graph)) graph
     in putStrLn $ Logger.read (logger logged) 
 
         -- gets (4, 8) this iteration. 

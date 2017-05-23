@@ -4,7 +4,13 @@ module Util where
 import Protolude
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import qualified Data.Text as Text
+import Data.Text (append)
+
+takeWhileDifferent :: Eq a => [a] -> [a]
+takeWhileDifferent []                    = []
+takeWhileDifferent [x]                   = [x]
+takeWhileDifferent (x : y : xs) | x == y = [x]
+takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 iterateEveryOther = iterateEveryOther' True
@@ -28,4 +34,7 @@ every n xs = case drop (n-1) xs of
 
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs
+
+appendShow :: Show a => Text -> a -> Text
+appendShow prefix val = prefix `append` show val
 
