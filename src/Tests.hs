@@ -56,8 +56,31 @@ test08 = TestCase $ assertEqual "" [1,2] (takeWhileDifferent [1,2,2,2])
 
 test09 = TestCase $ assertEqual "" [1,2] (takeWhileDifferent [1,2,2,3,4])
 
+
+----------------------------------------------------------------------------
+-- Algorithm
+
+test10 = TestCase   (do rep <- fileToGraph "data/P4.dmx"
+                        let init = Graph.initialize rep
+                            (_, graph) = findRoot init
+                        assertEqual
+                            ""
+                            [(1,3),(2,4),(3,1),(4,2)]
+                            (matching graph))
+
+
 ----------------------------------------------------------------------------
 -- All Tests
 
-tests = TestList [test01, test02, test03, test04, test05, test06, test07, test08, test09]
+tests = TestList [ test01
+                 , test02
+                 , test03
+                 , test04
+                 , test05
+                 , test06
+                 , test07
+                 , test08
+                 , test09
+                 , test10
+                 ]
 

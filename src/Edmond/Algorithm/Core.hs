@@ -70,30 +70,32 @@ grow ((x, y), graph)  =
 
 augment :: (Edge, Graph) -> (Edge, Graph)
 augment ((x, y), graph) = 
-    let (px, py, spx, spy) = rootPaths logged x y
-        logged = Graph.log (appendShow "px " px) $ 
-                    Graph.log (appendShow "mu x " (f x)) graph
+    let (px, py, spx, spy) = rootPaths graph x y
     in 
         if areDisjoint spx spy
             then
                 let (oddpx, oddpy) = odds px py
-                    union = oddpx ++ oddpy
-                    keys = [f x, f y] ++ map (f . g) union
-                    vals = [y, x] ++ union
+                    u = oddpx ++ oddpy
+                    gu = map g u
+                    keys = [x, y] ++ gu ++ u
+                    vals = [y, x] ++ u ++ gu
                     forest' = 
-                        (forest logged) { 
+                        (forest graph) { 
                             AF.mu = makeAssoc (adjustMapFor keys vals m) 
                         }
                     forest'' = AF.resetButMu 
-                                    (representation logged) 
+                                    (representation graph) 
                                     forest'
-                    graph' = logged { forest = forest'' }
-                    logged' = Graph.log (appendShow "y root path: " py) $
+                    graph' = graph { forest = forest'' }
+                    logged = Graph.log (appendShow "keys: " keys) $
+                                Graph.log (appendShow "vals: " vals) $
+                                Graph.log (appendShow "odds: " u) $
+                                Graph.log (appendShow "y root path: " py) $
                                 Graph.log (appendShow "x root path: " px) $
                                 Graph.log "Augmented" graph' 
-                in findRoot logged'
+                in findRoot logged
             else
-                findGrowth logged x
+                findGrowth graph x
     where
         nv = (length . vertices) graph
         ne = (length . edges) graph

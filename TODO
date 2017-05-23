@@ -30,3 +30,5 @@ build logger and integrate it with algorithm [done]
 incoparate the Edge we are working on into graph []
 
 implement pathToRoot correctly [done]
+
+augment malfunctioning []
