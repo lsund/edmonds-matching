@@ -27,6 +27,17 @@ findRoot graph =
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
+-- Given a graph and a vertex x, finds a neighbour y of x such that y is either
+-- out-of-forest or (y is outer and ro(y) =/ ro(x)
+findNeighbour :: Graph -> Vertex -> Maybe Vertex
+findNeighbour graph x =
+    let pred' y = isOuter graph y && 
+                       (fun . AF.ro . forest) graph y 
+                    /= (fun . AF.ro . forest) graph x
+        pred'' = isOutOfForest graph 
+        pred y = pred'' y || pred' y
+    in find pred (neighbours (representation graph) x)
+
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
 -- Finds two vertices (x, y) such that x is an outer vertex with scanned(x) =
@@ -35,13 +46,7 @@ findRoot graph =
 -- tree
 findGrowth :: Graph -> Vertex -> (Edge, Graph)
 findGrowth graph x = 
-    let pred' y = isOuter graph y && 
-                       (fun . AF.ro . forest) graph y 
-                    /= (fun . AF.ro . forest) graph x
-        pred'' = isOutOfForest graph 
-        pred y = pred'' y || pred' y
-        my = find pred (neighbours (representation graph) x)
-    in case my of
+    case findNeighbour graph x of
         Nothing -> 
             let f = const True
                 logged = Graph.log "No growth found" graph
@@ -128,7 +133,8 @@ shrink ((x, y), graph) =
 edmonds rep =
     let init = Graph.initialize rep
         ((x, y), graph) = findRoot init
-    in putStrLn $ Logger.read (logger graph) 
+        logged = Graph.log ("matching: " `append` show (matching graph)) graph
+    in putStrLn $ Logger.read (logger logged) 
 
         -- gets (4, 8) this iteration. 
 

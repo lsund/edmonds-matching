@@ -53,7 +53,12 @@ vertices :: Graph -> [Vertex]
 vertices = Data.Graph.vertices . representation
 
 neighbours :: GraphRepresentation -> Vertex -> [Vertex]
-neighbours rep v = rep ! v
+neighbours rep v = 
+    let xys = zip (indices rep) (elems rep)
+        forward = rep ! v
+        reverse = 
+            foldr (\(x, y) acc -> if v `elem` y then x : acc else acc) [] xys
+    in forward ++ reverse
 
 matching :: Graph -> [(Int, Int)]
 matching graph = zip (Map.keys m) (Map.elems m)
