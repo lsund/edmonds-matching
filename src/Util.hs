@@ -4,7 +4,10 @@ module Util where
 import Protolude
 import qualified Data.Set as Set
 import qualified Data.Map as Map
+import qualified Data.List as List
+import Data.Tuple
 import Data.Text (append)
+import Data.Graph
 
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent []                    = []
@@ -37,4 +40,12 @@ appendIf p x xs = if p then x : xs else xs
 
 appendShow :: Show a => Text -> a -> Text
 appendShow prefix val = prefix `append` show val
+
+uniqueElements :: Ord a => [a] -> Bool
+uniqueElements xs = length (List.nub xs) == length xs
+
+isMatching :: [Edge] -> Bool
+isMatching xs = uniqueElements vs
+    where vs = map fst xs ++ map snd xs
+
 

@@ -31,4 +31,6 @@ incoparate the Edge we are working on into graph []
 
 implement pathToRoot correctly [done]
 
-augment malfunctioning []
+augment malfunctioning [done]
+
+test Util.isMatching/ Util.unique [done]

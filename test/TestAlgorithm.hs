@@ -31,5 +31,21 @@ test02 = TestCase   (do rep <- fileToGraph "data/K4.dmx"
                             2
                             (length $ matching graph))
 
-algoTests = TestList [test00, test01, test02]
+test03 = TestCase   (do rep <- fileToGraph "data/bipartite-simple.dmx"
+                        let init = Graph.initialize rep
+                            (_, graph) = findRoot init
+                        assertEqual
+                            ""
+                            2
+                            (length $ matching graph))
+
+test04 = TestCase   (do rep <- fileToGraph "data/bipartite.dmx"
+                        let init = Graph.initialize rep
+                            (_, graph) = findRoot init
+                        assertEqual
+                            ""
+                            4
+                            (length $ matching graph))
+
+algoTests = TestList [test00, test01, test02, test03, test04]
 
