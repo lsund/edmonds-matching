@@ -34,13 +34,11 @@ checkMatchingLen exp graph = assertEqual "" exp $ length $ matching graph
 
 testIfMatching path = TestCase  (do rep <- fileToGraph path
                                     let init = Graph.initialize rep
-                                        (_, graph) = findRoot init
-                                    checkIfMatching graph)
+                                    checkIfMatching (findRoot init))
 
 testMatchingLen (path, len) = TestCase  (do rep <- fileToGraph path
                                             let init = Graph.initialize rep
-                                                (_, graph) = findRoot init
-                                            checkMatchingLen len graph)
+                                            checkMatchingLen len (findRoot init))
 
 ----------------------------------------------------------------------------
 -- tests

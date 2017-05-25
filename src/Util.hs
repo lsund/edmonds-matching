@@ -38,9 +38,6 @@ every n xs = case drop (n-1) xs of
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs
 
-appendShow :: Show a => Text -> a -> Text
-appendShow prefix val = prefix `append` show val
-
 uniqueElements :: Ord a => [a] -> Bool
 uniqueElements xs = length (List.nub xs) == length xs
 

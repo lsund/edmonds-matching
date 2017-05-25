@@ -16,26 +16,28 @@ import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 
-findRoot :: Graph -> (Edge, Graph)
+findRoot :: Graph -> Graph
 findRoot graph =
     let mx = unscannedOuter graph (Map.assocs ((dict . scanned) graph))
     in case mx of 
-            Nothing -> ((-1, -1), graph) -- TODO change to something sensible
+            Nothing -> graph
             Just (x, _) -> 
-                findGrowth (Graph.log (appendShow "Found root: " x) graph) x
+                findGrowth (Graph.logv "Found root: " x (graph { currentX = x }))
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
 -- Given a graph and a vertex x, finds a neighbour y of x such that y is either
 -- out-of-forest or (y is outer and ro(y) =/ ro(x)
-findNeighbour :: Graph -> Vertex -> Maybe Vertex
-findNeighbour graph x =
+findNeighbour :: Graph -> Maybe Vertex
+findNeighbour graph =
     let pred' y = isOuter graph y && 
                        (fun . AF.ro . forest) graph y 
                     /= (fun . AF.ro . forest) graph x
         pred'' = isOutOfForest graph 
         pred y = pred'' y || pred' y
     in find pred (neighbours (representation graph) x)
+    where
+        x = currentX graph
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
@@ -43,34 +45,38 @@ findNeighbour graph x =
 -- false, y is a neighbour of x such that y is out-of-forest or y is outer and
 -- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
 -- tree
-findGrowth :: Graph -> Vertex -> (Edge, Graph)
-findGrowth graph x = 
-    case findNeighbour graph x of
+findGrowth :: Graph -> Graph
+findGrowth graph = 
+    case findNeighbour graph of
         Nothing -> 
             let f = const True
                 logged = Graph.log "No growth found" graph
                 scanned' = adjustMap x True $ (dict . scanned) logged
             in findRoot (logged { scanned = makeAssoc scanned' })
         Just y -> 
-            let logged = Graph.log (appendShow "Found growth: " (x, y)) graph
-            in grow ((x, y), logged)
+            let logged = Graph.logv "Found growth: " (x, y) graph
+            in grow (logged { currentY = y })
+    where
+        x = currentX graph
 
-grow :: (Edge, Graph) -> (Edge, Graph)
-grow ((x, y), graph)  = 
+grow :: Graph -> Graph
+grow graph = 
     if isOutOfForest graph y
         then 
             let phi' = adjustMap y x m
                 forest' = (forest graph) { AF.phi = makeAssoc phi' }
-            in findGrowth (graph { forest = forest' }) x
+            in findGrowth (graph { forest = forest' })
         else
-            let logged = Graph.log (appendShow "Grew tree : " (x, y)) graph
-            in augment ((x, y), logged)
+            let logged = Graph.logv "Grew tree : " (x, y) graph
+            in augment logged
     where
         m = (dict . AF.phi . forest) graph
+        x = currentX graph
+        y = currentY graph
 
-augment :: (Edge, Graph) -> (Edge, Graph)
-augment ((x, y), graph) = 
-    let (px, py, spx, spy) = rootPaths graph x y
+augment :: Graph -> Graph
+augment graph = 
+    let (px, py, spx, spy) = rootPaths graph x y 
     in 
         if areDisjoint spx spy
             then
@@ -87,21 +93,23 @@ augment ((x, y), graph) =
                                     (representation graph) 
                                     forest'
                     graph' = graph { forest = forest'' }
-                    logged = Graph.log (appendShow "keys: " keys) $
-                                Graph.log (appendShow "vals: " vals) $
-                                Graph.log (appendShow "odds: " u) $
-                                Graph.log (appendShow "y root path: " py) $
-                                Graph.log (appendShow "x root path: " px) $
+                    logged = Graph.logv "keys: " keys $
+                                Graph.logv "vals: " vals $
+                                Graph.logv "odds: " u $
+                                Graph.logv "y root path: " py $
+                                Graph.logv "x root path: " px $
                                 Graph.log "Augmented" graph' 
                 in findRoot logged
             else
-                findGrowth graph x
+                findGrowth graph
     where
+        x  = currentX graph
+        y  = currentY graph
         nv = (length . vertices) graph
         ne = (length . edges) graph
-        m = (dict . AF.mu . forest) graph
-        f = (fun . AF.mu . forest) graph
-        g = (fun . AF.phi . forest) graph
+        m  = (dict . AF.mu . forest) graph
+        f  = (fun . AF.mu . forest) graph
+        g  = (fun . AF.phi . forest) graph
 
 shrink ((x, y), graph) = 
     let (px, py, spx, spy) = rootPaths graph x y
@@ -135,8 +143,8 @@ shrink ((x, y), graph) =
 -- the edges are given as {x, mu(x)}
 edmonds rep =
     let init = Graph.initialize rep
-        ((x, y), graph) = findRoot init
-        logged = Graph.log (appendShow "matching: " (matching graph)) graph
+        graph = findRoot init
+        logged = Graph.logv "matching: " (matching graph) graph
     in putStrLn $ Logger.read (logger logged) 
 
         -- gets (4, 8) this iteration. 

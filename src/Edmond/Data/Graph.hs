@@ -13,6 +13,7 @@ import Data.Array
 import qualified Data.Graph
 import qualified Data.Map as Map
 import qualified Data.List as List
+import Data.Text (append)
 
 -- Structures for holding a graph and an associated alternating forest
 
@@ -27,7 +28,9 @@ type AlternatingForest = AF.AlternatingForest
 data Graph = Graph { representation :: Data.Graph.Graph
                    , forest :: AlternatingForest
                    , scanned :: Assoc Vertex Bool 
-                   , logger :: Logger }
+                   , logger :: Logger
+                   , currentX :: Vertex
+                   , currentY :: Vertex }
 
 -- Initializes the graph as of the specification
 initialize :: GraphRepresentation -> Graph
@@ -39,9 +42,17 @@ initialize rep =
              (AF.initialize rep)
              (makeAssoc sInit)
              (Logger "")
+             (-1)
+             (-1)
 
+-- Logs a message
 log :: Text -> Graph -> Graph
 log msg graph = graph { logger = Logger.write (logger graph) msg }
+
+-- Logs a message and a value
+logv :: Show a => Text -> a -> Graph -> Graph
+logv msg val graph = graph { logger = logger' }
+    where logger' = Logger.write (logger graph) (msg `append` show val)
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
