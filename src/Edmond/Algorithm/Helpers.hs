@@ -12,13 +12,12 @@ type Set = Set.Set
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
 
-rootPaths :: Graph
-          -> Vertex
-          -> Vertex
-          -> ([Vertex], [Vertex], Set Vertex, Set Vertex)
-rootPaths graph x y = 
+rootPaths :: Graph -> ([Vertex], [Vertex], Set Vertex, Set Vertex)
+rootPaths graph = 
     let (px, py) = (pathToRoot graph x, pathToRoot graph y)
     in (px, py, Set.fromList px, Set.fromList py)
+    where x = currentX graph
+          y = currentY graph
         -- converting to set to be able to call
         -- areDisjoint. Bad??
 

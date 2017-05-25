@@ -31,7 +31,9 @@ test Util.isMatching/ Util.unique [done]
 
 test and get algorithm to work on a couple of bipartite graphs [done]
 
-incoparate the Edge we are working on into graph []
+incoparate the Edge we are working on into graph [done]
 
-outsource logging functions from graph to logger []
+outsource logging functions from graph to logger [done]
+
+get the algorithm to work on a non-bipartite graph (K3) []
 

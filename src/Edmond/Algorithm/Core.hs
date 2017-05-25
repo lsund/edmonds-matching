@@ -76,7 +76,7 @@ grow graph =
 
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py, spx, spy) = rootPaths graph x y 
+    let (px, py, spx, spy) = rootPaths graph
     in 
         if areDisjoint spx spy
             then
@@ -112,7 +112,7 @@ augment graph =
         g  = (fun . AF.phi . forest) graph
 
 shrink ((x, y), graph) = 
-    let (px, py, spx, spy) = rootPaths graph x y
+    let (px, py, spx, spy) = rootPaths graph
         isect    = spx `Set.intersection` spy
         r        = fromJust $ find (\x -> h x == x) isect
         (oddpx, oddpy) = odds px py
