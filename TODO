@@ -35,5 +35,9 @@ incoparate the Edge we are working on into graph [done]
 
 outsource logging functions from graph to logger [done]
 
+check so that the number of vertices and edges are correct in DIMACSPARSER []
+
+banish logger: we will use trace from now on! [done]
+
 get the algorithm to work on a non-bipartite graph (K3) []
 

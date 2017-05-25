@@ -16,6 +16,7 @@ paths = [ "data/P4.dmx"
         , "data/K4.dmx"
         , "data/bipartite-simple.dmx"
         , "data/bipartite.dmx"
+        -- , "data/K3.dmx"
         ]
 
 expectedLengths = [ 2
@@ -23,6 +24,7 @@ expectedLengths = [ 2
                   , 2
                   , 2
                   , 4
+                  -- , 1
                   ]
 
 ----------------------------------------------------------------------------

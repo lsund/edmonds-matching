@@ -1,10 +1,11 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Edmond.Data.Assoc where
 
 import Protolude
-import qualified Data.Map as Map
-import Data.Maybe
+import qualified Data.Map.Strict as Map
+import Data.Text (append)
 
 ----------------------------------------------------------------------------
 -- Assoc
@@ -17,10 +18,11 @@ data Assoc a b = Assoc { dict :: Map a b
                        , fun :: a -> b }
 
 -- Given a dictionary, creates a function
-assocToFun :: Ord a => Map a b -> (a -> b)
-assocToFun m x = fromJust $ Map.lookup x m 
+assocToFun :: (Show a, Ord a) => Map a b -> (a -> b)
+assocToFun m x = Map.findWithDefault e x m 
+    where e = error $ "cant find key: " `append` show x
 
 -- Given a map, creates an association
-makeAssoc :: Ord a => Map a b -> Assoc a b
+makeAssoc :: (Show a, Ord a) => Map a b -> Assoc a b
 makeAssoc m = Assoc m (assocToFun m)
 
