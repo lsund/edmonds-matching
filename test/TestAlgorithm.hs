@@ -22,6 +22,7 @@ paths = [ "data/P4.dmx"
         , "data/K4-v2.dmx"
         , "data/bipartite-simple-v2.dmx"
         , "data/K3-v2.dmx"
+        , "data/butterfly.dmx"
         ]
 
 expectedLengths = [ 2
@@ -35,13 +36,15 @@ expectedLengths = [ 2
                   , 2
                   , 2
                   , 1
+                  , 2
                   ]
 
 ----------------------------------------------------------------------------
 -- Utils
 
 checkIfMatching graph =
-    assertBool "Should be a matching" $ isMatching $ matching graph
+    let m = matching graph
+    in assertBool "Should be a matching" $ isMatching m && containsEdges m graph
 
 checkMatchingLen exp graph =
     assertEqual "Should have correct length " exp $ length $ matching graph

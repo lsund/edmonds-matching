@@ -5,6 +5,7 @@ module Edmond.Data.Graph where
 
 import Protolude
 
+import Util
 import Logger
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
@@ -60,6 +61,11 @@ edges = Data.Graph.edges . representation
 vertices :: Graph -> [Vertex]
 vertices = Data.Graph.vertices . representation
 
+containsEdges :: [Edge] -> Graph -> Bool
+containsEdges es graph = 
+    -- all (\e -> e `elem` edges graph || swap e `elem` edges graph) es
+    all (\e -> containsOne [e, swap e] (edges graph)) es
+
 neighbours :: GraphRepresentation -> Vertex -> [Vertex]
 neighbours rep v = 
     let xys = zip (indices rep) (elems rep)
@@ -68,9 +74,8 @@ neighbours rep v =
             foldr (\(x, y) acc -> if v `elem` y then x : acc else acc) [] xys
     in forward ++ reverse
 
-
 matching :: Graph -> [(Int, Int)]
-matching graph = filter (\(x, y) -> x < y) xs
+matching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys m) (Map.elems m)
           m = (dict . AF.mu . forest) graph
 

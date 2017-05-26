@@ -33,7 +33,7 @@ findRoot graph =
     let mx = unscannedOuter graph (Map.assocs ((dict . scanned) graph))
     in case mx of 
             Nothing -> graph
-            Just (x, _) -> debugv "found root: " x $ findGrowth $ graph { currentX = x }
+            Just (x, _) -> findGrowth $ graph { currentX = x }
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
@@ -83,7 +83,7 @@ grow graph =
  
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py) = debugv "augmenting from: " (x, y) (pathToRoot graph x, pathToRoot graph y)
+    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
         (spx, spy) = (Set.fromList px, Set.fromList py)
     in 
         if areDisjoint spx spy
@@ -114,7 +114,7 @@ augment graph =
 
 shrink :: Graph -> Graph
 shrink graph = 
-    let (px, py) = debugvId "p(x), p(y): " (pathToRoot graph x, pathToRoot graph y)
+    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
         (spx, spy) = (Set.fromList px, Set.fromList py)
         isect    = spx `Set.intersection` spy
         r        = fromJust $ find (\x -> h x == x) isect
@@ -128,10 +128,8 @@ shrink graph =
         vals'    = appendIf (h x /= r) y vals
         keys''   = appendIf (h y /= r) y keys'
         vals''   =  appendIf (h y /= r) x vals'
-        xs       = debugvId "shrinking: " $ filter 
-                    (\x -> h x `elem` union)
-                    (vertices graph)
-        forest'  = debugv "into: " r $ (forest graph) { AF.phi = 
+        xs       = filter (\x -> h x `elem` union) (vertices graph)
+        forest'  = (forest graph) { AF.phi = 
                                      makeAssoc (adjustMapFor keys'' vals'' gm) 
                                   , AF.ro = 
                                      makeAssoc (adjustMapFor xs (repeat r) hm) }

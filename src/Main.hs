@@ -11,7 +11,7 @@ import DIMACSParser
 -- path = "data/K3.dmx"
 -- path = "data/butterfly.dmx"
 -- path = "data/C5.dmx"
-path = "data/K4-v2.dmx"
+path = "data/K2-v2.dmx"
 -- path = "data/bipartite-simple-v2.dmx"
 
 main :: IO ()

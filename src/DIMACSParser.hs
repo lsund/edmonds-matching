@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module DIMACSParser (fileToGraph, parseLine) where
+module DIMACSParser (fileToGraph) where
 
 import Protolude
 import Data.Graph

@@ -9,10 +9,10 @@ import Data.Tuple
 import Data.Text (append)
 import Data.Graph
 
-takeWhileIncluding :: Eq a => (a -> Bool) -> [a] -> [a]
-takeWhileIncluding p []             = []
-takeWhileIncluding p (x : xs) | p x = x : takeWhileIncluding p xs
-takeWhileIncluding p (x : xs)       = [x]
+-- True if the second list contains at least one of the elements in the first
+-- list
+containsOne :: Eq a => [a] -> [a] -> Bool
+containsOne xs ys = any (`elem` ys) xs
 
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent []                    = []
