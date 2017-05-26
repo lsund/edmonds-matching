@@ -8,9 +8,8 @@ import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = takeWhileDifferent (iterateFG v)
-    where iterateFG = iterateEveryOther f g
-          f = (fun . AF.mu . forest) graph
+pathToRoot graph v = takeWhileDifferent $ iterateEveryOther f g v
+    where f = (fun . AF.mu . forest) graph
           g = (fun . AF.phi . forest) graph
 
 isOuter :: Graph -> Vertex -> Bool
@@ -24,7 +23,7 @@ isInner graph x = g (f x) == f x && g x /= x
           g = (fun . AF.phi . forest) graph
 
 isOutOfForest :: Graph -> Vertex -> Bool
-isOutOfForest graph x = f x /= x && g x == x && g (f x)== f x
+isOutOfForest graph x = f x /= x && g x == x && g (f x) == f x
     where f = (fun . AF.mu . forest) graph
           g = (fun . AF.phi . forest) graph
 

@@ -25,13 +25,15 @@ debug = trace
 debugv :: Show a => Text -> a -> b -> b
 debugv msg val = trace (msg +++ show val) 
 
+debugvId :: Show a => Text -> a -> a
+debugvId msg expr = trace (msg +++ show expr) expr
+
 findRoot :: Graph -> Graph
 findRoot graph =
     let mx = unscannedOuter graph (Map.assocs ((dict . scanned) graph))
     in case mx of 
             Nothing -> graph
-            Just (x, _) -> debugv "Found root: " x $ findGrowth $
-                            graph { currentX = x }
+            Just (x, _) -> debugv "found root: " x $ findGrowth $ graph { currentX = x }
     where
         unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
 
@@ -42,10 +44,10 @@ findNeighbour graph =
     let pred' y = isOuter graph y && 
                        (fun . AF.ro . forest) graph y 
                     /= (fun . AF.ro . forest) graph x
-        pred'' = isOutOfForest graph 
+        pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
         found = find pred $ neighbours (representation graph) x
-    in debugv "found neighbour: " found found
+    in found
     where
         x = currentX graph
 
@@ -61,9 +63,8 @@ findGrowth graph =
         Nothing -> 
             let f = const True
                 scanned' = adjustMap x True $ (dict . scanned) graph
-            in debug "No growth found" $ 
-                findRoot (graph { scanned = makeAssoc scanned' })
-        Just y -> debugv "Found growth: " (x, y) $ grow (graph { currentY = y })
+            in findRoot (graph { scanned = makeAssoc scanned' })
+        Just y -> grow (graph { currentY = y })
     where
         x = currentX graph
 
@@ -74,16 +75,16 @@ grow graph =
             let phi' = adjustMap y x m
                 forest' = (forest graph) { AF.phi = makeAssoc phi' }
             in findGrowth (graph { forest = forest' })
-        else
-            debugv "Grew tree: " (x, y) $ augment graph
+        else augment graph
     where
         m = (dict . AF.phi . forest) graph
         x = currentX graph
         y = currentY graph
-
+ 
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py, spx, spy) = rootPaths graph
+    let (px, py) = debugv "augmenting from: " (x, y) (pathToRoot graph x, pathToRoot graph y)
+        (spx, spy) = (Set.fromList px, Set.fromList py)
     in 
         if areDisjoint spx spy
             then
@@ -101,8 +102,7 @@ augment graph =
                                     forest'
                     graph' = graph { forest = forest'' }
                 in findRoot graph'
-            else
-                shrink graph
+            else shrink graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -114,33 +114,35 @@ augment graph =
 
 shrink :: Graph -> Graph
 shrink graph = 
-    let (px, py, spx, spy) = rootPaths graph
+    let (px, py) = debugvId "p(x), p(y): " (pathToRoot graph x, pathToRoot graph y)
+        (spx, spy) = (Set.fromList px, Set.fromList py)
         isect    = spx `Set.intersection` spy
         r        = fromJust $ find (\x -> h x == x) isect
         (oddpx, oddpy) = odds px py
-        union    = oddpx ++ oddpy
-        union'   = filter (\v -> (h . g) v /= r) union
-        keys     = map (g . g) union'
-        vals     = union'
-        keys'     = appendIf (h x /= r) (g y) keys
-        vals'    = appendIf (h y /= r) y vals
-        keys''   = appendIf (h y /= r) (g y) keys'
-        vals''   = appendIf (h y /= r) x vals'
-        xs       = filter 
-                    (\x -> inUnion (h x) spx spy)
+        union    =  spx `Set.union` spy
+        oddUnion = Set.toList $ Set.fromList $ oddpx ++ oddpy
+        filtered =  filter (\v -> (h . g) v /= r) oddUnion
+        keys     = map g filtered
+        vals     = filtered
+        keys'    = appendIf (h x /= r) x keys
+        vals'    = appendIf (h x /= r) y vals
+        keys''   = appendIf (h y /= r) y keys'
+        vals''   =  appendIf (h y /= r) x vals'
+        xs       = debugvId "shrinking: " $ filter 
+                    (\x -> h x `elem` union)
                     (vertices graph)
-        forest'  = (forest graph) { AF.phi = 
-                                     makeAssoc (adjustMapFor keys'' vals'' m) 
+        forest'  = debugv "into: " r $ (forest graph) { AF.phi = 
+                                     makeAssoc (adjustMapFor keys'' vals'' gm) 
                                   , AF.ro = 
-                                    makeAssoc (adjustMapFor xs (repeat r) m) }
-    in graph { forest = forest' }
+                                     makeAssoc (adjustMapFor xs (repeat r) hm) }
+    in findGrowth $ graph { forest = forest' }
     where
         x = currentX graph
         y = currentY graph
-        m = (dict . AF.phi . forest) graph
-        h = (fun . AF.ro . forest) graph
+        gm = (dict . AF.phi . forest) graph
         g = (fun . AF.phi . forest) graph
-        inUnion x spx spy = x `Set.member` (spx `Set.union` spy)
+        hm = (dict . AF.ro . forest) graph
+        h = (fun . AF.ro . forest) graph
 
 
 -- the edges are given as {x, mu(x)}

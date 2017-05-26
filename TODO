@@ -39,5 +39,12 @@ check so that the number of vertices and edges are correct in DIMACSPARSER []
 
 banish logger: we will use trace from now on! [done]
 
-get the algorithm to work on a non-bipartite graph (K3) []
+get the algorithm to work on a non-bipartite graph (K3) [done]
+
+butterfly []
+
+butterfly-extended []
+
+potential bug to examine: edges are not sorted, and the algorithm fails because
+of that []
 

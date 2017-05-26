@@ -9,6 +9,11 @@ import Data.Tuple
 import Data.Text (append)
 import Data.Graph
 
+takeWhileIncluding :: Eq a => (a -> Bool) -> [a] -> [a]
+takeWhileIncluding p []             = []
+takeWhileIncluding p (x : xs) | p x = x : takeWhileIncluding p xs
+takeWhileIncluding p (x : xs)       = [x]
+
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent []                    = []
 takeWhileDifferent [x]                   = [x]
