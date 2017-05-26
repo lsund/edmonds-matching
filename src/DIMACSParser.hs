@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module DIMACSParser (fileToGraph) where
+module DIMACSParser (fileToGraph, parseLine) where
 
 import Protolude
 import Data.Graph
@@ -24,6 +24,7 @@ parseLine ["p", "edge", x, y] = DimacsSize (textToInt x) (textToInt y)
 parseLine [c, x, y]
     | c == "e" || c == "a"    = DimacsEdge (textToInt x) (textToInt y)
 parseLine ("c" : xs)          = DimacsComment $ Text.unwords xs
+parseLine []                  = DimacsComment ""
 
 loadLines :: [Text] -> [DimacsEntry]
 loadLines = map (parseLine . Text.words)
