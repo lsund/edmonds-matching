@@ -42,8 +42,8 @@ banish logger: we will use trace from now on! [done]
 get the algorithm to work on a non-bipartite graph (K3) [done]
 
 fix bug: edges are not sorted, and the algorithm 
-fails because of that
-    K4-v2 []
+fails because of that. 
+    Probably not that, rather shrink that doesnt work in general [done]
 
 butterfly []
 
