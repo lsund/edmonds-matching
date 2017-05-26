@@ -45,7 +45,7 @@ fails because of that.
 
 butterfly [done]
 
-butterfly-extended []
+butterfly-extended [done]
 
 check so that the number of vertices and edges are correct in DIMACSPARSER []
 

@@ -23,6 +23,7 @@ paths = [ "data/P4.dmx"
         , "data/bipartite-simple-v2.dmx"
         , "data/K3-v2.dmx"
         , "data/butterfly.dmx"
+        , "data/butterfly-extended.dmx"
         ]
 
 expectedLengths = [ 2
@@ -37,6 +38,7 @@ expectedLengths = [ 2
                   , 2
                   , 1
                   , 2
+                  , 3
                   ]
 
 ----------------------------------------------------------------------------
