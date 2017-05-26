@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module DIMACSParser (fileToGraph) where
+module Parser where
 
 import Protolude
 import Data.Graph
@@ -14,30 +14,38 @@ data DimacsEntry = DimacsSize     { nvertices :: Int
                                   , second    :: Int }
                  | DimacsComment  { content   :: Text } deriving (Show, Eq)
 
+data Optima = Optima Text Int
+
+class Parseable a where
+    parse :: [Text] -> a
+
+instance Parseable Optima where
+    parse [x, y] = Optima (x `Text.append` ".dmx") (textToInt y)
+
+instance Parseable DimacsEntry where
+    parse ["p", "edge", x, y]  = DimacsSize (textToInt x) (textToInt y)
+    parse [c, x, y]
+        | c == "e" || c == "a" = DimacsEdge (textToInt x) (textToInt y)
+    parse ("c" : xs)           = DimacsComment $ Text.unwords xs
+    parse []                   = DimacsComment ""
+
 textToInt :: Text -> Int
 textToInt x = case Text.decimal x of
                     Left a -> undefined
                     Right b -> fst b
 
-parseLine :: [Text] -> DimacsEntry
-parseLine ["p", "edge", x, y] = DimacsSize (textToInt x) (textToInt y)
-parseLine [c, x, y]
-    | c == "e" || c == "a"    = DimacsEdge (textToInt x) (textToInt y)
-parseLine ("c" : xs)          = DimacsComment $ Text.unwords xs
-parseLine []                  = DimacsComment ""
+loadLines :: [Text] -> [[Text]]
+loadLines = map Text.words
 
-loadLines :: [Text] -> [DimacsEntry]
-loadLines = map (parseLine . Text.words)
-
-loadFile :: FilePath -> IO [DimacsEntry]
-loadFile path = fmap (loadLines . Text.lines) (readFile path)
+parseFile :: FilePath -> IO [[Text]]
+parseFile path = fmap (loadLines . Text.lines) (readFile path)
 
 fileToGraph :: FilePath -> IO Graph
 fileToGraph path    = do
-    dimacs <- loadFile path
-    let dimacsSize  = fromMaybe undefined $ head [x | x@DimacsSize {} <- dimacs]
+    content <- parseFile path
+    let dimacs = map parse content
+        dimacsSize  = fromMaybe undefined $ head [x | x@DimacsSize {} <- dimacs]
         dimacsEdges = [x | x@DimacsEdge {} <- dimacs]
         edges       = map (\(DimacsEdge x y) -> (x, y)) dimacsEdges
         bounds      = (1, nvertices dimacsSize)
     return $ buildG bounds edges
-

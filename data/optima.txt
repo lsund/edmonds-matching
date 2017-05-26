@@ -1,0 +1,15 @@
+P4                  2
+K2                  1
+K4                  2
+bipartite-simple    2
+bipartite           4
+K3                  1
+C5                  2
+K2-v2               1
+K4-v2               2
+bipartite-simple-v2 2
+K3-v2               1
+butterfly           2
+butterfly-extended  3
+peterson            5
+

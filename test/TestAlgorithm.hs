@@ -5,25 +5,28 @@ import Test.HUnit
 import Util
 
 import Edmond.Data.Graph as Graph
-import DIMACSParser
+import Parser
 import Edmond.Algorithm.Core
+
+dataDir = "data/graphs/"
 
 ----------------------------------------------------------------------------
 -- Data
 
-paths = [ "data/P4.dmx"
-        , "data/K2.dmx"
-        , "data/K4.dmx"
-        , "data/bipartite-simple.dmx"
-        , "data/bipartite.dmx"
-        , "data/K3.dmx"
-        , "data/C5.dmx"
-        , "data/K2-v2.dmx"
-        , "data/K4-v2.dmx"
-        , "data/bipartite-simple-v2.dmx"
-        , "data/K3-v2.dmx"
-        , "data/butterfly.dmx"
-        , "data/butterfly-extended.dmx"
+paths = [ dataDir ++ "P4.dmx"
+        , dataDir ++ "K2.dmx"
+        , dataDir ++ "K4.dmx"
+        , dataDir ++ "bipartite-simple.dmx"
+        , dataDir ++ "bipartite.dmx"
+        , dataDir ++ "K3.dmx"
+        , dataDir ++ "C5.dmx"
+        , dataDir ++ "K2-v2.dmx"
+        , dataDir ++ "K4-v2.dmx"
+        , dataDir ++ "bipartite-simple-v2.dmx"
+        , dataDir ++ "K3-v2.dmx"
+        , dataDir ++ "butterfly.dmx"
+        , dataDir ++ "butterfly-extended.dmx"
+        , dataDir ++ "peterson.dmx"
         ]
 
 expectedLengths = [ 2
@@ -39,6 +42,7 @@ expectedLengths = [ 2
                   , 1
                   , 2
                   , 3
+                  , 5
                   ]
 
 ----------------------------------------------------------------------------

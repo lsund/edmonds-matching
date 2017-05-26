@@ -1,30 +1,30 @@
 
-module TestDIMACSParser where
+module TestParser where
 
 import Protolude
 import Test.HUnit
 
 import Edmond.Data.Graph as Graph
 import qualified Data.Graph
-import DIMACSParser
+import Parser
 
-test00 = TestCase (do x <- fileToGraph "data/K2.dmx"
+test00 = TestCase (do x <- fileToGraph "data/graphs/K2.dmx"
                       assertEqual 
                             "Should be 2 vertices"
                             2 $
                             length $ Data.Graph.vertices x)
-test01 = TestCase (do x <- fileToGraph "data/K2.dmx"
+test01 = TestCase (do x <- fileToGraph "data/graphs/K2.dmx"
                       assertEqual 
                             "Should be 1 edge"
                             1 $
                             length $ Data.Graph.edges x)
 
-test02 = TestCase (do x <- fileToGraph "data/K4.dmx"
+test02 = TestCase (do x <- fileToGraph "data/graphs/K4.dmx"
                       assertEqual 
                             "Should be 4 vertices"
                             4 $
                             length $ Data.Graph.vertices x)
-test03 = TestCase (do x <- fileToGraph "data/K4.dmx"
+test03 = TestCase (do x <- fileToGraph "data/graphs/K4.dmx"
                       assertEqual 
                           "Should be 6 edges"
                           6 $

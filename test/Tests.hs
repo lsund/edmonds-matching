@@ -5,7 +5,7 @@ module Tests where
 import Protolude
 import Test.HUnit
 
-import TestDIMACSParser (dimacsTests)
+import TestParser (dimacsTests)
 import TestAlgorithm (algoTests)
 import TestUtil (utilTests)
 

@@ -3,7 +3,7 @@ module Main where
 
 import Protolude
 import Edmond.Algorithm.Core
-import DIMACSParser
+import Parser
 
 -- path = "data/P4.dmx"
 -- path = "data/K4.dmx"
@@ -13,7 +13,7 @@ import DIMACSParser
 -- path = "data/C5.dmx"
 -- path = "data/K2-v2.dmx"
 -- path = "data/bipartite-simple-v2.dmx"
-path = "data/butterfly-extended.dmx"
+path = "data/graphs/peterson.dmx"
 
 main :: IO ()
 main = do
