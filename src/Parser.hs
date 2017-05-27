@@ -32,9 +32,10 @@ instance Parseable DimacsEntry where
     parse []                   = DimacsComment ""
 
 textToInt :: Text -> Int
-textToInt x = case Text.decimal x of
-                    Left a -> undefined
-                    Right b -> fst b
+textToInt x =
+    case Text.decimal x of
+        Left a -> undefined
+        Right b -> fst b
 
 loadLines :: [Text] -> [[Text]]
 loadLines = map Text.words
