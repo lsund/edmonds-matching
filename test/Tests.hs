@@ -6,7 +6,7 @@ import Protolude
 import Test.HUnit
 
 import TestParser (dimacsTests)
-import TestAlgorithm (algoTests)
+import TestAlgorithm (mAlgoTests)
 import TestUtil (utilTests)
 
 import Data.List
@@ -19,6 +19,8 @@ sameElements xs ys = null $ xs \\ ys
 ----------------------------------------------------------------------------
 -- All Tests
 
--- alltests :: [Test]
-alltests = TestList [utilTests, dimacsTests, algoTests]
+runtests :: IO Counts
+runtests = do
+    algoTests <- mAlgoTests
+    runTestTT $ TestList [utilTests, dimacsTests, algoTests]
 

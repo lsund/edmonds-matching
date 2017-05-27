@@ -3,7 +3,7 @@ module Main where
 
 import Protolude
 import Edmond.Algorithm.Core
-import Parser
+import qualified Parser
 
 -- path = "data/P4.dmx"
 -- path = "data/K4.dmx"
@@ -17,5 +17,5 @@ path = "data/graphs/peterson.dmx"
 
 main :: IO ()
 main = do
-    graph <- fileToGraph path
+    graph <- Parser.fileToGraph path
     edmonds graph

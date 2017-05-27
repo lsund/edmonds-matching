@@ -1,33 +1,20 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module TestAlgorithm where
 
 import Protolude
 import Test.HUnit
 import Util
+import qualified Data.Text as Text
 
 import Edmond.Data.Graph as Graph
 import Parser
 import Edmond.Algorithm.Core
 
-dataDir = "data/graphs/"
-
 ----------------------------------------------------------------------------
 -- Data
 
-paths = [ dataDir ++ "P4.dmx"
-        , dataDir ++ "K2.dmx"
-        , dataDir ++ "K4.dmx"
-        , dataDir ++ "bipartite-simple.dmx"
-        , dataDir ++ "bipartite.dmx"
-        , dataDir ++ "K3.dmx"
-        , dataDir ++ "C5.dmx"
-        , dataDir ++ "K2-v2.dmx"
-        , dataDir ++ "K4-v2.dmx"
-        , dataDir ++ "bipartite-simple-v2.dmx"
-        , dataDir ++ "K3-v2.dmx"
-        , dataDir ++ "butterfly.dmx"
-        , dataDir ++ "butterfly-extended.dmx"
-        , dataDir ++ "peterson.dmx"
-        ]
+dataDir = "data/graphs/"
 
 expectedLengths = [ 2
                   , 1
@@ -48,17 +35,21 @@ expectedLengths = [ 2
 ----------------------------------------------------------------------------
 -- Utils
 
+checkIfMatching :: Graph -> Assertion
 checkIfMatching graph =
     let m = matching graph
     in assertBool "Should be a matching" $ isMatching m && containsEdges m graph
 
+checkMatchingLen :: Int -> Graph -> Assertion 
 checkMatchingLen exp graph =
     assertEqual "Should have correct length " exp $ length $ matching graph
 
+testIfMatching :: FilePath -> Test
 testIfMatching path = TestCase  (do rep <- fileToGraph path
                                     let init = Graph.initialize rep
                                     checkIfMatching (findRoot init))
 
+testMatchingLen :: (FilePath, Int) -> Test
 testMatchingLen (path, len) = TestCase  (do rep <- fileToGraph path
                                             let init = Graph.initialize rep
                                             checkMatchingLen len (findRoot init))
@@ -66,9 +57,25 @@ testMatchingLen (path, len) = TestCase  (do rep <- fileToGraph path
 ----------------------------------------------------------------------------
 -- tests
 
-tests0 = map testIfMatching paths
+tests0 :: IO [Test]
+tests0 = do
+    content <- parseFile "data/optima.txt"
+    let optimas = map parse content
+        names = map Parser.path optimas
+        paths = map ("data/graphs/" ++) names
+    return $ map testIfMatching paths
 
-tests1 = zipWith (curry testMatchingLen) paths expectedLengths
+tests1 :: IO [Test]
+tests1 = do content <- parseFile "data/optima.txt"
+            let optimas = map parse content
+                names   = map Parser.path optimas
+                paths = map ("data/graphs/" ++) names
+                optima  = map Parser.optima optimas
+            return $ zipWith (curry testMatchingLen) paths optima
 
-algoTests = TestList (tests0 ++ tests1)
+mAlgoTests :: IO Test
+mAlgoTests = do
+    t0 <- tests0
+    t1 <- tests1
+    return $ TestList (t0 ++ t1)
 

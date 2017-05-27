@@ -14,13 +14,15 @@ data DimacsEntry = DimacsSize     { nvertices :: Int
                                   , second    :: Int }
                  | DimacsComment  { content   :: Text } deriving (Show, Eq)
 
-data Optima = Optima Text Int
+data Optima = Optima { path :: FilePath
+                     , optima :: Int } deriving (Show)
 
 class Parseable a where
     parse :: [Text] -> a
 
 instance Parseable Optima where
-    parse [x, y] = Optima (x `Text.append` ".dmx") (textToInt y)
+    parse [x, y] = Optima (Text.unpack x ++ ".dmx") (textToInt y)
+    parse []     = error "Parse Optima: Cannot parse empty line"
 
 instance Parseable DimacsEntry where
     parse ["p", "edge", x, y]  = DimacsSize (textToInt x) (textToInt y)
