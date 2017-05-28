@@ -22,8 +22,8 @@ initialize rep =
         idAssoc = makeAssoc idMap
     in AlternatingForest idAssoc idAssoc idAssoc
 
-resetButMu :: Data.Graph.Graph -> AlternatingForest -> AlternatingForest
-resetButMu rep forest =
+resetButMu :: Data.Graph.Graph -> Map Vertex Vertex -> AlternatingForest
+resetButMu rep mu' =
     let new = initialize rep
-    in new { mu = mu forest }
+    in new { mu = makeAssoc mu' }
 

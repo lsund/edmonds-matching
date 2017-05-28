@@ -13,6 +13,7 @@ test00 = TestCase (do x <- fileToGraph "data/graphs/K2.dmx"
                             "Should be 2 vertices"
                             2 $
                             length $ Data.Graph.vertices x)
+
 test01 = TestCase (do x <- fileToGraph "data/graphs/K2.dmx"
                       assertEqual 
                             "Should be 1 edge"
@@ -24,6 +25,7 @@ test02 = TestCase (do x <- fileToGraph "data/graphs/K4.dmx"
                             "Should be 4 vertices"
                             4 $
                             length $ Data.Graph.vertices x)
+
 test03 = TestCase (do x <- fileToGraph "data/graphs/K4.dmx"
                       assertEqual 
                           "Should be 6 edges"

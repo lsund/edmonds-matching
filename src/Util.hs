@@ -14,6 +14,11 @@ import Data.Graph
 containsOne :: Eq a => [a] -> [a] -> Bool
 containsOne xs ys = any (`elem` ys) xs
 
+takeUntil :: Eq a => a -> [a] -> [a]
+takeUntil _ []                = []
+takeUntil v (x : xs) | v == x = [v]
+takeUntil v (x : xs)          = x : takeUntil v xs
+
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent []                    = []
 takeWhileDifferent [x]                   = [x]

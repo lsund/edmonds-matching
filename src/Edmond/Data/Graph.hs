@@ -78,4 +78,3 @@ matching :: Graph -> [(Int, Int)]
 matching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys m) (Map.elems m)
           m = (dict . AF.mu . forest) graph
-

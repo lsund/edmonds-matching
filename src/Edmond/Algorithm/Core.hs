@@ -80,7 +80,7 @@ grow graph =
         m = (dict . AF.phi . forest) graph
         x = currentX graph
         y = currentY graph
- 
+
 augment :: Graph -> Graph
 augment graph = 
     let (px, py) = (pathToRoot graph x, pathToRoot graph y)
@@ -91,18 +91,13 @@ augment graph =
                 let (oddpx, oddpy) = odds px py
                     u = oddpx ++ oddpy
                     gu = map g u
-                    keys = [x, y] ++ gu ++ u
-                    vals = [y, x] ++ u ++ gu
-                    forest' = 
-                        (forest graph) { 
-                            AF.mu = makeAssoc (adjustMapFor keys vals m) 
-                        }
-                    forest'' = AF.resetButMu 
-                                    (representation graph) 
-                                    forest'
+                    m' = adjustMapFor gu u m
+                    m'' = adjustMapFor u gu m'
+                    m''' = adjustMapFor [x, y] [y, x] m''
+                    forest'' = AF.resetButMu (representation graph) m'''
                     graph' = graph { forest = forest'' }
                 in findRoot graph'
-            else shrink graph
+            else shrink px py spx spy graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -112,27 +107,31 @@ augment graph =
         f  = (fun . AF.mu . forest) graph
         g  = (fun . AF.phi . forest) graph
 
-shrink :: Graph -> Graph
-shrink graph = 
-    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-        (spx, spy) = (Set.fromList px, Set.fromList py)
-        isect    = spx `Set.intersection` spy
+shrink :: [Vertex] ->
+          [Vertex] ->
+          Set.Set Vertex ->
+          Set.Set Vertex ->
+          Graph ->
+          Graph
+shrink px py spx spy graph = 
+    let isect    = spx `Set.intersection` spy
         r        = fromJust $ find (\x -> h x == x) isect
-        (oddpx, oddpy) = odds px py
-        union    =  spx `Set.union` spy
-        oddUnion = Set.toList $ Set.fromList $ oddpx ++ oddpy
+        (pxr, pyr) = (takeUntil r px, takeUntil r py)
+        (spxr, spyr) = (Set.fromList pxr, Set.fromList pyr) 
+        (oddpx, oddpy) = odds pxr pyr
+        union    = spxr `Set.union` spyr
+        oddUnion = oddpx ++ oddpy
         filtered =  filter (\v -> (h . g) v /= r) oddUnion
         keys     = map g filtered
         vals     = filtered
-        keys'    = appendIf (h x /= r) x keys
-        vals'    = appendIf (h x /= r) y vals
-        keys''   = appendIf (h y /= r) y keys'
-        vals''   =  appendIf (h y /= r) x vals'
-        xs       = filter (\x -> h x `elem` union) (vertices graph)
-        forest'  = (forest graph) { AF.phi = 
-                                     makeAssoc (adjustMapFor keys'' vals'' gm) 
-                                  , AF.ro = 
-                                     makeAssoc (adjustMapFor xs (repeat r) hm) }
+        gm'      = adjustMapFor keys vals gm
+        gm''     = if h x /= r then adjustMap x y gm' else gm'
+        gm'''    = if h y /= r then adjustMap y x gm'' else gm''
+        keys'    = filter (\x -> h x `elem` union) (vertices graph)
+        hm'      = adjustMapFor keys' (repeat r) hm
+        forest'  = (forest graph) { AF.phi = makeAssoc gm'''
+                                  , AF.ro = makeAssoc hm'
+                                  }
     in findGrowth $ graph { forest = forest' }
     where
         x = currentX graph
@@ -143,12 +142,9 @@ shrink graph =
         h = (fun . AF.ro . forest) graph
 
 
--- the edges are given as {x, mu(x)}
 edmonds rep =
     let init = Graph.initialize rep
         graph = findRoot init
-    in print $ matching graph
-
-        -- gets (4, 8) this iteration. 
+    in print $ length $ matching graph
 
 

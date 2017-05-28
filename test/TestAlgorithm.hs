@@ -57,25 +57,19 @@ testMatchingLen (path, len) = TestCase  (do rep <- fileToGraph path
 ----------------------------------------------------------------------------
 -- tests
 
-tests0 :: IO [Test]
-tests0 = do
-    content <- parseFile "data/optima.txt"
-    let optimas = map parse content
-        names = map Parser.path optimas
-        paths = map ("data/graphs/" ++) names
-    return $ map testIfMatching paths
-
 tests1 :: IO [Test]
 tests1 = do content <- parseFile "data/optima.txt"
-            let optimas = map parse content
+            let optimas = [x | x@Optima {} <- map parse content]
                 names   = map Parser.path optimas
                 paths = map ("data/graphs/" ++) names
                 optima  = map Parser.optima optimas
-            return $ zipWith (curry testMatchingLen) paths optima
+            return $ 
+                zipWith (curry testMatchingLen) paths optima
+                ++ map testIfMatching paths
+                
 
 mAlgoTests :: IO Test
 mAlgoTests = do
-    t0 <- tests0
     t1 <- tests1
-    return $ TestList (t0 ++ t1)
+    return $ TestList t1
 
