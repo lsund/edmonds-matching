@@ -47,10 +47,6 @@ butterfly [done]
 
 butterfly-extended [done]
 
-check so that the number of vertices and edges are correct in DIMACSPARSER []
-
-outsource debug functionality []
-
 make sure the edges in the matching exists in the graph [done]
 
 bug: Maybe.fromJust in pma343
@@ -58,5 +54,9 @@ find another matching algorithm and
 test and see if we can reproduce the bug [done]
 The bug seems to be with my algorithm
 
-fix bug Maybe.fromJust: Nothing in shrink
+fix bug Maybe.fromJust: Nothing in shrink [done]
+
+outsource debug functionality [done]
+
+check so that the number of vertices and edges are correct in DIMACSPARSER []
 

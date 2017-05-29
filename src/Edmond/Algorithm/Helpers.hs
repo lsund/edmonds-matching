@@ -2,12 +2,13 @@
 
 module Edmond.Algorithm.Helpers where
 
+import Protolude
 import Util
 import Edmond.Data.Graph
 import qualified Data.Set as Set
 
 type Set = Set.Set
 
-odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
+odds :: Seq Vertex -> Seq Vertex -> (Seq Vertex, Seq Vertex)
 odds px py = (every 2 px, every 2 py)
 
