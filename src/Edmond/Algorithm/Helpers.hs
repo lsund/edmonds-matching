@@ -10,3 +10,4 @@ type Set = Set.Set
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
+

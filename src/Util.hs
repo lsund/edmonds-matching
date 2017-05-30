@@ -1,15 +1,12 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
-{-# LANGUAGE ViewPatterns, PatternSynonyms #-}
 
 module Util where
 
 import Protolude
-import qualified Data.Set as Set
 import qualified Data.Map as Map
 import qualified Data.List as List
 import Data.Text (append)
 import Data.Graph
-import qualified Data.Sequence as Seq
 
 ----------------------------------------------------------------------------
 -- Debug
@@ -47,9 +44,6 @@ iterateEveryOther = iterateEveryOther' True
     where
         iterateEveryOther' True f g x  = x : iterateEveryOther' False f g (f x)
         iterateEveryOther' False f g x = x :  iterateEveryOther' True f g (g x)
-
--- areDisjoint :: Ord a => Set a -> Set a -> Bool
--- areDisjoint xs = Set.null . Set.intersection xs
 
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)

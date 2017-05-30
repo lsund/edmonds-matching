@@ -72,26 +72,22 @@ grow graph =
 augment :: Graph -> Graph
 augment graph = 
     let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-    in 
-        if areDisjoint px py
-            then
-                let (oddpx, oddpy) = odds px py
-                    u = oddpx ++ oddpy
-                    gu = map g u
-                    m' = adjustMapFor gu u m
-                    m'' = adjustMapFor u gu m'
-                    m''' = adjustMapFor [x, y] [y, x] m''
-                    forest'' = AF.resetButMu (representation graph) m'''
-                    graph' = graph { forest = forest'' }
-                in findRoot graph'
-            else shrink px py graph
+    in if areDisjoint px py
+        then
+            let (oddpx, oddpy) = odds px py
+                u = oddpx ++ oddpy
+                gu = map g u
+                m' = adjustMapFor ([x, y] ++ gu) ([y, x] ++ u) $ adjustMapFor u gu m
+                forest'' = AF.resetButMu (representation graph) m'
+                graph' = graph { forest = forest'' }
+            in findRoot graph'
+        else shrink px py graph
     where
         x  = currentX graph
         y  = currentY graph
         nv = (length . vertices) graph
         ne = (length . edges) graph
         m  = (dict . AF.mu . forest) graph
-        f  = (fun . AF.mu . forest) graph
         g  = (fun . AF.phi . forest) graph
 
 shrink :: [Vertex] ->

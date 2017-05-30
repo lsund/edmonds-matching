@@ -60,3 +60,5 @@ outsource debug functionality [done]
 
 check so that the number of vertices and edges are correct in DIMACSPARSER []
 
+profiling []
+
