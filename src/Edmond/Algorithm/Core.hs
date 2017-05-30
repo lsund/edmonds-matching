@@ -13,8 +13,8 @@ import Edmond.Algorithm.Helpers
 import Protolude
 import Data.Maybe
 import qualified Data.Map as Map
-import qualified Data.Set as Set
 import qualified Data.Graph
+import qualified Data.List as List
 
 findRoot :: Graph -> Graph
 findRoot graph =
@@ -72,9 +72,8 @@ grow graph =
 augment :: Graph -> Graph
 augment graph = 
     let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-        (spx, spy) = (Set.fromList px, Set.fromList py)
     in 
-        if areDisjoint spx spy
+        if areDisjoint px py
             then
                 let (oddpx, oddpy) = odds px py
                     u = oddpx ++ oddpy
@@ -85,7 +84,7 @@ augment graph =
                     forest'' = AF.resetButMu (representation graph) m'''
                     graph' = graph { forest = forest'' }
                 in findRoot graph'
-            else shrink px py spx spy graph
+            else shrink px py graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -97,17 +96,14 @@ augment graph =
 
 shrink :: [Vertex] ->
           [Vertex] ->
-          Set.Set Vertex ->
-          Set.Set Vertex ->
           Graph ->
           Graph
-shrink px py spx spy graph = 
-    let isect    = spx `Set.intersection` spy
+shrink px py graph = 
+    let isect    = px `List.intersect` py
         r        = fromJust $ find (\x -> h x == x) isect
         (pxr, pyr) = (takeUntil r px, takeUntil r py)
-        (spxr, spyr) = (Set.fromList pxr, Set.fromList pyr) 
         (oddpx, oddpy) = odds pxr pyr
-        union    = spxr `Set.union` spyr
+        union    = pxr `List.union` pyr
         oddUnion = oddpx ++ oddpy
         filtered = filter (\v -> (h . g) v /= r) oddUnion
         keys     = map g filtered
