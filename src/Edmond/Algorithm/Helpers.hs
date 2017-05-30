@@ -10,5 +10,5 @@ import qualified Data.Set as Set
 type Set = Set.Set
 
 odds :: Seq Vertex -> Seq Vertex -> (Seq Vertex, Seq Vertex)
-odds px py = (every 2 px, every 2 py)
+odds px py = (every2 2 px, every2 2 py)
 

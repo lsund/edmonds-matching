@@ -59,11 +59,17 @@ adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 adjustMapFor2 :: Ord a =>  Seq a -> Seq b -> Map a b -> Map a b
 adjustMapFor2 keys vals m = foldr (uncurry adjustMap) m (Seq.zip keys vals)
 
-every :: Int -> Seq a -> Seq a
+every :: Int -> [a] -> [a]
 every n xs = 
+    case drop (pred n) xs of
+        []    -> []
+        y : ys -> every n ys
+
+every2 :: Int -> Seq a -> Seq a
+every2 n xs = 
     case Seq.viewl (Seq.drop (pred n) xs) of
         Seq.EmptyL    -> Seq.empty
-        (y Seq.:< ys) -> every n ys
+        (y Seq.:< ys) -> every2 n ys
 
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs
