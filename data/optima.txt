@@ -25,7 +25,7 @@ queen11_11              60
 queen16_16              128
 queen27_27              364
 pma343                  171
-lu980                   490
-pbd984                  492
+c lu980                   490
+c pbd984                  492
 c fixed                 500
 c ei8246                4123
