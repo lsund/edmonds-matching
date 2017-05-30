@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fwarn-unused-imports #-}
+{-# LANGUAGE ViewPatterns, PatternSynonyms #-}
 
 module Util where
 
@@ -5,7 +7,6 @@ import Protolude
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 import qualified Data.List as List
-import Data.Tuple
 import Data.Text (append)
 import Data.Graph
 import qualified Data.Sequence as Seq
@@ -56,20 +57,11 @@ adjustMap k v = Map.adjust (const v) k
 adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
 adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 
-adjustMapFor2 :: Ord a =>  Seq a -> Seq b -> Map a b -> Map a b
-adjustMapFor2 keys vals m = foldr (uncurry adjustMap) m (Seq.zip keys vals)
-
 every :: Int -> [a] -> [a]
 every n xs = 
     case drop (pred n) xs of
         y : ys -> y : every n ys
         []    -> []
-
-every2 :: Int -> Seq a -> Seq a
-every2 n xs = 
-    case Seq.viewl (Seq.drop (pred n) xs) of
-        Seq.EmptyL    -> Seq.empty
-        (y Seq.:< ys) -> every2 n ys
 
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs

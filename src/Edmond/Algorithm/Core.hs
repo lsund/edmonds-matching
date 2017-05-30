@@ -15,8 +15,6 @@ import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Graph
-import qualified Data.Sequence as Seq
-import Data.Foldable (toList)
 
 findRoot :: Graph -> Graph
 findRoot graph =
@@ -97,32 +95,6 @@ augment graph =
         f  = (fun . AF.mu . forest) graph
         g  = (fun . AF.phi . forest) graph
 
-augment2 :: Graph -> Graph
-augment2 graph = 
-    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-        (spx, spy) = (Set.fromList px, Set.fromList py)
-    in 
-        if areDisjoint spx spy
-            then
-                let (oddpx, oddpy) = odds2 (Seq.fromList px) (Seq.fromList py)
-                    u = oddpx Seq.>< oddpy
-                    gu = map g u
-                    m' = adjustMapFor2 gu u m
-                    m'' = adjustMapFor2 u gu m'
-                    m''' = adjustMapFor2 (Seq.fromList [x, y]) (Seq.fromList [y, x]) m''
-                    forest'' = AF.resetButMu (representation graph) m'''
-                    graph' = graph { forest = forest'' }
-                in findRoot graph'
-            else shrink px py spx spy graph
-    where
-        x  = currentX graph
-        y  = currentY graph
-        nv = (length . vertices) graph
-        ne = (length . edges) graph
-        m  = (dict . AF.mu . forest) graph
-        f  = (fun . AF.mu . forest) graph
-        g  = (fun . AF.phi . forest) graph
-
 shrink :: [Vertex] ->
           [Vertex] ->
           Set.Set Vertex ->
@@ -134,17 +106,17 @@ shrink px py spx spy graph =
         r        = fromJust $ find (\x -> h x == x) isect
         (pxr, pyr) = (takeUntil r px, takeUntil r py)
         (spxr, spyr) = (Set.fromList pxr, Set.fromList pyr) 
-        (oddpx, oddpy) = odds2 (Seq.fromList pxr) (Seq.fromList pyr)
+        (oddpx, oddpy) = odds pxr pyr
         union    = spxr `Set.union` spyr
-        oddUnion = oddpx Seq.>< oddpy
-        filtered = Seq.filter (\v -> (h . g) v /= r) oddUnion
+        oddUnion = oddpx ++ oddpy
+        filtered = filter (\v -> (h . g) v /= r) oddUnion
         keys     = map g filtered
         vals     = filtered
-        gm'      = adjustMapFor (toList keys) (toList vals) gm
+        gm'      = adjustMapFor keys vals gm
         gm''     = if h x /= r then adjustMap x y gm' else gm'
         gm'''    = if h y /= r then adjustMap y x gm'' else gm''
         keys'    = filter (\x -> h x `elem` union) (vertices graph)
-        hm'      = adjustMapFor (toList keys') (repeat r) hm
+        hm'      = adjustMapFor keys' (replicate (length keys') r) hm
         forest'  = (forest graph) { AF.phi = makeAssoc gm'''
                                   , AF.ro = makeAssoc hm'
                                   }
