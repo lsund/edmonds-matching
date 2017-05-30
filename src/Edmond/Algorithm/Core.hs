@@ -78,7 +78,33 @@ augment graph =
     in 
         if areDisjoint spx spy
             then
-                let (oddpx, oddpy) = odds (Seq.fromList px) (Seq.fromList py)
+                let (oddpx, oddpy) = odds px py
+                    u = oddpx ++ oddpy
+                    gu = map g u
+                    m' = adjustMapFor gu u m
+                    m'' = adjustMapFor u gu m'
+                    m''' = adjustMapFor [x, y] [y, x] m''
+                    forest'' = AF.resetButMu (representation graph) m'''
+                    graph' = graph { forest = forest'' }
+                in findRoot graph'
+            else shrink px py spx spy graph
+    where
+        x  = currentX graph
+        y  = currentY graph
+        nv = (length . vertices) graph
+        ne = (length . edges) graph
+        m  = (dict . AF.mu . forest) graph
+        f  = (fun . AF.mu . forest) graph
+        g  = (fun . AF.phi . forest) graph
+
+augment2 :: Graph -> Graph
+augment2 graph = 
+    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
+        (spx, spy) = (Set.fromList px, Set.fromList py)
+    in 
+        if areDisjoint spx spy
+            then
+                let (oddpx, oddpy) = odds2 (Seq.fromList px) (Seq.fromList py)
                     u = oddpx Seq.>< oddpy
                     gu = map g u
                     m' = adjustMapFor2 gu u m
@@ -108,7 +134,7 @@ shrink px py spx spy graph =
         r        = fromJust $ find (\x -> h x == x) isect
         (pxr, pyr) = (takeUntil r px, takeUntil r py)
         (spxr, spyr) = (Set.fromList pxr, Set.fromList pyr) 
-        (oddpx, oddpy) = odds (Seq.fromList pxr) (Seq.fromList pyr)
+        (oddpx, oddpy) = odds2 (Seq.fromList pxr) (Seq.fromList pyr)
         union    = spxr `Set.union` spyr
         oddUnion = oddpx Seq.>< oddpy
         filtered = Seq.filter (\v -> (h . g) v /= r) oddUnion

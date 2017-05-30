@@ -62,8 +62,8 @@ adjustMapFor2 keys vals m = foldr (uncurry adjustMap) m (Seq.zip keys vals)
 every :: Int -> [a] -> [a]
 every n xs = 
     case drop (pred n) xs of
+        y : ys -> y : every n ys
         []    -> []
-        y : ys -> every n ys
 
 every2 :: Int -> Seq a -> Seq a
 every2 n xs = 
