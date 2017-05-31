@@ -37,6 +37,10 @@ isOutOfForest graph x = f x /= x && g x == x && g (f x) == f x
     where f = (fun . AF.mu . forest) graph
           g = (fun . AF.phi . forest) graph
 
+isScanned :: Graph -> Vertex -> Bool
+isScanned graph = s
+    where s = (fun . scanned) graph
+
 ----------------------------------------------------------------------------
 -- 
 

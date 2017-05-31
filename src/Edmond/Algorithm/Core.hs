@@ -11,18 +11,20 @@ import Edmond.Algorithm.Helpers
 
 import Protolude
 import Data.Maybe
-import qualified Data.Map as Map
 import qualified Data.Graph
 import qualified Data.List as List
 
+-- Finds an x such that x is not scanned and x is outer. If success, proceed
+-- with calling findGrowth with the found x. If unsuccessful, return the graph
+-- of the current state.
 findRoot :: Graph -> Graph
 findRoot graph =
-    let mx = unscannedOuter graph (Map.assocs ((dict . scanned) graph))
+    let mx = find (\x -> all ($ x) [not . isScanned graph, isOuter graph]) vs
     in case mx of 
             Nothing -> graph
-            Just (x, _) -> findGrowth $ graph { currentX = x }
-    where
-        unscannedOuter graph = find (\(x, y) -> not y && isOuter graph x)
+            Just x -> findGrowth $ graph { currentX = x }
+    where vs = vertices graph
+            
 
 -- Given a graph and a vertex x, finds a neighbour y of x such that y is either
 -- out-of-forest or (y is outer and ro(y) =/ ro(x)
