@@ -4,7 +4,6 @@
 module Edmond.Algorithm.Core where
 
 import Util
-import Edmond.Data.Vertex
 import Edmond.Data.Graph as Graph
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
