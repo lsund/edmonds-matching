@@ -6,7 +6,6 @@ module Edmond.Data.Graph where
 import Protolude
 
 import Util
-import Logger
 import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 
@@ -27,7 +26,6 @@ type AlternatingForest = AF.AlternatingForest
 data Graph = Graph { representation :: Data.Graph.Graph
                    , forest :: AlternatingForest
                    , scanned :: Assoc Vertex Bool 
-                   , logger :: Logger
                    , currentX :: Vertex
                    , currentY :: Vertex }
 
@@ -40,17 +38,8 @@ initialize rep =
     in Graph rep 
              (AF.initialize rep)
              (makeAssoc sInit)
-             (Logger "")
              (-1)
              (-1)
-
--- Logs a message
-log :: Text -> Graph -> Graph
-log msg graph = graph { logger = Logger.write msg (logger graph) }
-
--- Logs a message and a value
-logv :: Show a => Text -> a -> Graph -> Graph
-logv msg val graph = graph { logger = Logger.writev msg val (logger graph) }
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties

@@ -62,6 +62,3 @@ check so that the number of vertices and edges are correct in DIMACSPARSER []
 
 profiling []
 
-test algorithm: one way to check if a matching is maximum is to check if there
-exists a M-augmenting path. []
-
