@@ -40,6 +40,14 @@ initialize rep =
              (makeAssoc sInit)
              (-1)
              (-1)
+----------------------------------------------------------------------------
+-- 'Special' Graph properties
+
+mu :: Graph -> Map Vertex Vertex
+mu = dict . AF.mu . forest
+
+phi :: Graph -> Map Vertex Vertex
+phi = dict . AF.phi . forest
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
@@ -66,4 +74,4 @@ neighbours rep v =
 matching :: Graph -> [(Int, Int)]
 matching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys m) (Map.elems m)
-          m = (dict . AF.mu . forest) graph
+          m = mu graph

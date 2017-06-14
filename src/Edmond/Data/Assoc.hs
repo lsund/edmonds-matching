@@ -18,11 +18,11 @@ data Assoc a b = Assoc { dict :: Map a b
                        , fun :: a -> b }
 
 -- Given a dictionary, creates a function
-assocToFun :: (Show a, Ord a) => Map a b -> (a -> b)
-assocToFun m x = Map.findWithDefault e x m 
+mapToFun :: (Show a, Ord a) => Map a b -> (a -> b)
+mapToFun m x = Map.findWithDefault e x m 
     where e = error $ "cant find key: " `append` show x
 
 -- Given a map, creates an association
 makeAssoc :: (Show a, Ord a) => Map a b -> Assoc a b
-makeAssoc m = Assoc m (assocToFun m)
+makeAssoc m = Assoc m (mapToFun m)
 
