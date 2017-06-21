@@ -5,7 +5,6 @@ module Edmond.Algorithm.Core where
 
 import Util
 import Edmond.Data.Graph as Graph
-import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
 
@@ -31,8 +30,8 @@ findRoot graph =
 findNeighbour :: Graph -> Maybe Vertex
 findNeighbour graph =
     let pred' y = isOuter graph y && 
-                       (fun . AF.ro . forest) graph y 
-                    /= (fun . AF.ro . forest) graph x
+                       (unmap . AF.ro . forest) graph y 
+                    /= (unmap . AF.ro . forest) graph x
         pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
         found = find pred $ neighbours (representation graph) x
@@ -51,8 +50,8 @@ findGrowth graph =
     case findNeighbour graph of
         Nothing -> 
             let f = const True
-                scanned' = adjustMap x True $ (dict . scanned) graph
-            in findRoot (graph { scanned = makeAssoc scanned' })
+                scanned' = adjustMap x True $ scanned graph
+            in findRoot (graph { scanned = scanned' })
         Just y -> grow (graph { currentY = y })
     where
         x = currentX graph
@@ -62,11 +61,11 @@ grow graph =
     if isOutOfForest graph y
         then 
             let phi' = adjustMap y x m
-                forest' = (forest graph) { AF.phi = makeAssoc phi' }
+                forest' = (forest graph) { AF.phi = phi' }
             in findGrowth (graph { forest = forest' })
         else augment graph
     where
-        m = (dict . AF.phi . forest) graph
+        m = (AF.phi . forest) graph
         x = currentX graph
         y = currentY graph
 
@@ -88,8 +87,8 @@ augment graph =
         y  = currentY graph
         nv = (length . vertices) graph
         ne = (length . edges) graph
-        m  = (dict . AF.mu . forest) graph
-        g  = (fun . AF.phi . forest) graph
+        m  = (AF.mu . forest) graph
+        g  = (unmap . AF.phi . forest) graph
 
 shrink :: [Vertex] ->
           [Vertex] ->
@@ -110,17 +109,17 @@ shrink px py graph =
         gm'''    = if h y /= r then adjustMap y x gm'' else gm''
         keys'    = filter (\x -> h x `elem` union) (vertices graph)
         hm'      = adjustMapFor keys' (replicate (length keys') r) hm
-        forest'  = (forest graph) { AF.phi = makeAssoc gm'''
-                                  , AF.ro = makeAssoc hm'
+        forest'  = (forest graph) { AF.phi = gm'''
+                                  , AF.ro = hm'
                                   }
     in findGrowth $ graph { forest = forest' }
     where
         x = currentX graph
         y = currentY graph
-        gm = (dict . AF.phi . forest) graph
-        g = (fun . AF.phi . forest) graph
-        hm = (dict . AF.ro . forest) graph
-        h = (fun . AF.ro . forest) graph
+        gm = (AF.phi . forest) graph
+        g = (unmap . AF.phi . forest) graph
+        hm = (AF.ro . forest) graph
+        h = (unmap . AF.ro . forest) graph
 
 
 edmonds :: Data.Graph.Graph -> IO [Edge]

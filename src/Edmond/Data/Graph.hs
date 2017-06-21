@@ -6,7 +6,6 @@ module Edmond.Data.Graph where
 import Protolude
 
 import Util
-import Edmond.Data.Assoc
 import qualified Edmond.Data.AlternatingForest as AF
 
 import Data.Array
@@ -25,7 +24,7 @@ type AlternatingForest = AF.AlternatingForest
 
 data Graph = Graph { representation :: Data.Graph.Graph
                    , forest :: AlternatingForest
-                   , scanned :: Assoc Vertex Bool 
+                   , scanned :: Map Vertex Bool 
                    , currentX :: Vertex
                    , currentY :: Vertex }
 
@@ -37,17 +36,17 @@ initialize rep =
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
              (AF.initialize rep)
-             (makeAssoc sInit)
+             sInit
              (-1)
              (-1)
 ----------------------------------------------------------------------------
 -- 'Special' Graph properties
 
 mu :: Graph -> Map Vertex Vertex
-mu = dict . AF.mu . forest
+mu = AF.mu . forest
 
 phi :: Graph -> Map Vertex Vertex
-phi = dict . AF.phi . forest
+phi = AF.phi . forest
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
