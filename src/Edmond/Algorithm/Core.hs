@@ -96,23 +96,20 @@ shrink :: [Vertex] ->
           Graph ->
           Graph
 shrink px py graph = 
-    let isect    = px `List.intersect` py
-        r        = fromJust $ find (\x -> ro ! x == x) isect
-        (pxr, pyr) = (takeUntil r px, takeUntil r py)
+    let isect          = px `List.intersect` py
+        r              = fromJust $ find (\x -> ro ! x == x) isect
+        (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
-        union    = pxr `List.union` pyr
-        oddUnion = oddpx ++ oddpy
-        filtered = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
-        keys     = map (phi !) filtered
-        vals     = filtered
-        phi'      = adjustMapFor keys vals phi
-        phi''     = if (ro !) x /= r then adjustMap x y phi' else phi'
-        phi'''    = if (ro !) y /= r then adjustMap y x phi'' else phi''
-        keys'    = filter (\x -> (ro !) x `elem` union) (vertices graph)
-        hm'      = adjustMapFor keys' (replicate (length keys') r) ro
-        forest'  = (forest graph) { AF.phi = phi'''
-                                  , AF.ro = hm'
-                                  }
+        union          = pxr `List.union` pyr
+        oddUnion       = oddpx ++ oddpy
+        filtered       = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
+        phi'           = adjustMapFor (map (phi !) filtered) filtered phi
+        phi''          = symmetricUpdate (ro !) r x y phi'
+        keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)
+        hm'            = adjustMapFor keys' (replicate (length keys') r) ro
+        forest'        = (forest graph) { AF.phi = phi''
+                                        , AF.ro = hm'
+                                        }
     in findGrowth $ graph { forest = forest' }
     where
         x = currentX graph

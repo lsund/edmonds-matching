@@ -55,6 +55,26 @@ adjustMap k v = Map.adjust (const v) k
 adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
 adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 
+--  Arguments:
+--
+--  p: the predicate, 
+--  t: the target
+--  k: the key
+--  v: the value
+--  m: the map
+--
+--  Description:
+--
+--  Updates the map with (k, v) if the key applied to the predicate doesn't
+--  match the target.
+--  Updates the map with (v, k) if the value applied to the predicate doesn't
+--  match the target.
+--  
+symmetricUpdate :: Ord a => (a -> a) -> a -> a -> a -> Map a a -> Map a a
+symmetricUpdate p t k v m = 
+    let xm = if p k /= t then adjustMap k v m else m
+    in       if p v /= t then adjustMap v k xm else xm
+
 every :: Int -> [a] -> [a]
 every n xs = 
     case drop (pred n) xs of
