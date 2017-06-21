@@ -1,1 +1,5 @@
 dist
+edmonds-profile.*
+profiling-commands
+.cabal-sandbox
+cabal.sandbox.config

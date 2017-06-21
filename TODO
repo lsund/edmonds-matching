@@ -61,6 +61,7 @@ outsource debug functionality [done]
 check so that the number of vertices and edges are correct in DIMACSPARSER []
 
 profiling []
+    bottleneck: computing backward edges each iteration. Store them. []
 
 simplyfy expressions like (fun . AF.mu . forest) graph to: mu graph
 
