@@ -4,14 +4,10 @@
 module Util where
 
 import Protolude
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 import Data.Text (append)
 import Data.Graph
-
-unmap :: (Show a, Ord a) => Map a b -> (a -> b)
-unmap m x = Map.findWithDefault e x m 
-    where e = error $ "cant find key: " `append` show x
 
 ----------------------------------------------------------------------------
 -- Debug

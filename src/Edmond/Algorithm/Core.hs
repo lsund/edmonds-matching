@@ -12,6 +12,7 @@ import Protolude
 import Data.Maybe
 import qualified Data.Graph
 import qualified Data.List as List
+import Data.Map.Strict ((!))
 
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
@@ -30,8 +31,8 @@ findRoot graph =
 findNeighbour :: Graph -> Maybe Vertex
 findNeighbour graph =
     let pred' y = isOuter graph y && 
-                       (unmap . AF.ro . forest) graph y 
-                    /= (unmap . AF.ro . forest) graph x
+                       ((!) . AF.ro . forest) graph y 
+                    /= ((!) . AF.ro . forest) graph x
         pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
         found = find pred $ neighbours (representation graph) x
@@ -76,9 +77,9 @@ augment graph =
         then
             let (oddpx, oddpy) = odds px py
                 u = oddpx ++ oddpy
-                gu = map g u
-                m' = adjustMapFor ([x, y] ++ gu) ([y, x] ++ u) $ adjustMapFor u gu m
-                forest'' = AF.resetButMu (representation graph) m'
+                pu = fmap (phi !) u
+                mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
+                forest'' = AF.resetButMu (representation graph) mu'
                 graph' = graph { forest = forest'' }
             in findRoot graph'
         else shrink px py graph
@@ -87,8 +88,8 @@ augment graph =
         y  = currentY graph
         nv = (length . vertices) graph
         ne = (length . edges) graph
-        m  = (AF.mu . forest) graph
-        g  = (unmap . AF.phi . forest) graph
+        mu  = (AF.mu . forest) graph
+        phi  = (AF.phi . forest) graph
 
 shrink :: [Vertex] ->
           [Vertex] ->
@@ -96,30 +97,28 @@ shrink :: [Vertex] ->
           Graph
 shrink px py graph = 
     let isect    = px `List.intersect` py
-        r        = fromJust $ find (\x -> h x == x) isect
+        r        = fromJust $ find (\x -> ro ! x == x) isect
         (pxr, pyr) = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
         union    = pxr `List.union` pyr
         oddUnion = oddpx ++ oddpy
-        filtered = filter (\v -> (h . g) v /= r) oddUnion
-        keys     = map g filtered
+        filtered = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
+        keys     = map (phi !) filtered
         vals     = filtered
-        gm'      = adjustMapFor keys vals gm
-        gm''     = if h x /= r then adjustMap x y gm' else gm'
-        gm'''    = if h y /= r then adjustMap y x gm'' else gm''
-        keys'    = filter (\x -> h x `elem` union) (vertices graph)
-        hm'      = adjustMapFor keys' (replicate (length keys') r) hm
-        forest'  = (forest graph) { AF.phi = gm'''
+        phi'      = adjustMapFor keys vals phi
+        phi''     = if (ro !) x /= r then adjustMap x y phi' else phi'
+        phi'''    = if (ro !) y /= r then adjustMap y x phi'' else phi''
+        keys'    = filter (\x -> (ro !) x `elem` union) (vertices graph)
+        hm'      = adjustMapFor keys' (replicate (length keys') r) ro
+        forest'  = (forest graph) { AF.phi = phi'''
                                   , AF.ro = hm'
                                   }
     in findGrowth $ graph { forest = forest' }
     where
         x = currentX graph
         y = currentY graph
-        gm = (AF.phi . forest) graph
-        g = (unmap . AF.phi . forest) graph
-        hm = (AF.ro . forest) graph
-        h = (unmap . AF.ro . forest) graph
+        phi = (AF.phi . forest) graph
+        ro = (AF.ro . forest) graph
 
 
 edmonds :: Data.Graph.Graph -> IO [Edge]

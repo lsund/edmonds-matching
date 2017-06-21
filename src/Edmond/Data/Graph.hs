@@ -39,14 +39,6 @@ initialize rep =
              sInit
              (-1)
              (-1)
-----------------------------------------------------------------------------
--- 'Special' Graph properties
-
-mu :: Graph -> Map Vertex Vertex
-mu = AF.mu . forest
-
-phi :: Graph -> Map Vertex Vertex
-phi = AF.phi . forest
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
@@ -73,4 +65,4 @@ neighbours rep v =
 matching :: Graph -> [(Int, Int)]
 matching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys m) (Map.elems m)
-          m = mu graph
+          m = (AF.mu . forest) graph
