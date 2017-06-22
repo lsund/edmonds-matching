@@ -58,10 +58,12 @@ fix bug Maybe.fromJust: Nothing in shrink [done]
 
 outsource debug functionality [done]
 
-check so that the number of vertices and edges are correct in DIMACSPARSER []
+simplyfy expressions like (fun . AF.mu . forest) graph to: mu graph [done]
+
+remove call to forward in Core.hs []
 
 profiling []
-    bottleneck: computing backward edges each iteration. Store them. []
+    bottleneck: computing backward edges each iteration. Store them. [done]
 
-simplyfy expressions like (fun . AF.mu . forest) graph to: mu graph
+check so that the number of vertices and edges are correct in DIMACSPARSER []
 

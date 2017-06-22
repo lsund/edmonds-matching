@@ -15,27 +15,27 @@ type Set = Set.Set
 -- Used by Core.hs
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = takeWhileDifferent $ iterateEveryOther f g v
-    where f = ((!) . AF.mu . forest) graph
-          g = ((!) . AF.phi . forest) graph
+pathToRoot graph v = takeWhileDifferent $ iterateEveryOther mu phi v
+    where mu = ((!) . AF.mu . forest) graph
+          phi = ((!) . AF.phi . forest) graph
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
 
 isOuter :: Graph -> Vertex -> Bool
-isOuter graph x = f x == x || g (f x) /= f x
-    where f = ((!) . AF.mu . forest) graph
-          g = ((!) . AF.phi . forest) graph
+isOuter graph x = mu x == x || phi (mu x) /= mu x
+    where mu = ((!) . AF.mu . forest) graph
+          phi = ((!) . AF.phi . forest) graph
 
 isInner :: Graph -> Vertex -> Bool
-isInner graph x = g (f x) == f x && g x /= x
-    where f = ((!) . AF.mu . forest) graph
-          g = ((!) . AF.phi . forest) graph
+isInner graph x = phi (mu x) == mu x && phi x /= x
+    where mu = ((!) . AF.mu . forest) graph
+          phi = ((!) . AF.phi . forest) graph
 
 isOutOfForest :: Graph -> Vertex -> Bool
-isOutOfForest graph x = f x /= x && g x == x && g (f x) == f x
-    where f = ((!) . AF.mu . forest) graph
-          g = ((!) . AF.phi . forest) graph
+isOutOfForest graph x = mu x /= x && phi x == x && phi (mu x) == mu x
+    where mu = ((!) . AF.mu . forest) graph
+          phi = ((!) . AF.phi . forest) graph
 
 isScanned :: Graph -> Vertex -> Bool
 isScanned graph = s

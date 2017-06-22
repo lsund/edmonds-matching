@@ -10,7 +10,6 @@ import qualified Parser
 -- path = "data/bipartite.dmx"
 -- path = "data/K3.dmx"
 -- path = "data/graphs/butterfly.dmx"
--- path = "data/graphs/peterson.dmx"
 -- path = "data/K2-v2.dmx"
 path = "data/graphs/pbd984.dmx"
 -- path = "data/graphs/lu

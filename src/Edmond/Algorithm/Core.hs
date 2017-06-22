@@ -35,7 +35,7 @@ findNeighbour graph =
                     /= ((!) . AF.ro . forest) graph x
         pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
-        found = find pred $ neighbours (representation graph) x
+        found = find pred $ neighbours graph x
     in found
     where
         x = currentX graph
@@ -79,7 +79,7 @@ augment graph =
                 u = oddpx ++ oddpy
                 pu = fmap (phi !) u
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
-                forest'' = AF.resetButMu (representation graph) mu'
+                forest'' = AF.resetButMu (forward graph) mu'
                 graph' = graph { forest = forest'' }
             in findRoot graph'
         else shrink px py graph

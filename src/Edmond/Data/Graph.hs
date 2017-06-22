@@ -10,6 +10,7 @@ import qualified Edmond.Data.AlternatingForest as AF
 
 import Data.Array
 import qualified Data.Graph
+import qualified Data.List as List
 import qualified Data.Map as Map
 
 -- Structures for holding a graph and an associated alternating forest
@@ -22,7 +23,8 @@ type Edge = Data.Graph.Edge
 type GraphRepresentation = Data.Graph.Graph
 type AlternatingForest = AF.AlternatingForest
 
-data Graph = Graph { representation :: Data.Graph.Graph
+data Graph = Graph { forward :: Data.Graph.Graph
+                   , backward :: Data.Graph.Graph
                    , forest :: AlternatingForest
                    , scanned :: Map Vertex Bool 
                    , currentX :: Vertex
@@ -35,34 +37,38 @@ initialize rep =
         ne = (length . Data.Graph.edges) rep
         sInit = Map.fromList [(x, y) | x <- [1..nv], y <- replicate nv False]
     in Graph rep 
+             (toBackward rep)
              (AF.initialize rep)
              sInit
              (-1)
              (-1)
+    where
+        toBackward rep = 
+            let redges = map swap (Data.Graph.edges rep)
+            in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
+
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
 
 edges :: Graph -> [Edge]
-edges = Data.Graph.edges . representation
+edges = Data.Graph.edges . forward
 
 vertices :: Graph -> [Vertex]
-vertices = Data.Graph.vertices . representation
+vertices = Data.Graph.vertices . forward
 
 containsEdges :: [Edge] -> Graph -> Bool
 containsEdges es graph = 
     -- all (\e -> e `elem` edges graph || swap e `elem` edges graph) es
     all (\e -> containsOne [e, swap e] (edges graph)) es
 
-neighbours :: GraphRepresentation -> Vertex -> [Vertex]
-neighbours rep v = 
-    let xys = zip (indices rep) (elems rep)
-        forward = rep ! v
-        reverse = 
-            foldr (\(x, y) acc -> if v `elem` y then x : acc else acc) [] xys
-    in forward ++ reverse
+neighbours :: Graph -> Vertex -> [Vertex]
+neighbours graph v = (forw ! v) `List.union` (backw ! v)
+    where
+        forw = forward graph
+        backw = backward graph
 
 matching :: Graph -> [(Int, Int)]
 matching graph = filter (uncurry (<)) xs
-    where xs = zip (Map.keys m) (Map.elems m)
-          m = (AF.mu . forest) graph
+    where xs = zip (Map.keys mu) (Map.elems mu)
+          mu = (AF.mu . forest) graph
