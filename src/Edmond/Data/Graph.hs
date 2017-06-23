@@ -47,7 +47,6 @@ initialize rep =
             let redges = map swap (Data.Graph.edges rep)
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
 
-
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
 

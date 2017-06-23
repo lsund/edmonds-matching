@@ -11,8 +11,8 @@ import qualified Parser
 -- path = "data/K3.dmx"
 -- path = "data/graphs/butterfly.dmx"
 -- path = "data/K2-v2.dmx"
-path = "data/graphs/pbd984.dmx"
--- path = "data/graphs/lu
+-- path = "data/graphs/pbd984.dmx"
+path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "data/graphs/ar9152.dmx"

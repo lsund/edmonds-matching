@@ -1,31 +1,30 @@
-c lua980 size originally 468 but my alg gets 489, pyth-matching gets 490
-c for ei8246 my algorithm gets 4123
-P4                      2
-K2                      1
-K4                      2
-bipartite-simple        2
-bipartite               4
-K3                      1
-C5                      2
-K2-v2                   1
-K4-v2                   2
-bipartite-simple-v2     2
-K3-v2                   1
-butterfly               2
-butterfly-extended      3
-peterson                5
-queen4_4                8
-queen5_5                12
-queen6_6                18
-queen7_7                24
-queen8_8                32
-queen9_9                40
-queen10_10              50
-queen11_11              60
-queen16_16              128
-queen27_27              364
-pma343                  171
-c lu980                   490
-c pbd984                  492
-c fixed                 500
-c ei8246                4123
+INSTANCE:             |      OPT:
+----------------------|----------
+ar9152.dmx            |      4349
+ch71009.dmx           |     35025
+ei8246.dmx            |      4123
+fixed.dmx             |       500
+gr9882.dmx            |      4931
+K2.dmx                |         1
+K3.dmx                |         1
+K4.dmx                |         2
+lu980.dmx             |       490
+P3.dmx                |         2
+pbd984.dmx            |       492
+peterson.dmx          |         5
+pma343.dmx            |       171
+queen10_10.dmx        |        50
+queen11_11.dmx        |        60
+queen16_16.dmx        |       128
+queen27_27.dmx        |       364
+queen4_4.dmx          |         8
+queen5_5.dmx          |        12
+queen6_6.dmx          |        18
+queen7_7.dmx          |        24
+queen8_8.dmx          |        32
+queen9_9.dmx          |        40
+simple.dmx            |         2
+USA-road-d.FLA.dmx    |    507967
+USA-road-d.USA.dmx    |  11325669
+xqf131.dmx            |        64
+

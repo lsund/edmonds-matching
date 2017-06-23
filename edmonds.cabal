@@ -28,7 +28,17 @@ cabal-version:       >=1.10
 executable edmonds
   main-is:             Main.hs
   
-  other-extensions:    NoImplicitPrelude, CPP, Safe, Trustworthy, Unsafe, DeriveDataTypeable, FlexibleInstances, TypeSynonymInstances, FlexibleContexts, ExplicitNamespaces, ExtendedDefaultRules, BangPatterns
+  other-extensions:    NoImplicitPrelude,
+                       CPP, Safe,
+                       Trustworthy,
+                       Unsafe,
+                       DeriveDataTypeable,
+                       FlexibleInstances,
+                       TypeSynonymInstances,
+                       FlexibleContexts,
+                       ExplicitNamespaces,
+                       ExtendedDefaultRules,
+                       BangPatterns
   
   build-depends:       base >=4.9 && <4.10, 
                        containers >=0.5 && <0.6,
@@ -88,7 +98,6 @@ executable edmonds-profile
                        split >=0.2 && <0.3
   
   hs-source-dirs:      src, protolude/src, test
-
   
   default-language:    Haskell2010
 
