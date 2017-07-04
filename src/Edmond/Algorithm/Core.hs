@@ -79,8 +79,7 @@ augment graph =
                 u = oddpx ++ oddpy
                 pu = fmap (phi !) u
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
-                forest'' = AF.resetButMu (forward graph) mu'
-                graph' = graph { forest = forest'' }
+                graph' = resetForest graph mu'
             in findRoot graph'
         else shrink px py graph
     where

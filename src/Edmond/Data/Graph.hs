@@ -71,3 +71,9 @@ matching :: Graph -> [(Int, Int)]
 matching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys mu) (Map.elems mu)
           mu = (AF.mu . forest) graph
+
+resetForest :: Graph -> Map Vertex Vertex -> Graph
+resetForest graph mu' =
+    let newForest' = AF.initialize (forward graph)
+    in graph {forest = newForest' { AF.mu = mu' }}
+

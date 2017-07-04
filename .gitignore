@@ -3,3 +3,4 @@ edmonds-profile.*
 profiling-commands
 .cabal-sandbox
 cabal.sandbox.config
+edmonds-test

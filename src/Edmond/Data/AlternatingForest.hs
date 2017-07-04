@@ -16,12 +16,6 @@ data AlternatingForest = AlternatingForest { mu :: Map Vertex Vertex
 initialize :: Data.Graph.Graph -> AlternatingForest
 initialize rep = 
     let nv = (length . Data.Graph.vertices) rep
-        ne = (length . Data.Graph.edges) rep
         idMap = Map.fromList [(x, x) | x <- [1..nv]]
     in AlternatingForest idMap idMap idMap
-
-resetButMu :: Data.Graph.Graph -> Map Vertex Vertex -> AlternatingForest
-resetButMu rep mu' =
-    let new = initialize rep
-    in new { mu = mu' }
 
