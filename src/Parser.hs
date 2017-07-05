@@ -22,7 +22,7 @@ class Parseable a where
     parse :: [Text] -> a
 
 instance Parseable Optima where
-    parse [x, y]     = Optima (Text.unpack x ++ ".dmx") (textToInt y)
+    parse [x, y]     = Optima (Text.unpack x) (textToInt y)
     parse ("c" : xs) = Void
     parse []         = Void
 

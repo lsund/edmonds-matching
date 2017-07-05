@@ -8,6 +8,7 @@ import Test.HUnit
 import TestParser (dimacsTests)
 import TestAlgorithm (mAlgoTests)
 import TestUtil (utilTests)
+import TestGraph (mGraphTests)
 
 import Data.List
 
@@ -22,5 +23,7 @@ sameElements xs ys = null $ xs \\ ys
 runtests :: IO Counts
 runtests = do
     algoTests <- mAlgoTests
-    runTestTT $ TestList [utilTests, dimacsTests, algoTests]
+    graphTests <- mGraphTests
+    -- runTestTT $ TestList [utilTests, dimacsTests, algoTests]
+    runTestTT $ TestList [utilTests, dimacsTests, graphTests]
 

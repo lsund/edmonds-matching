@@ -60,10 +60,17 @@ outsource debug functionality [done]
 
 simplyfy expressions like (fun . AF.mu . forest) graph to: mu graph [done]
 
-remove call to forward in Core.hs []
+remove call to forward in Core.hs [done]
 
 profiling []
     bottleneck: computing backward edges each iteration. Store them. [done]
+    profile fixed.dmx []
 
 check so that the number of vertices and edges are correct in DIMACSPARSER []
+
+bug: lu980 result is 489 but should be 490  []
+make sure that the graph is exactly as specified by the file []
+
+create a graph generator and try to generate a counterexample for a small k []
+
 

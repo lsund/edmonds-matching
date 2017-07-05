@@ -50,8 +50,7 @@ findGrowth :: Graph -> Graph
 findGrowth graph = 
     case findNeighbour graph of
         Nothing -> 
-            let f = const True
-                scanned' = adjustMap x True $ scanned graph
+            let scanned' = adjustMap x True $ scanned graph
             in findRoot (graph { scanned = scanned' })
         Just y -> grow (graph { currentY = y })
     where
@@ -73,7 +72,8 @@ grow graph =
 augment :: Graph -> Graph
 augment graph = 
     let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-    in if areDisjoint px py
+        isect = px `List.intersect` py
+    in if null isect
         then
             let (oddpx, oddpy) = odds px py
                 u = oddpx ++ oddpy
@@ -81,7 +81,7 @@ augment graph =
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
                 graph' = resetForest graph mu'
             in findRoot graph'
-        else shrink px py graph
+        else shrink px py isect graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -92,11 +92,11 @@ augment graph =
 
 shrink :: [Vertex] ->
           [Vertex] ->
+          [Vertex] ->
           Graph ->
           Graph
-shrink px py graph = 
-    let isect          = px `List.intersect` py
-        r              = fromJust $ find (\x -> ro ! x == x) isect
+shrink px py isect graph = 
+    let r              = fromJust $ find (\x -> ro ! x == x) isect
         (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
         union          = pxr `List.union` pyr
