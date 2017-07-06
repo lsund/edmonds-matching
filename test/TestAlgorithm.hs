@@ -65,7 +65,6 @@ tests1 = do content <- parseFile "data/optima-stripped.txt"
                 names   = map Parser.path optimas
                 paths = map ("data/graphs/" ++) names
                 optima  = map Parser.optima optimas
-            mapM_ print paths
             return $ 
                 zipWith (curry testMatchingLen) paths optima
                 ++ map testIfMatching paths

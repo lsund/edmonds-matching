@@ -6,6 +6,7 @@ import qualified Edmond.Data.Graph as Graph
 import Test.HUnit
 import Protolude
 import Parser
+import Generator
 
 ----------------------------------------------------------------------------
 -- tests
@@ -20,3 +21,4 @@ mGraphTests = do
                 , TestCase $ assertEqual "Should have 1000 vertices" 449449 ne
                 ]
     return $ TestList tests
+
