@@ -3,4 +3,5 @@ edmonds-profile.*
 profiling-commands
 .cabal-sandbox
 cabal.sandbox.config
-edmonds-test
+third_party
+data/graphs/random-graphs/
