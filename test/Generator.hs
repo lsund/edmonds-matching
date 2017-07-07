@@ -1,7 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Generator where
-
+import Data.Text as Text (append)
 import Protolude
-import qualified Data.Graph
+import Data.Graph
 import System.Random
 import Data.List (nub) 
 
@@ -17,8 +18,31 @@ randomEdges nv ne = do
     ys <- replicateM ne $ randomRIO (1, nv)
     return $ shapeTupleList $ zip xs ys
 
-genGraph nv = do
+genRandomEdges :: Int -> IO [Edge]
+genRandomEdges nv = do
     let neMax = div (nv * (nv - 1)) 2
         ne = ceiling $ fromIntegral neMax * sparseness
-    edges <- randomEdges nv ne
-    return $ Data.Graph.buildG (1, nv) edges
+    randomEdges nv ne
+
+format (x, y) = 
+    let line = ["e ", show x,  " ", show y, "\n"]
+    in foldr Text.append "" line
+
+maxVertex :: [Edge] -> Vertex
+maxVertex xs = max x y
+    where ((x, y) : _) = 
+            sortBy (\(a, b) (c, d) -> if max a b > max c d then LT else GT) xs
+
+-- writeGraph :: [Edge] -> FilePath -> IO ()
+-- writeGraph edges path = do
+--     let nv = maxBound edges
+--     let firstline = [show nv, " ", show (length edges), "\n"]
+--     appendFile path (foldl Text.append "p edge " firstline)
+--     mapM_ (appendFile path . format) edges
+    
+-- writeRandomGraph :: Int -> FilePath -> IO ()
+-- writeRandomGraph nv path = do
+--     randomEdges <- genRandomEdges nv
+--     writeGraph randomEdges
+
+
