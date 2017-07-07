@@ -71,6 +71,9 @@ check so that the number of vertices and edges are correct in DIMACSPARSER []
 bug: lu980 result is 489 but should be 490  []
 make sure that the graph is exactly as specified by the file []
 
+figure out how to run the code in TestMain []
+
 create a graph generator and try to generate a counterexample for a small k []
+
 
 

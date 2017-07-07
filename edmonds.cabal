@@ -3,7 +3,7 @@ name:                edmonds
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             1.0.5.0
+version:             1.0.5.1
 
 category:            Algorithms
 
@@ -68,7 +68,6 @@ executable edmonds-profile
   ghc-options:
      -threaded
      "-with-rtsopts=-N -p -s -h -i0.1"
-  configure-options:   enable-profiling
   main-is:             Main.hs
 
   other-extensions:    NoImplicitPrelude,
@@ -109,3 +108,4 @@ executable edmonds-profile
 source-repository head
   type:              github
   location:          https://github.com/lsund/edmonds-matching
+
