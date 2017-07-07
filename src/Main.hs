@@ -4,6 +4,7 @@ module Main where
 import Protolude
 import Edmond.Algorithm.Core
 import qualified Parser
+import qualified Generator
 
 -- path = "data/graphs/C5.dmx"
 -- path = "data/P4.dmx"
