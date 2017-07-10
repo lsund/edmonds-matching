@@ -3,7 +3,7 @@ name:                edmonds
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             1.0.5.1
+version:             1.0.6.0
 
 category:            Algorithms
 
@@ -27,6 +27,8 @@ cabal-version:       >=1.10
 
 executable edmonds
   main-is:             Main.hs
+
+  exposed-modules:     Main.hs
   
   other-extensions:    NoImplicitPrelude,
                        CPP, Safe,
@@ -108,4 +110,3 @@ executable edmonds-profile
 source-repository head
   type:              github
   location:          https://github.com/lsund/edmonds-matching
-

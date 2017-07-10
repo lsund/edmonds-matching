@@ -18,10 +18,11 @@ import qualified Generator
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "data/graphs/ar9152.dmx"
-path = "data/graphs/fixed.dmx"
+-- path = "data/graphs/fixed.dmx"
+path = "data/graphs/random-graphs/haskell/08/026.dmx"
 
 main :: IO ()
 main = do
     graph <- Parser.fileToGraph path
     edges <- edmonds graph
-    print $ length edges
+    print $ edges

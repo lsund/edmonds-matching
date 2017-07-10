@@ -3,6 +3,7 @@
 
 module Util where
 
+import Prelude ()
 import Protolude
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List

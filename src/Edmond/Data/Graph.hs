@@ -3,6 +3,7 @@
 
 module Edmond.Data.Graph where
 
+import Prelude ()
 import Protolude
 
 import Util
@@ -75,5 +76,9 @@ matching graph = filter (uncurry (<)) xs
 resetForest :: Graph -> Map Vertex Vertex -> Graph
 resetForest graph mu' =
     let newForest' = AF.initialize (forward graph)
-    in graph {forest = newForest' { AF.mu = mu' }}
+        newScanned = Map.fromList [(x, False) | x <- [1..nv]]
+    in graph { forest = newForest' { AF.mu = mu' }
+             , scanned = newScanned }
+    where
+        nv = length $ vertices graph
 

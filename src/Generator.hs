@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-
 module Generator where
 
 import Data.Text as Text (append)
@@ -53,8 +52,9 @@ writeRandomGraph nv path = do
 genFilenames :: Int -> [FilePath]
 genFilenames n = genFilenames' n n
     where
+        emsg = "can't gen more than 999 filenames" 
         genFilenames' n count | count == 0 = []
-        genFilenames' n count | count > 999 = error "can't gen more than 999 filenames" 
+        genFilenames' n count | count > 999 = error emsg
         genFilenames' n count = name count : genFilenames' n (pred count)
             where 
                 name c | c < 10 = "00" ++ show count ++ ".dmx"

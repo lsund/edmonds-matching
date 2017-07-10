@@ -3,6 +3,7 @@
 
 module Parser where
 
+import Prelude ()
 import Protolude
 import Data.Graph
 import qualified Data.Text as Text

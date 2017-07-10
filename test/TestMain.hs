@@ -1,21 +1,24 @@
+{-# LANGUAGE OverloadedStrings #-}
 module TestMain where
 
 import Protolude
-import Data.List.Split
-import Data.List (last)
+import qualified Data.Text as Text
+import qualified Data.List.Split as LS
+import qualified Data.List as L
 import System.Directory
 
 import Edmond.Algorithm.Core
 import Parser
 
-testFile :: FilePath -> IO ()
-testFile path = do
-    graph <- fileToGraph path
+testFile :: FilePath ->  FilePath -> IO ()
+testFile inpath outpath = do
+    graph <- fileToGraph inpath
     es <- edmonds graph
-    let basename = Data.List.last $ Data.List.Split.splitOn "/" path
-    putStrLn $ basename ++ " " ++ show (length es)
+    let basename = L.last $ LS.splitOn "/" inpath
+    appendFile outpath (Text.pack $ basename ++ " " ++ show (length es) ++ "\n")
 
-testDirectory :: FilePath -> IO ()
-testDirectory path = 
-    mpaths >>= mapM_ (\x -> testFile (path ++ x)) . sort
-    where mpaths = System.Directory.listDirectory path
+testDirectory :: FilePath -> FilePath -> IO ()
+testDirectory inpath outpath = do
+    writeFile outpath ""
+    mpaths >>= mapM_ (\x -> testFile (inpath ++ x) outpath) . sort
+    where mpaths = System.Directory.listDirectory inpath

@@ -8,6 +8,7 @@ import Edmond.Data.Graph as Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
 
+import Prelude ()
 import Protolude
 import Data.Maybe
 import qualified Data.Graph
@@ -22,23 +23,9 @@ findRoot graph =
     let mx = find (\x -> all ($ x) [not . isScanned graph, isOuter graph]) vs
     in case mx of 
             Nothing -> graph
-            Just x -> findGrowth $ graph { currentX = x }
+            Just x -> findNeighbour $ graph { currentX = (debugvId "x: " x) }
     where vs = vertices graph
             
-
--- Given a graph and a vertex x, finds a neighbour y of x such that y is either
--- out-of-forest or (y is outer and ro(y) =/ ro(x)
-findNeighbour :: Graph -> Maybe Vertex
-findNeighbour graph =
-    let pred' y = isOuter graph y && 
-                       ((!) . AF.ro . forest) graph y 
-                    /= ((!) . AF.ro . forest) graph x
-        pred'' = isOutOfForest graph
-        pred y = pred'' y || pred' y
-        found = find pred $ neighbours graph x
-    in found
-    where
-        x = currentX graph
 
 -- Map.assocs has RT O(n)
 -- At this point, we need to decide where to grow our tree.
@@ -46,13 +33,23 @@ findNeighbour graph =
 -- false, y is a neighbour of x such that y is out-of-forest or y is outer and
 -- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
 -- tree
-findGrowth :: Graph -> Graph
-findGrowth graph = 
-    case findNeighbour graph of
-        Nothing -> 
+--
+-- Given a graph and a vertex x, finds a neighbour y of x such that y is either
+-- out-of-forest or (y is outer and ro(y) =/ ro(x)
+findNeighbour :: Graph -> Graph
+findNeighbour graph =
+    let pred' y = isOuter graph y && 
+                       ((!) . AF.ro . forest) graph y 
+                    /= ((!) . AF.ro . forest) graph x
+        pred'' = isOutOfForest graph
+        pred y = pred'' y || pred' y
+        nbs = neighbours graph x
+        found = find pred $ nbs
+    in case (debugvId "y: " found) of
+        Nothing ->
             let scanned' = adjustMap x True $ scanned graph
             in findRoot (graph { scanned = scanned' })
-        Just y -> grow (graph { currentY = y })
+        Just y -> traceShow "growing" $ grow (graph { currentY = y })
     where
         x = currentX graph
 
@@ -62,8 +59,8 @@ grow graph =
         then 
             let phi' = adjustMap y x m
                 forest' = (forest graph) { AF.phi = phi' }
-            in findGrowth (graph { forest = forest' })
-        else augment graph
+            in findNeighbour (graph { forest = forest' })
+        else traceShow "augmenting" $ augment graph
     where
         m = (AF.phi . forest) graph
         x = currentX graph
@@ -81,7 +78,7 @@ augment graph =
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
                 graph' = resetForest graph mu'
             in findRoot graph'
-        else shrink px py isect graph
+        else traceShow "shrinking" $ shrink px py isect graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -100,16 +97,16 @@ shrink px py isect graph =
         (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
         union          = pxr `List.union` pyr
-        oddUnion       = oddpx ++ oddpy
+        oddUnion       = oddpx `List.union` oddpy
         filtered       = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
         phi'           = adjustMapFor (map (phi !) filtered) filtered phi
         phi''          = symmetricUpdate (ro !) r x y phi'
         keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)
-        hm'            = adjustMapFor keys' (replicate (length keys') r) ro
+        ro'            = adjustMapFor keys' (replicate (length keys') r) ro
         forest'        = (forest graph) { AF.phi = phi''
-                                        , AF.ro = hm'
+                                        , AF.ro = ro'
                                         }
-    in findGrowth $ graph { forest = forest' }
+    in findNeighbour $ graph { forest = forest' }
     where
         x = currentX graph
         y = currentY graph

@@ -74,6 +74,47 @@ make sure that the graph is exactly as specified by the file []
 figure out how to run the code in TestMain []
 
 create a graph generator and try to generate a counterexample for a small k []
+smallest counterexample found: 08/026.dmx
 
+c++/026.dmx
+8 9
+3 5
+2 4
+2 5
+2 6
+1 5
+6 7
+3 7
+0 1
+0 5
+
+card: 4
+0 1             ==      1 2
+2 4             ==      3 5
+3 5             ==      4 6
+6 7             ==      7 8
+
+p edge 8 9
+e 4 6 [x]
+e 3 5 [x]
+e 3 6 [ ]
+e 3 7 [ ]
+e 2 6 [ ]
+e 7 8 [x]
+e 4 8 [ ]
+e 1 2 [x]
+e 1 6 [ ]
+
+1 6
+3 7
+4 8
+
+* --- 1
+|     |
+2 --- 6 --- 4
+      |     |
+5 --- 3     |
+      |     |
+      7 --- 8
 
 

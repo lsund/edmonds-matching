@@ -2,6 +2,7 @@
 
 module TestGraph where
 
+import Prelude ()
 import qualified Edmond.Data.Graph as Graph
 import Test.HUnit
 import Protolude
