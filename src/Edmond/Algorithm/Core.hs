@@ -23,7 +23,7 @@ findRoot graph =
     let mx = find (\x -> all ($ x) [not . isScanned graph, isOuter graph]) vs
     in case mx of 
             Nothing -> graph
-            Just x -> findNeighbour $ graph { currentX = (debugvId "x: " x) }
+            Just x -> findNeighbour $ graph { currentX = x }
     where vs = vertices graph
             
 
@@ -45,11 +45,11 @@ findNeighbour graph =
         pred y = pred'' y || pred' y
         nbs = neighbours graph x
         found = find pred $ nbs
-    in case (debugvId "y: " found) of
+    in case found of
         Nothing ->
             let scanned' = adjustMap x True $ scanned graph
             in findRoot (graph { scanned = scanned' })
-        Just y -> traceShow "growing" $ grow (graph { currentY = y })
+        Just y -> grow (graph { currentY = y })
     where
         x = currentX graph
 
@@ -60,7 +60,7 @@ grow graph =
             let phi' = adjustMap y x m
                 forest' = (forest graph) { AF.phi = phi' }
             in findNeighbour (graph { forest = forest' })
-        else traceShow "augmenting" $ augment graph
+        else augment graph
     where
         m = (AF.phi . forest) graph
         x = currentX graph
@@ -78,7 +78,7 @@ augment graph =
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
                 graph' = resetForest graph mu'
             in findRoot graph'
-        else traceShow "shrinking" $ shrink px py isect graph
+        else shrink px py isect graph
     where
         x  = currentX graph
         y  = currentY graph

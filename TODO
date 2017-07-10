@@ -62,18 +62,8 @@ simplyfy expressions like (fun . AF.mu . forest) graph to: mu graph [done]
 
 remove call to forward in Core.hs [done]
 
-profiling []
-    bottleneck: computing backward edges each iteration. Store them. [done]
-    profile fixed.dmx []
-
-check so that the number of vertices and edges are correct in DIMACSPARSER []
-
-bug: lu980 result is 489 but should be 490  []
-make sure that the graph is exactly as specified by the file []
-
-figure out how to run the code in TestMain []
-
-create a graph generator and try to generate a counterexample for a small k []
+create a graph generator and try to generate a counterexample for 
+a small k [done]
 smallest counterexample found: 08/026.dmx
 
 c++/026.dmx
@@ -117,4 +107,15 @@ e 1 6 [ ]
       |     |
       7 --- 8
 
+
+bug: lu980 result is 489 but should be 490 (fixed) [done]
+make sure that the graph is exactly as specified by the file [done]
+
+figure out how to run the code in TestMain [done]
+
+check so that the number of vertices and edges are correct in DIMACSPARSER []
+
+profiling []
+    bottleneck: computing backward edges each iteration. Store them. [done]
+    profile fixed.dmx []
 
