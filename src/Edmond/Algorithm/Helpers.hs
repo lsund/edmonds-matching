@@ -9,20 +9,19 @@ import qualified Data.Set as Set
 import qualified Edmond.Data.AlternatingForest as AF
 import Data.Map.Strict ((!))
 
-type Set = Set.Set
+-- type Set = Set.Set
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = takeWhileDifferent $ iterateEveryOther mu phi v
+pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
 
-isOuter :: Graph -> Vertex -> Bool
 isOuter graph x = mu x == x || phi (mu x) /= mu x
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph

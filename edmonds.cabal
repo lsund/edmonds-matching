@@ -1,35 +1,47 @@
 name:                edmonds
-
--- PVP summary:      +-+------- breaking API changes
---                   | | +----- non-breaking API additions
---                   | | | +--- code changes with no API change
-version:             1.0.6.0
-
-category:            Algorithms
-
-synopsis:            cabal run
-
-description:         A matching algorithm
-
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/githubuser/edmonds#readme
 license:             BSD3
-
 license-file:        LICENSE
-
-author:              Ludvig Sundström
-
-maintainer:          lud.sund@gmail.com
-
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2017 Author name here
+category:            Web
 build-type:          Simple
-
-extra-source-files:  ChangeLog.md, README.md
-
+extra-source-files:  README.md
 cabal-version:       >=1.10
 
-executable edmonds
-  main-is:             Main.hs
+-- library
+  -- hs-source-dirs:      src
+  -- exposed-modules:     Lib
+  -- build-depends:       base >= 4.7 && < 5
+  -- default-language:    Haskell2010
 
-  exposed-modules:     Main.hs
-  
+executable edmonds-exe
+  hs-source-dirs:      app, protolude/src, src
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base, 
+                       containers,
+                       ghc-prim,
+                       text,
+                       bytestring,
+                       mtl,
+                       stm,
+                       hashable,
+                       async,
+                       deepseq,
+                       safe,
+                       random,
+                       directory,
+                       array
+
+  default-language:    Haskell2010
+
+  default-extensions:  NoImplicitPrelude
+
   other-extensions:    NoImplicitPrelude,
                        CPP, Safe,
                        Trustworthy,
@@ -41,72 +53,38 @@ executable edmonds
                        ExplicitNamespaces,
                        ExtendedDefaultRules,
                        BangPatterns
-  
-  build-depends:       base >=4.9 && <4.10, 
-                       containers >=0.5 && <0.6,
-                       HUnit >=1.5 && <1.7,
-                       array >=0.5 && <0.6,
-                       mtl >=2.2 && <2.3,
-                       text >=1.2 && <1.3,
-                       bytestring >=0.10 && <0.11,
-                       safe >=0.3 && <0.4, 
-                       deepseq >=1.4 && <1.5,
-                       hashable >=1.2 && <1.3,
-                       stm >=2.4 && <2.5,
-                       async >=2.1 && <2.2,
-                       ghc-prim >=0.5 && <0.6,
-                       split >=0.2 && <0.3,
-                       random >= 1.0 && < 2.0,
-                       directory >= 1.2.0.0 && < 2.0.0.0
-  
-  hs-source-dirs:      src, protolude/src, test
 
-  
+  other-modules:       Applicative,
+                       Base,
+                       Bool           
+                       Conv,
+                       Debug,
+                       Edmond.Algorithm.Core,
+                       Edmond.Algorithm.Helpers,
+                       Edmond.Data.AlternatingForest,
+                       Edmond.Data.Graph,
+                       Either,
+                       Exceptions,
+                       Functor,
+                       Generator,
+                       List,
+                       Monad,
+                       Panic,
+                       Parser,
+                       Protolude,
+                       Semiring,
+                       Show,
+                       Util
+
+test-suite edmonds-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , edmonds
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
-  default-extensions: NoImplicitPrelude
-
-executable edmonds-profile
-  ghc-options:
-     -threaded
-     "-with-rtsopts=-N -p -s -h -i0.1"
-  main-is:             Main.hs
-
-  other-extensions:    NoImplicitPrelude,
-                       CPP,
-                       Safe,
-                       Trustworthy,
-                       Unsafe,
-                       DeriveDataTypeable,
-                       FlexibleInstances,
-                       TypeSynonymInstances,
-                       FlexibleContexts,
-                       ExplicitNamespaces,
-                       ExtendedDefaultRules,
-                       BangPatterns
-  
-  build-depends:       base >=4.9 && <4.10, 
-                       containers >=0.5 && <0.6,
-                       HUnit >=1.5 && <1.7,
-                       array >=0.5 && <0.6,
-                       mtl >=2.2 && <2.3,
-                       text >=1.2 && <1.3,
-                       bytestring >=0.10 && <0.11,
-                       safe >=0.3 && <0.4, 
-                       deepseq >=1.4 && <1.5,
-                       hashable >=1.2 && <1.3,
-                       stm >=2.4 && <2.5,
-                       async >=2.1 && <2.2,
-                       ghc-prim >=0.5 && <0.6,
-                       split >=0.2 && <0.3
-  
-  hs-source-dirs:      src, protolude/src, test
-  
-  default-language:    Haskell2010
-
-  default-extensions: NoImplicitPrelude
-
-  
 source-repository head
-  type:              github
-  location:          https://github.com/lsund/edmonds-matching
+  type:     git
+  location: https://github.com/githubuser/edmonds

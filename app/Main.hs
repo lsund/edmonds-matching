@@ -7,7 +7,7 @@ import qualified Parser
 import qualified Generator
 
 -- path = "data/graphs/queen27_27.dmx"
-path = "data/graphs/queen16_16.dmx"
+-- path = "data/graphs/queen16_16.dmx"
 -- path = "data/graphs/pma343.dmx"
 -- path = "data/graphs/C5.dmx"
 -- path = "data/P4.dmx"
@@ -16,7 +16,7 @@ path = "data/graphs/queen16_16.dmx"
 -- path = "data/K3.dmx"
 -- path = "data/graphs/butterfly.dmx"
 -- path = "data/K2-v2.dmx"
--- path = "data/graphs/pbd984.dmx"
+path = "data/graphs/pbd984.dmx"
 -- path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"

@@ -117,5 +117,18 @@ check so that the number of vertices and edges are correct in DIMACSPARSER []
 
 profiling []
     bottleneck: computing backward edges each iteration. Store them. [done]
-    profile fixed.dmx []
+    profile for fixed.dmx []
+
+check if I can use Set instead of list.
+    Problems arise in shrink and augment, where eg pathToRoot, odds, takeuntil
+    is dependent on insertion order.
+
+    Augment:
+        pathToRoot: (px, py) does not need to be lists
+                    (oddpx, oddpy) could potentially be retrieved by instead of
+                    building sets of vertices, build sets of (Vertex, Bool),
+                    where Bool represents odd or not.
+
+                    One idea was to only store odds, but this does not work
+                    since we need to check the intersection of the whole paths
 

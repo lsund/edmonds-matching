@@ -78,7 +78,7 @@ augment graph =
                 mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
                 graph' = resetForest graph mu'
             in findRoot graph'
-        else shrink px py isect graph
+        else shrink graph
     where
         x  = currentX graph
         y  = currentY graph
@@ -87,13 +87,11 @@ augment graph =
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
-shrink :: [Vertex] ->
-          [Vertex] ->
-          [Vertex] ->
-          Graph ->
-          Graph
-shrink px py isect graph = 
-    let r              = fromJust $ find (\x -> ro ! x == x) isect
+shrink :: Graph -> Graph
+shrink graph = 
+    let (px, py)       = (pathToRoot graph x, pathToRoot graph y)
+        isect          = px `List.intersect` py
+        r              = fromJust $ find (\x -> ro ! x == x) isect
         (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
         union          = pxr `List.union` pyr
