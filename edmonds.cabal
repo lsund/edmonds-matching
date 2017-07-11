@@ -36,7 +36,8 @@ executable edmonds-exe
                        safe,
                        random,
                        directory,
-                       array
+                       array,
+                       split
 
   default-language:    Haskell2010
 

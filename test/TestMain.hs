@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module TestMain where
+module TestFiles where
 
 import Protolude
 import qualified Data.Text as Text
