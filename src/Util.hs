@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Util where
 
@@ -16,15 +15,6 @@ import Data.Graph
 
 (+++) :: Text -> Text -> Text
 a +++ b = a `append` b
-
-debug :: Text -> a -> a
-debug = trace
-
-debugv :: Show a => Text -> a -> b -> b
-debugv msg val = trace (msg +++ show val) 
-
-debugvId :: Show a => Text -> a -> a
-debugvId msg expr = trace (msg +++ show expr) expr
 
 -- True if the second list contains at least one of the elements in the first
 -- list

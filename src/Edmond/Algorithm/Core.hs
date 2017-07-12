@@ -1,5 +1,4 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Edmond.Algorithm.Core where
 
@@ -44,7 +43,7 @@ findNeighbour graph =
         pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
         nbs = neighbours graph x
-        found = find pred $ nbs
+        found = find pred nbs
     in case found of
         Nothing ->
             let scanned' = adjustMap x True $ scanned graph
