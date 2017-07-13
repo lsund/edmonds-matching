@@ -7,7 +7,6 @@ import Edmond.Data.Graph as Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
 
-import Prelude ()
 import Protolude
 import Data.Maybe
 import qualified Data.Graph

@@ -5,7 +5,6 @@ module Edmond.Algorithm.Helpers where
 import Protolude
 import Util
 import Edmond.Data.Graph
-import qualified Data.Set as Set
 import qualified Edmond.Data.AlternatingForest as AF
 import Data.Map.Strict ((!))
 
@@ -19,11 +18,11 @@ pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
-pathToRootSet :: Graph -> Vertex -> Set (Vertex, Bool)
-pathToRootSet graph v = 
-    takeWhileDifferentSet (iterateEveryOther mu phi v)
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+-- pathToRootSet :: Graph -> Vertex -> Set (Vertex, Bool)
+-- pathToRootSet graph v = 
+--     takeWhileDifferentSet (iterateEveryOther mu phi v)
+--     where mu = ((!) . AF.mu . forest) graph
+--           phi = ((!) . AF.phi . forest) graph
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
