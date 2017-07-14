@@ -30,8 +30,9 @@ data Graph = Graph { forward :: Data.Graph.Graph
                    , scanned :: Map Vertex Bool 
                    , currentX :: Vertex
                    , currentY :: Vertex }
+----------------------------------------------------------------------------
+-- Initialize
 
--- Initializes the graph as of the specification
 initialize :: GraphRepresentation -> Graph
 initialize rep = 
     let nv = (length . Data.Graph.vertices) rep
@@ -47,6 +48,14 @@ initialize rep =
         toBackward rep = 
             let redges = map swap (Data.Graph.edges rep)
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
+
+loadMatching :: Graph -> [Edge] -> Graph
+loadMatching graph matching =
+    let xs = map fst matching
+        ys = map snd matching
+        mu' = adjustMapFor xs ys ((AF.mu . forest) graph)
+        mu'' = adjustMapFor ys xs mu'
+    in graph { forest = (forest graph) { AF.mu = mu'' }}
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
@@ -68,8 +77,8 @@ neighbours graph v = (forw ! v) `List.union` (backw ! v)
         forw = forward graph
         backw = backward graph
 
-matching :: Graph -> [(Int, Int)]
-matching graph = filter (uncurry (<)) xs
+toMatching :: Graph -> [Edge]
+toMatching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys mu) (Map.elems mu)
           mu = (AF.mu . forest) graph
 

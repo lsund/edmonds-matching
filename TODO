@@ -132,3 +132,8 @@ check if I can use Set instead of list.
                     One idea was to only store odds, but this does not work
                     since we need to check the intersection of the whole paths
 
+        While this would solve some things, there still comes a point where we
+        need to update the maps, and this is done knowing that the order of the
+        lists of vertices to update preserves the order. Sets doesn't preserve
+        the order of their elements.
+

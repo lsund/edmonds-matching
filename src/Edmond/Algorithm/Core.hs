@@ -6,6 +6,7 @@ import Util
 import Edmond.Data.Graph as Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
+import Edmond.Algorithm.Heuristics
 
 import Protolude
 import Data.Maybe
@@ -72,8 +73,8 @@ augment graph =
         then
             let (oddpx, oddpy) = odds px py
                 u = oddpx ++ oddpy
-                pu = fmap (phi !) u
-                mu' = adjustMapFor ([x, y] ++ pu) ([y, x] ++ u) $ adjustMapFor u pu mu
+                pu = foldr (\x acc -> (x, phi ! x) : acc) [] u
+                mu' = adjustMapFor2 ((x, y) : (y, x) : pu) mu
                 graph' = resetForest graph mu'
             in findRoot graph'
         else shrink graph
@@ -113,6 +114,13 @@ shrink graph =
 edmonds :: Data.Graph.Graph -> IO [Edge]
 edmonds rep =
     let init = Graph.initialize rep
-        graph = findRoot init
-    in return $ matching graph
+        matching = maximalMatching init
+        graph = loadMatching init matching
+        graph' = findRoot graph
+    in return $ toMatching graph'
 
+-- edmonds :: Data.Graph.Graph -> IO [Edge]
+-- edmonds rep =
+--     let init = Graph.initialize rep
+--         graph = findRoot init
+--     in return $ toMatching graph

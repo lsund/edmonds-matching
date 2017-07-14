@@ -54,6 +54,9 @@ adjustMap k v = Map.adjust (const v) k
 adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
 adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 
+adjustMapFor2 :: Ord a => [(a, a)] -> Map a a -> Map a a
+adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
+
 --  Arguments:
 --
 --  p: the predicate, 
