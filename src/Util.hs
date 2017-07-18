@@ -26,18 +26,31 @@ takeUntil _ []                = []
 takeUntil v (x : xs) | v == x = [v]
 takeUntil v (x : xs)          = x : takeUntil v xs
 
+takeUntilSet :: Ord a => a -> [a] -> Bool -> Set (a, Bool) -> Set (a, Bool)
+takeUntilSet v [] odd acc                = acc
+takeUntilSet v (x : xs) odd acc | v == x = Set.insert (x, odd) acc
+takeUntilSet v (x : xs) odd acc          = takeUntilSet v xs 
+                                            (not odd)
+                                            (Set.insert (x, odd) acc)
+
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent []                    = []
 takeWhileDifferent [x]                   = [x]
 takeWhileDifferent (x : y : xs) | x == y = [x]
 takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
 
-takeWhileDifferentSet :: Ord a => [a] -> Bool -> Set (a, Bool) -> Set (a, Bool)
-takeWhileDifferentSet [] odd acc = acc
-takeWhileDifferentSet [x] odd acc = Set.insert (x, odd) acc
-takeWhileDifferentSet (x : y : xs) odd acc | x == y = Set.insert (x, odd) acc
-takeWhileDifferentSet (x : y : xs) odd acc =
-    takeWhileDifferentSet (y : xs) (not odd) (Set.insert (x, odd) acc)
+takeWhileDifferentSet :: Ord a => 
+                         [a]
+                         -> Bool
+                         -> Set (a, Bool)
+                         -> Set (a, Bool)
+                         -> Set (a, Bool)
+takeWhileDifferentSet [] isodd all odds = all
+takeWhileDifferentSet [x] isodd all odds = Set.insert (x, isodd) all
+takeWhileDifferentSet (x : y : xs) isodd all odds 
+    | x == y = Set.insert (x, isodd) all odds
+takeWhileDifferentSet (x : y : xs) isodd all odds =
+    takeWhileDifferentSet (y : xs) (not isodd) (Set.insert (x, isodd) all)
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 iterateEveryOther = iterateEveryOther' True

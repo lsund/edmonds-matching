@@ -21,9 +21,12 @@ pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
 
 pathToRootSet :: Graph -> Vertex -> Set (Vertex, Bool)
 pathToRootSet graph v = 
-    takeWhileDifferentSet (iterateEveryOther mu phi v) False Set.empty
+    takeWhileDifferentSet (iterateEveryOther mu phi v) False Set.empty Set.empty
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
+
+-- pathToR :: Graph -> Vertex -> Vertex -> Set (Vertex, Bool)
+-- pathToR graph v r = foldr (=/ r) (iterateEveryOther mu phi v)
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)

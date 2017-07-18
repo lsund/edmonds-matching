@@ -136,4 +136,12 @@ check if I can use Set instead of list.
         need to update the maps, and this is done knowing that the order of the
         lists of vertices to update preserves the order. Sets doesn't preserve
         the order of their elements.
+        
+        Solved it by keeping tuples of (x, phi x) elements, instead of two
+        separate lists
+
+    Shrink:
+        takeUntil is a funcition that gets the x -> r path
+        should be able to solve this simply by modifying takeWhileSet. Because I
+        don't need the full path.
 

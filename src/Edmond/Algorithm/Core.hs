@@ -11,7 +11,7 @@ import Edmond.Algorithm.Heuristics
 import Protolude
 import Data.Maybe
 import qualified Data.Graph
-import qualified Data.List as List
+import qualified Data.Set as Set
 import Data.Map.Strict ((!))
 
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
@@ -67,13 +67,13 @@ grow graph =
 
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py) = (pathToRoot graph x, pathToRoot graph y)
-        isect = px `List.intersect` py
+    let (px, py) = (pathToRootSet graph x, pathToRootSet graph y)
+        isect = px `Set.intersection` py
     in if null isect
         then
-            let (oddpx, oddpy) = odds px py
-                u = oddpx ++ oddpy
-                pu = foldr (\x acc -> (x, phi ! x) : acc) [] u
+            let (oddpx, oddpy) = (Set.filter snd px, Set.filter snd py)
+                u = oddpx `Set.union` oddpy
+                pu = foldr (\(x, _) acc -> (x, phi ! x) : acc) [] u
                 mu' = adjustMapFor2 ((x, y) : (y, x) : pu) mu
                 graph' = resetForest graph mu'
             in findRoot graph'
@@ -81,22 +81,22 @@ augment graph =
     where
         x  = currentX graph
         y  = currentY graph
-        nv = (length . vertices) graph
-        ne = (length . edges) graph
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
 shrink :: Graph -> Graph
 shrink graph = 
     let (px, py)       = (pathToRoot graph x, pathToRoot graph y)
-        isect          = px `List.intersect` py
-        r              = fromJust $ find (\x -> ro ! x == x) isect
-        (pxr, pyr)     = (takeUntil r px, takeUntil r py)
-        (oddpx, oddpy) = odds pxr pyr
-        union          = pxr `List.union` pyr
-        oddUnion       = oddpx `List.union` oddpy
-        filtered       = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
-        phi'           = adjustMapFor (map (phi !) filtered) filtered phi
+        (spx, spy)     = (pathToRootSet graph x, pathToRootSet graph y)
+        isect          = spx `Set.intersection` spy
+        r              = (fst . fromJust) $ find (\(x, _) -> ro ! x == x) isect
+        (spxr, spyr)   = (takeUntilSet r px False Set.empty, takeUntilSet r py False Set.empty)
+        (oddspx, oddspy) = (Set.filter snd spxr, Set.filter snd spyr)
+        union          = Set.map fst $ spxr `Set.union` spyr
+        oddUnion       = oddspx `Set.union` oddspy
+        filtered       = Set.filter (\(v, _) -> ((ro !) . (phi !)) v /= r) oddUnion
+        zipped         = foldr (\x acc ->  (phi ! x, x) : acc) [] (Set.map fst filtered)
+        phi'           = adjustMapFor2 zipped phi
         phi''          = symmetricUpdate (ro !) r x y phi'
         keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)
         ro'            = adjustMapFor keys' (replicate (length keys') r) ro

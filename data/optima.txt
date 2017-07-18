@@ -3,7 +3,7 @@ INSTANCE:             |      OPT:
 ar9152.dmx            |      4349       [x]
 ch71009.dmx           |     35025
 ei8246.dmx            |      4123       [x] 713 s, 1121 s
-fixed.dmx             |       500       [x]
+fixed.dmx             |       500       [x] 16.73 s,
 gr9882.dmx            |      4931
 K2.dmx                |         1
 K3.dmx                |         1
