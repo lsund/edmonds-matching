@@ -1,5 +1,5 @@
 name:                edmonds
-version:             0.1.0.0
+version:             0.1.1.1
 -- synopsis:
 -- description:
 homepage:            https://github.com/githubuser/edmonds#readme
@@ -14,63 +14,61 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 executable edmonds-exe
-  hs-source-dirs:      app, src
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base, 
-                       protolude,
-                       containers,
-                       ghc-prim,
-                       text,
-                       bytestring,
-                       mtl,
-                       stm,
-                       hashable,
-                       async,
-                       deepseq,
-                       safe,
-                       random,
-                       directory,
-                       array,
-                       split
+    hs-source-dirs:     app, src
+    main-is:            Main.hs
+    ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+    build-depends:      base >= 4.9.1.0 && <= 4.10.0.0, 
+                        protolude == 0.1.10,
+                        array == 0.5.1.1,
+                        containers >= 0.5.7.1 && <= 0.5.10.2,
+                        ghc-prim == 0.5.0.0,
+                        text >= 1.2.2.1 && <= 1.2.2.2,
+                        bytestring == 0.10.8.1,
+                        mtl == 2.2.1,
+                        stm == 2.4.4.1,
+                        hashable == 1.2.6.1,
+                        async == 2.1.1.1,
+                        safe == 0.3.15,
+                        random == 1.1,
+                        directory >= 1.3.0.0 && <= 1.3.1.1
 
-  default-language:    Haskell2010
+    default-language:   Haskell2010
 
-  default-extensions:  NoImplicitPrelude
+    default-extensions: NoImplicitPrelude
 
-  other-extensions:    NoImplicitPrelude,
-                       CPP, Safe,
-                       Trustworthy,
-                       Unsafe,
-                       DeriveDataTypeable,
-                       FlexibleInstances,
-                       TypeSynonymInstances,
-                       FlexibleContexts,
-                       ExplicitNamespaces,
-                       ExtendedDefaultRules,
-                       BangPatterns
+    other-extensions:   NoImplicitPrelude,
+                        CPP, Safe,
+                        Trustworthy,
+                        Unsafe,
+                        DeriveDataTypeable,
+                        FlexibleInstances,
+                        TypeSynonymInstances,
+                        FlexibleContexts,
+                        ExplicitNamespaces,
+                        ExtendedDefaultRules,
+                        BangPatterns
 
-  other-modules:       Applicative,
-                       Base,
-                       Bool           
-                       Conv,
-                       Debug,
-                       Edmond.Algorithm.Core,
-                       Edmond.Algorithm.Helpers,
-                       Edmond.Data.AlternatingForest,
-                       Edmond.Data.Graph,
-                       Either,
-                       Exceptions,
-                       Functor,
-                       Generator,
-                       List,
-                       Monad,
-                       Panic,
-                       Parser,
-                       Protolude,
-                       Semiring,
-                       Show,
-                       Util
+    other-modules:       Applicative,
+                         Base,
+                         Bool           
+                         Conv,
+                         Debug,
+                         Edmond.Algorithm.Core,
+                         Edmond.Algorithm.Helpers,
+                         Edmond.Data.AlternatingForest,
+                         Edmond.Data.Graph,
+                         Either,
+                         Exceptions,
+                         Functor,
+                         Generator,
+                         List,
+                         Monad,
+                         Panic,
+                         Parser,
+                         Protolude,
+                         Semiring,
+                         Show,
+                         Util
 
 test-suite edmonds-test
   type:                exitcode-stdio-1.0
