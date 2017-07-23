@@ -47,10 +47,9 @@ takeWhileDifferentSet :: Ord a =>
                          -> Set (a, Bool)
 takeWhileDifferentSet [] isodd all odds = all
 takeWhileDifferentSet [x] isodd all odds = Set.insert (x, isodd) all
-takeWhileDifferentSet (x : y : xs) isodd all odds 
-    | x == y = Set.insert (x, isodd) all odds
+takeWhileDifferentSet (x : y : xs) isodd all odds | x == y = Set.insert (x, isodd) all
 takeWhileDifferentSet (x : y : xs) isodd all odds =
-    takeWhileDifferentSet (y : xs) (not isodd) (Set.insert (x, isodd) all)
+    takeWhileDifferentSet (y : xs) (not isodd) (Set.insert (x, isodd) all) odds
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 iterateEveryOther = iterateEveryOther' True

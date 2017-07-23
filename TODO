@@ -145,3 +145,4 @@ check if I can use Set instead of list.
         should be able to solve this simply by modifying takeWhileSet. Because I
         don't need the full path.
 
+can install protolude as a package. dont need it as source in my directory ...[]

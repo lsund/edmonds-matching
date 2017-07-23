@@ -47,7 +47,7 @@ parseFile :: FilePath -> IO [[Text]]
 parseFile path = fmap (loadLines . Text.lines) (readFile path)
 
 fileToGraph :: FilePath -> IO Graph
-fileToGraph path    = do
+fileToGraph path = do
     content <- parseFile path
     let dimacs = map parse content
         dimacsSize  = fromMaybe undefined $ head [x | x@DimacsSize {} <- dimacs]
