@@ -21,72 +21,61 @@ a +++ b = a `append` b
 containsOne :: Eq a => [a] -> [a] -> Bool
 containsOne xs ys = any (`elem` ys) xs
 
-takeUntil :: Eq a => a -> [a] -> [a]
-takeUntil _ []                = []
-takeUntil v (x : xs) | v == x = [v]
-takeUntil v (x : xs)          = x : takeUntil v xs
-
-takeUntilSet :: Ord a =>
+takeUntil :: Ord a =>
              a ->
              [a] ->
              Bool ->
              Set a ->
              Set a ->
              (Set a, Set a)
-takeUntilSet v [] isodd all odds           = (all, odds)
-takeUntilSet v (x : xs) isodd all odds | v == x = 
+takeUntil v [] isodd all odds           = (all, odds)
+takeUntil v (x : xs) isodd all odds | v == x = 
     if isodd then
         (Set.insert x all, Set.insert x odds)
     else 
         (Set.insert x all, odds)
-takeUntilSet v (x : xs) isodd all odds     = 
+takeUntil v (x : xs) isodd all odds     = 
     if isodd then
-        takeUntilSet 
+        takeUntil 
             v
             xs
             (not isodd)
             (Set.insert x all)
             (Set.insert x odds)
     else 
-        takeUntilSet 
+        takeUntil 
             v
             xs
             (not isodd)
             (Set.insert x all)
             odds
 
-takeWhileDifferent :: Eq a => [a] -> [a]
-takeWhileDifferent []                    = []
-takeWhileDifferent [x]                   = [x]
-takeWhileDifferent (x : y : xs) | x == y = [x]
-takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
-
-takeWhileDifferentSet :: Ord a => 
+takeWhileDifferent :: Ord a => 
                          [a]
                          -> Bool
                          -> Set a
                          -> Set a
                          -> (Set a, Set a)
-takeWhileDifferentSet [] isodd all odds = (all, odds)
-takeWhileDifferentSet [x] isodd all odds =
+takeWhileDifferent [] isodd all odds = (all, odds)
+takeWhileDifferent [x] isodd all odds =
     if isodd then 
         (Set.insert x all, Set.insert x odds)
     else
         (Set.insert x all, odds)
-takeWhileDifferentSet (x : y : xs) isodd all odds | x == y =
+takeWhileDifferent (x : y : xs) isodd all odds | x == y =
     if isodd then 
         (Set.insert x all, Set.insert x odds)
     else
         (Set.insert x all, odds)
-takeWhileDifferentSet (x : y : xs) isodd all odds =
+takeWhileDifferent (x : y : xs) isodd all odds =
     if isodd then 
-        takeWhileDifferentSet 
+        takeWhileDifferent 
             (y : xs)
             (not isodd)
             (Set.insert x all)
             (Set.insert x odds)
     else
-        takeWhileDifferentSet 
+        takeWhileDifferent 
             (y : xs)
             (not isodd)
             (Set.insert x all)

@@ -85,22 +85,22 @@ augment graph =
 
 shrink :: Graph -> Graph
 shrink graph = 
-    let (px, py)       = (pathToRoot graph x, pathToRoot graph y)
+    let 
         ((spx, ospx), (spy, ospy))  = (pathToRootSet graph x, pathToRootSet graph y)
         isect          = spx `Set.intersection` spy
         r              = fromJust $ find (\x -> ro ! x == x) isect
-        ((spxr, ospxr), (spyr, ospyr))   = (takeUntilSet r px False Set.empty Set.empty, takeUntilSet r py False Set.empty Set.empty)
-        u          = spxr `Set.union` spyr
-        oddUnion       = ospxr `Set.union` ospyr
-        filtered       = Set.filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
-        zipped         = foldr (\x acc ->  (phi ! x, x) : acc) [] filtered
-        phi'           = adjustMapFor2 zipped phi
-        phi''          = symmetricUpdate (ro !) r x y phi'
-        keys'          = filter (\x -> (ro !) x `elem` u) (vertices graph)
-        ro'            = adjustMapFor keys' (replicate (length keys') r) ro
-        forest'        = (forest graph) { AF.phi = phi''
-                                        , AF.ro = ro'
-                                        }
+        ((spxr, ospxr), (spyr, ospyr))  = (pathToR graph x r, pathToR graph y r)
+        u        = spxr `Set.union` spyr
+        ou       = ospxr `Set.union` ospyr
+        filtered = Set.filter (\v -> ((ro !) . (phi !)) v /= r) ou
+        zipped   = foldr (\x acc ->  (phi ! x, x) : acc) [] filtered
+        phi'     = adjustMapFor2 zipped phi
+        phi''    = symmetricUpdate (ro !) r x y phi'
+        keys'    = filter (\x -> (ro !) x `elem` u) (vertices graph)
+        ro'      = adjustMapFor keys' (replicate (length keys') r) ro
+        forest'  = (forest graph) { AF.phi = phi''
+                                  , AF.ro  = ro'
+                                  }
     in findNeighbour $ graph { forest = forest' }
     where
         x = currentX graph

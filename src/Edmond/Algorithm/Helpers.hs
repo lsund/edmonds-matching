@@ -14,19 +14,17 @@ import Data.Set as Set
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
-pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
-
 pathToRootSet :: Graph -> Vertex -> (Set Vertex, Set Vertex)
 pathToRootSet graph v = 
-    takeWhileDifferentSet (iterateEveryOther mu phi v) False Set.empty Set.empty
+    takeWhileDifferent (iterateEveryOther mu phi v) False Set.empty Set.empty
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
--- pathToR :: Graph -> Vertex -> Vertex -> Set (Vertex, Bool)
--- pathToR graph v r = foldr (=/ r) (iterateEveryOther mu phi v)
+pathToR :: Graph -> Vertex -> Vertex -> (Set Vertex, Set Vertex)
+pathToR graph v r =
+    takeUntil r (iterateEveryOther mu phi v) False Set.empty Set.empty
+    where mu = ((!) . AF.mu . forest) graph
+          phi = ((!) . AF.phi . forest) graph
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
