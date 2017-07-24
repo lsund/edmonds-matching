@@ -30,29 +30,29 @@ takeUntilSet :: Ord a =>
              a ->
              [a] ->
              Bool ->
-             Set (a, Bool) ->
              Set a ->
-             (Set (a, Bool), Set a)
+             Set a ->
+             (Set a, Set a)
 takeUntilSet v [] isodd all odds           = (all, odds)
 takeUntilSet v (x : xs) isodd all odds | v == x = 
     if isodd then
-        (Set.insert (x, isodd) all, Set.insert x odds)
+        (Set.insert x all, Set.insert x odds)
     else 
-        (Set.insert (x, isodd) all, odds)
+        (Set.insert x all, odds)
 takeUntilSet v (x : xs) isodd all odds     = 
     if isodd then
         takeUntilSet 
             v
             xs
             (not isodd)
-            (Set.insert (x, isodd) all)
+            (Set.insert x all)
             (Set.insert x odds)
     else 
         takeUntilSet 
             v
             xs
             (not isodd)
-            (Set.insert (x, isodd) all)
+            (Set.insert x all)
             odds
 
 takeWhileDifferent :: Eq a => [a] -> [a]
@@ -64,32 +64,32 @@ takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
 takeWhileDifferentSet :: Ord a => 
                          [a]
                          -> Bool
-                         -> Set (a, Bool)
                          -> Set a
-                         -> (Set (a, Bool), Set a)
+                         -> Set a
+                         -> (Set a, Set a)
 takeWhileDifferentSet [] isodd all odds = (all, odds)
 takeWhileDifferentSet [x] isodd all odds =
     if isodd then 
-        (Set.insert (x, isodd) all, Set.insert x odds)
+        (Set.insert x all, Set.insert x odds)
     else
-        (Set.insert (x, isodd) all, odds)
+        (Set.insert x all, odds)
 takeWhileDifferentSet (x : y : xs) isodd all odds | x == y =
     if isodd then 
-        (Set.insert (x, isodd) all, Set.insert x odds)
+        (Set.insert x all, Set.insert x odds)
     else
-        (Set.insert (x, isodd) all, odds)
+        (Set.insert x all, odds)
 takeWhileDifferentSet (x : y : xs) isodd all odds =
     if isodd then 
         takeWhileDifferentSet 
             (y : xs)
             (not isodd)
-            (Set.insert (x, isodd) all)
+            (Set.insert x all)
             (Set.insert x odds)
     else
         takeWhileDifferentSet 
             (y : xs)
             (not isodd)
-            (Set.insert (x, isodd) all)
+            (Set.insert x all)
             odds
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
