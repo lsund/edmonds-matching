@@ -67,7 +67,9 @@ grow graph =
 
 augment :: Graph -> Graph
 augment graph = 
-    let ((px, opx), (py, opy)) = (pathToRootSet graph x, pathToRootSet graph y)
+    let ((epx, opx), (epy, opy)) = (pathToRoot graph x, pathToRoot graph y)
+        px = epx `Set.union` opx
+        py = epy `Set.union` opy
         isect = px `Set.intersection` py
     in if null isect
         then
@@ -86,10 +88,14 @@ augment graph =
 shrink :: Graph -> Graph
 shrink graph = 
     let 
-        ((spx, ospx), (spy, ospy))  = (pathToRootSet graph x, pathToRootSet graph y)
+        ((espx, ospx), (espy, ospy))  = (pathToRoot graph x, pathToRoot graph y)
+        spx = espx `Set.union` ospx
+        spy = espy `Set.union` ospy
         isect          = spx `Set.intersection` spy
         r              = fromJust $ find (\x -> ro ! x == x) isect
-        ((spxr, ospxr), (spyr, ospyr))  = (pathToR graph x r, pathToR graph y r)
+        ((espxr, ospxr), (espyr, ospyr))  = (pathToR graph x r, pathToR graph y r)
+        spxr      = espxr `Set.union` ospxr
+        spyr      = espyr `Set.union` ospyr
         u        = spxr `Set.union` spyr
         ou       = ospxr `Set.union` ospyr
         filtered = Set.filter (\v -> ((ro !) . (phi !)) v /= r) ou
