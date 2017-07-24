@@ -53,9 +53,8 @@ loadMatching :: Graph -> [Edge] -> Graph
 loadMatching graph matching =
     let xs = map fst matching
         ys = map snd matching
-        mu' = adjustMapFor xs ys ((AF.mu . forest) graph)
-        mu'' = adjustMapFor ys xs mu'
-    in graph { forest = (forest graph) { AF.mu = mu'' }}
+        mu' = adjustMapForSymmetric (zip xs ys) ((AF.mu . forest) graph)
+    in graph { forest = (forest graph) { AF.mu = mu' }}
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties

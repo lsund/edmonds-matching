@@ -65,11 +65,11 @@ areDisjoint xs ys = null (xs `List.intersect` ys)
 adjustMap :: Ord a =>  a -> b -> Map a b -> Map a b
 adjustMap k v = Map.adjust (const v) k
 
-adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
-adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
+adjustMapFor :: Ord a =>  [(a, a)] -> Map a a -> Map a a
+adjustMapFor xs m = foldr (uncurry adjustMap) m xs
 
-adjustMapFor2 :: Ord a => [(a, a)] -> Map a a -> Map a a
-adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
+adjustMapForSymmetric :: Ord a => [(a, a)] -> Map a a -> Map a a
+adjustMapForSymmetric xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
 
 --  Arguments:
 --

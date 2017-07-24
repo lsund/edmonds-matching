@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -fwarn-unused-imports #-}
-
 module Edmond.Algorithm.Core where
 
 import Util
@@ -37,18 +35,16 @@ findRoot graph =
 -- out-of-forest or (y is outer and ro(y) =/ ro(x)
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
-    let pred' y = isOuter graph y && 
+    let outerAndDisjoint y = isOuter graph y && 
                        ((!) . AF.ro . forest) graph y 
                     /= ((!) . AF.ro . forest) graph x
-        pred'' = isOutOfForest graph
-        pred y = pred'' y || pred' y
         nbs = neighbours graph x
-        found = find pred nbs
-    in case found of
+        mnb = find (\x' -> outerAndDisjoint x' || isOutOfForest graph x') nbs
+    in case mnb of
         Nothing ->
             let scanned' = adjustMap x True $ scanned graph
             in findRoot (graph { scanned = scanned' })
-        Just y -> grow (graph { currentY = y })
+        Just nb -> grow (graph { currentY = nb })
     where
         x = currentX graph
 
@@ -67,43 +63,39 @@ grow graph =
 
 augment :: Graph -> Graph
 augment graph = 
-    let ((epx, opx), (epy, opy)) = (pathToRoot graph x, pathToRoot graph y)
-        px = epx `Set.union` opx
-        py = epy `Set.union` opy
-        isect = px `Set.intersection` py
+    let ((exs, oxs), (eys, oys)) = (pathToRoot graph x, pathToRoot graph y)
+        xs = exs `Set.union` oxs
+        ys = eys `Set.union` oys
+        isect = xs `Set.intersection` ys
     in if null isect
         then
-            let u = opx `Set.union` opy
-                pu = foldr (\x acc -> (x, phi ! x) : acc) [] u
-                mu' = adjustMapFor2 ((x, y) : (y, x) : pu) mu
+            let ou = oxs `Set.union` oys
+                ou' = foldr (\x acc -> (x, phi ! x) : acc) [] ou
+                mu' = adjustMapForSymmetric ((x, y) : ou') mu
                 graph' = resetForest graph mu'
             in findRoot graph'
-        else shrink graph
+        else shrink graph exs oxs eys oys xs ys isect
     where
         x  = currentX graph
         y  = currentY graph
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
-shrink :: Graph -> Graph
-shrink graph = 
+-- shrink :: Graph -> Graph
+shrink graph exs oxs eys oys xs ys isect = 
     let 
-        ((espx, ospx), (espy, ospy))  = (pathToRoot graph x, pathToRoot graph y)
-        spx = espx `Set.union` ospx
-        spy = espy `Set.union` ospy
-        isect          = spx `Set.intersection` spy
         r              = fromJust $ find (\x -> ro ! x == x) isect
-        ((espxr, ospxr), (espyr, ospyr))  = (pathToR graph x r, pathToR graph y r)
-        spxr      = espxr `Set.union` ospxr
-        spyr      = espyr `Set.union` ospyr
-        u        = spxr `Set.union` spyr
-        ou       = ospxr `Set.union` ospyr
+        ((exsr, oxsr), (eysr, oysr)) = (pathToR graph x r, pathToR graph y r)
+        xsr      = exsr `Set.union` oxsr
+        ysr      = eysr `Set.union` oysr
+        u        = xsr `Set.union` ysr
+        ou       = oxsr `Set.union` oysr
         filtered = Set.filter (\v -> ((ro !) . (phi !)) v /= r) ou
         zipped   = foldr (\x acc ->  (phi ! x, x) : acc) [] filtered
-        phi'     = adjustMapFor2 zipped phi
+        phi'     = adjustMapForSymmetric zipped phi
         phi''    = symmetricUpdate (ro !) r x y phi'
         keys'    = filter (\x -> (ro !) x `elem` u) (vertices graph)
-        ro'      = adjustMapFor keys' (replicate (length keys') r) ro
+        ro'      = adjustMapFor (zip keys' (replicate (length keys') r)) ro
         forest'  = (forest graph) { AF.phi = phi''
                                   , AF.ro  = ro'
                                   }
@@ -114,7 +106,6 @@ shrink graph =
         phi = (AF.phi . forest) graph
         ro = (AF.ro . forest) graph
 
-
 edmonds :: Data.Graph.Graph -> IO [Edge]
 edmonds rep =
     let init = Graph.initialize rep
@@ -123,8 +114,3 @@ edmonds rep =
         graph' = findRoot graph
     in return $ toMatching graph'
 
--- edmonds :: Data.Graph.Graph -> IO [Edge]
--- edmonds rep =
---     let init = Graph.initialize rep
---         graph = findRoot init
---     in return $ toMatching graph
