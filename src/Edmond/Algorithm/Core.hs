@@ -67,13 +67,14 @@ grow graph =
 
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py) = (pathToRootSet graph x, pathToRootSet graph y)
+    let ((px, opx), (py, opy)) = (pathToRootSet graph x, pathToRootSet graph y)
         isect = px `Set.intersection` py
     in if null isect
         then
-            let (oddpx, oddpy) = (Set.filter snd px, Set.filter snd py)
+            let (oddpx, oddpy) = (Set.map fst (Set.filter snd px), 
+                                  Set.map fst (Set.filter snd py)) 
                 u = oddpx `Set.union` oddpy
-                pu = foldr (\(x, _) acc -> (x, phi ! x) : acc) [] u
+                pu = foldr (\x acc -> (x, phi ! x) : acc) [] u
                 mu' = adjustMapFor2 ((x, y) : (y, x) : pu) mu
                 graph' = resetForest graph mu'
             in findRoot graph'
@@ -87,15 +88,16 @@ augment graph =
 shrink :: Graph -> Graph
 shrink graph = 
     let (px, py)       = (pathToRoot graph x, pathToRoot graph y)
-        (spx, spy)     = (pathToRootSet graph x, pathToRootSet graph y)
+        ((spx, ospx), (spy, ospy))  = (pathToRootSet graph x, pathToRootSet graph y)
         isect          = spx `Set.intersection` spy
         r              = (fst . fromJust) $ find (\(x, _) -> ro ! x == x) isect
-        (spxr, spyr)   = (takeUntilSet r px False Set.empty, takeUntilSet r py False Set.empty)
+        ((spxr, ospxr), (spyr, ospyr))   = (takeUntilSet r px False Set.empty Set.empty, takeUntilSet r py False Set.empty Set.empty)
         (oddspx, oddspy) = (Set.filter snd spxr, Set.filter snd spyr)
         union          = Set.map fst $ spxr `Set.union` spyr
-        oddUnion       = oddspx `Set.union` oddspy
-        filtered       = Set.filter (\(v, _) -> ((ro !) . (phi !)) v /= r) oddUnion
-        zipped         = foldr (\x acc ->  (phi ! x, x) : acc) [] (Set.map fst filtered)
+        -- oddUnion       = ospxr `Set.union` ospyr
+        oddUnion       = Set.map fst oddspx `Set.union` Set.map fst oddspy
+        filtered       = Set.filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
+        zipped         = foldr (\x acc ->  (phi ! x, x) : acc) [] filtered
         phi'           = adjustMapFor2 zipped phi
         phi''          = symmetricUpdate (ro !) r x y phi'
         keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)

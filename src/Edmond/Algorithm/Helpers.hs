@@ -19,7 +19,7 @@ pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
-pathToRootSet :: Graph -> Vertex -> Set (Vertex, Bool)
+pathToRootSet :: Graph -> Vertex -> (Set (Vertex, Bool), Set Vertex)
 pathToRootSet graph v = 
     takeWhileDifferentSet (iterateEveryOther mu phi v) False Set.empty Set.empty
     where mu = ((!) . AF.mu . forest) graph
