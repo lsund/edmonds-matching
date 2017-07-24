@@ -6,7 +6,7 @@ import Protolude
 import Util
 import Edmond.Data.Graph
 import qualified Edmond.Data.AlternatingForest as AF
-import Data.Map.Strict ((!))
+import Data.HashMap.Strict ((!))
 
 -- type Set = Set.Set
 

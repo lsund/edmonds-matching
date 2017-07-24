@@ -10,7 +10,7 @@ import Protolude
 import Data.Maybe
 import qualified Data.Graph
 import qualified Data.Set as Set
-import Data.Map.Strict ((!))
+import Data.HashMap.Strict ((!))
 
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
