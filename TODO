@@ -116,8 +116,6 @@ figure out how to run the code in TestMain [done]
 can install protolude as a package. dont need it as source 
 in my directory [done]
 
-can use hash-tables in the ST monad []
-
 check so that the number of vertices and edges are correct in DIMACSPARSER []
 
 profiling []
@@ -151,3 +149,9 @@ check if I can use Set instead of list.
         don't need the full path.
 
 heleprs and util are overlapping. Make something sensible out of this. []
+
+can use hash-tables in the ST monad []
+
+high level api for create, update and get alternatingforest values. HashMap
+should only be exposed to alternatingforest.
+

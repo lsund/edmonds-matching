@@ -2,7 +2,6 @@ module Edmond.Algorithm.Core where
 
 import Util
 import Edmond.Data.Graph as Graph
-import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.Helpers
 import Edmond.Algorithm.Heuristics
 
@@ -10,7 +9,6 @@ import Protolude
 import Data.Maybe
 import qualified Data.Graph
 import qualified Data.Set as Set
-import Data.HashMap.Strict ((!))
 
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
@@ -36,8 +34,8 @@ findRoot graph =
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
     let outerAndDisjoint y = isOuter graph y && 
-                       ((!) . AF.ro . forest) graph y 
-                    /= ((!) . AF.ro . forest) graph x
+                       getVertex graph Ro y
+                    /= getVertex graph Ro x
         nbs = neighbours graph x
         mnb = find (\x' -> outerAndDisjoint x' || isOutOfForest graph x') nbs
     in case mnb of
@@ -51,13 +49,9 @@ findNeighbour graph =
 grow :: Graph -> Graph
 grow graph = 
     if isOutOfForest graph y
-        then 
-            let phi' = adjustMap y x m
-                forest' = (forest graph) { AF.phi = phi' }
-            in findNeighbour (graph { forest = forest' })
+        then findNeighbour $ Graph.updateVertex graph Phi (y, x)
         else augment graph
     where
-        m = (AF.phi . forest) graph
         x = currentX graph
         y = currentY graph
 
@@ -70,41 +64,45 @@ augment graph =
     in if null isect
         then
             let ou = oxs `Set.union` oys
-                ou' = foldr (\x acc -> (x, phi ! x) : acc) [] ou
-                mu' = adjustMapForSymmetric ((x, y) : ou') mu
-                graph' = resetForest graph mu'
-            in findRoot graph'
+                ou' = foldr (\x acc -> (x, getVertex graph Phi x) : acc) [] ou
+                graph' = Graph.updateSymmetric graph Mu ((x, y) : ou')
+                graph'' = resetForest graph'
+            in findRoot graph''
         else shrink graph exs oxs eys oys xs ys isect
     where
         x  = currentX graph
         y  = currentY graph
-        mu  = (AF.mu . forest) graph
-        phi  = (AF.phi . forest) graph
 
 -- shrink :: Graph -> Graph
 shrink graph exs oxs eys oys xs ys isect = 
     let 
-        r              = fromJust $ find (\x -> ro ! x == x) isect
+        r       = fromJust $ find (\x -> getVertex graph Ro x  == x) isect
         ((exsr, oxsr), (eysr, oysr)) = (pathToR graph x r, pathToR graph y r)
         xsr      = exsr `Set.union` oxsr
         ysr      = eysr `Set.union` oysr
         u        = xsr `Set.union` ysr
         ou       = oxsr `Set.union` oysr
-        filtered = Set.filter (\v -> ((ro !) . (phi !)) v /= r) ou
-        zipped   = foldr (\x acc ->  (phi ! x, x) : acc) [] filtered
-        phi'     = adjustMapForSymmetric zipped phi
-        phi''    = symmetricUpdate (ro !) r x y phi'
-        keys'    = filter (\x -> (ro !) x `elem` u) (vertices graph)
-        ro'      = adjustMapFor (zip keys' (replicate (length keys') r)) ro
-        forest'  = (forest graph) { AF.phi = phi''
-                                  , AF.ro  = ro'
-                                  }
-    in findNeighbour $ graph { forest = forest' }
+        filtered = Set.filter 
+                    (\v -> 
+                        (getVertex graph Ro . getVertex graph Phi)
+                        v /= r)
+                    ou
+        zipped   = foldr (\x acc -> (getVertex graph Phi x, x) : acc) [] filtered
+        graph'     = updateSymmetric graph Phi zipped
+        graph''  = if getVertex graph' Ro x /= r
+                    then updateVertex graph' Phi (x, y)
+                    else graph'
+        graph'''   = if getVertex graph'' Ro y /= r
+                    then updateVertex graph'' Phi (y, x)
+                    else graph''
+        keys'    = filter (\x -> getVertex graph''' Ro x `elem` u) 
+                          (vertices graph''')
+        zipped'  = zip keys' (replicate (length keys') r)
+        graph'''' = update graph''' Ro zipped'
+    in findNeighbour graph''''
     where
         x = currentX graph
         y = currentY graph
-        phi = (AF.phi . forest) graph
-        ro = (AF.ro . forest) graph
 
 edmonds :: Data.Graph.Graph -> IO [Edge]
 edmonds rep =

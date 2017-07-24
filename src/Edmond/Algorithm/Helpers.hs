@@ -4,9 +4,7 @@ module Edmond.Algorithm.Helpers where
 
 import Protolude
 import Util
-import Edmond.Data.Graph
-import qualified Edmond.Data.AlternatingForest as AF
-import Data.HashMap.Strict ((!))
+import Edmond.Data.Graph as Graph
 
 -- type Set = Set.Set
 
@@ -16,35 +14,35 @@ import Data.HashMap.Strict ((!))
 pathToRoot :: Graph -> Vertex -> (Set Vertex, Set Vertex)
 pathToRoot graph v = 
     takeWhileDifferent (iterateEveryOther mu phi v)
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+    where mu = Graph.getVertex graph Mu
+          phi = Graph.getVertex graph Phi
 
 pathToR :: Graph -> Vertex -> Vertex -> (Set Vertex, Set Vertex)
 pathToR graph v r =
     takeUntil r (iterateEveryOther mu phi v)
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+    where mu = Graph.getVertex graph Mu
+          phi = Graph.getVertex graph Phi
 
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
 
 isOuter graph x = mu x == x || phi (mu x) /= mu x
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+    where mu = Graph.getVertex graph Mu
+          phi = Graph.getVertex graph Phi
 
 isInner :: Graph -> Vertex -> Bool
 isInner graph x = phi (mu x) == mu x && phi x /= x
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+    where mu = Graph.getVertex graph Mu
+          phi = Graph.getVertex graph Phi
 
 isOutOfForest :: Graph -> Vertex -> Bool
 isOutOfForest graph x = mu x /= x && phi x == x && phi (mu x) == mu x
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
+    where mu = Graph.getVertex graph Mu
+          phi = Graph.getVertex graph Phi
 
 isScanned :: Graph -> Vertex -> Bool
 isScanned graph = s
-    where s = ((!) . scanned) graph
+    where s = Graph.getScanned graph
 
 ----------------------------------------------------------------------------
 -- 
