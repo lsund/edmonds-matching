@@ -155,3 +155,5 @@ can use hash-tables in the ST monad []
 high level api for create, update and get alternatingforest values. HashMap
 should only be exposed to alternatingforest.
 
+initialize hash tables properly []
+

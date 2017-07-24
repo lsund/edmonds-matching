@@ -10,8 +10,10 @@ import qualified Data.Set as Set
 import Data.Text (append)
 import Data.Graph
 import Data.Hashable
+import qualified Data.HashTable.ST.Basic as HashTable
 
 type HashMap = HashMap.HashMap
+type HashTable = HashTable.HashTable
 
 ----------------------------------------------------------------------------
 -- Debug
@@ -73,6 +75,30 @@ adjustMapFor xs m = foldr (uncurry adjustMap) m xs
 
 adjustMapForSymmetric :: (Eq a, Hashable a) => [(a, a)] -> HashMap a a -> HashMap a a
 adjustMapForSymmetric xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
+
+
+adjustHashTable :: (Eq a, Hashable a) =>
+                   (a, a) ->
+                    HashTable s a a ->
+                    ST s ()
+adjustHashTable (k, v) ht = HashTable.insert ht k v
+
+
+adjustHashTableFor :: (Eq a, Hashable a) =>
+                      [(a, a)] ->
+                      HashTable s a a ->
+                      ST s ()
+adjustHashTableFor xs ht = mapM_ (uncurry (HashTable.insert ht)) xs
+     
+adjustHashTableForSymmetric :: (Eq a, Hashable a) =>
+                               [(a, a)] ->
+                               HashTable s a a ->
+                               ST s ()
+adjustHashTableForSymmetric xs ht =
+    mapM_ (\(k, v) -> do
+            HashTable.insert ht k v
+            HashTable.insert ht v k)
+          xs
 
 --  Arguments:
 --

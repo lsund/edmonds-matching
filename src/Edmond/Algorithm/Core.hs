@@ -49,7 +49,7 @@ findNeighbour graph =
 grow :: Graph -> Graph
 grow graph = 
     if isOutOfForest graph y
-        then findNeighbour $ Graph.updateVertex graph Phi (y, x)
+        then findNeighbour $ updateSingle graph Phi (y, x)
         else augment graph
     where
         x = currentX graph
@@ -66,7 +66,7 @@ augment graph =
             let ou = oxs `Set.union` oys
                 ou' = foldr (\x acc -> (x, getVertex graph Phi x) : acc) [] ou
                 graph' = Graph.updateSymmetric graph Mu ((x, y) : ou')
-                graph'' = resetForest graph'
+                graph'' = reset graph'
             in findRoot graph''
         else shrink graph exs oxs eys oys xs ys isect
     where
@@ -90,10 +90,10 @@ shrink graph exs oxs eys oys xs ys isect =
         zipped   = foldr (\x acc -> (getVertex graph Phi x, x) : acc) [] filtered
         graph'     = updateSymmetric graph Phi zipped
         graph''  = if getVertex graph' Ro x /= r
-                    then updateVertex graph' Phi (x, y)
+                    then updateSingle graph' Phi (x, y)
                     else graph'
         graph'''   = if getVertex graph'' Ro y /= r
-                    then updateVertex graph'' Phi (y, x)
+                    then updateSingle graph'' Phi (y, x)
                     else graph''
         keys'    = filter (\x -> getVertex graph''' Ro x `elem` u) 
                           (vertices graph''')

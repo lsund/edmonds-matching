@@ -1,5 +1,5 @@
 name:                edmonds-matching
-version:             0.1.0.0
+version:             0.1.2.0
 -- synopsis:
 -- description:
 homepage:            https://github.com/githubuser/edmonds-matching#readme
@@ -23,7 +23,8 @@ executable edmonds-matching
                        hashable,
                        text,
                        protolude,
-                       array
+                       array,
+                       hashtables
   default-extensions:  NoImplicitPrelude
 
   exposed-modules:    Edmond.Algorithm.Core,
