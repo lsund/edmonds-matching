@@ -16,7 +16,7 @@ pathToRoot graph v = do
     graph' <- graph
     let mu = Graph.getVertex graph Mu
         phi = Graph.getVertex graph Phi
-    let rootpath = iterateEveryOther mu phi v
+    rootpath <- iterateEveryOther mu phi v
     return $ takeWhileDifferent rootpath
 
 pathToR :: ST s (Graph s) -> Vertex -> Vertex -> ST s (Set Vertex, Set Vertex)

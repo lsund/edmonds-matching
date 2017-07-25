@@ -58,11 +58,20 @@ takeWhileDifferent xs =
     in
          takeWhileDifferent' xs False Set.empty Set.empty
 
-iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
+iterateEveryOther :: (a -> ST s a) -> (a -> ST s a) -> a -> ST s [a]
 iterateEveryOther = iterateEveryOther' True
     where
-        iterateEveryOther' True f g x  = x : iterateEveryOther' False f g (f x)
-        iterateEveryOther' False f g x = x :  iterateEveryOther' True f g (g x)
+        iterateEveryOther' :: Bool -> (a -> ST s a) -> (a -> ST s a) -> a -> ST s [a]
+        iterateEveryOther' True f g x = do
+            let fx = f x
+            x' <- fx
+            xs <- iterateEveryOther' False f g x'
+            return $ x : xs
+        iterateEveryOther' False f g x = do
+            let gx = g x
+            x' <- gx
+            xs <- iterateEveryOther' False f g x'
+            return $ x :  xs
 
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
