@@ -135,6 +135,9 @@ every n xs =
         y : ys -> y : every n ys
         []    -> []
 
+odds :: [a] -> [a] -> ([a], [a])
+odds px py = (every 2 px, every 2 py)
+
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs
 

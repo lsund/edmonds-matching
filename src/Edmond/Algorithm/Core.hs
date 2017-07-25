@@ -10,16 +10,29 @@ import Data.Maybe
 import qualified Data.Graph
 import qualified Data.Set as Set
 
+import Control.Monad
+import Control.Monad.Trans.Maybe
+
+findM :: (Monad m) => (a -> m (Maybe b)) -> [a] -> m (Maybe b)
+findM f = runMaybeT . msum . map (MaybeT . f)
+
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
 -- of the current state.
-findRoot :: Graph -> Graph
-findRoot graph =
-    let mx = find (\x -> all ($ x) [not . isScanned graph, isOuter graph]) vs
-    in case mx of 
+findRoot :: ST s (Graph s) -> ST s (Graph s)
+findRoot graph = do
+    vs <- vertices graph
+    mx <-  findM (\x -> do
+                        xScanned <- isScanned graph x
+                        xOuter <- isOuter graph x
+                        return $
+                            if not xScanned && xOuter then
+                                Just x
+                            else Nothing) vs
+
+    case mx of 
             Nothing -> graph
-            Just x -> findNeighbour $ graph { currentX = x }
-    where vs = vertices graph
+            Just x -> findNeighbour $ updateX graph x
             
 
 -- Map.assocs has RT O(n)
@@ -31,7 +44,7 @@ findRoot graph =
 --
 -- Given a graph and a vertex x, finds a neighbour y of x such that y is either
 -- out-of-forest or (y is outer and ro(y) =/ ro(x)
-findNeighbour :: Graph -> Graph
+findNeighbour :: ST s (Graph s) -> ST s (Graph s)
 findNeighbour graph =
     let outerAndDisjoint y = isOuter graph y && 
                        getVertex graph Ro y
@@ -46,7 +59,7 @@ findNeighbour graph =
     where
         x = currentX graph
 
-grow :: Graph -> Graph
+grow :: ST s (Graph s) -> ST s (Graph s)
 grow graph = 
     if isOutOfForest graph y
         then findNeighbour $ updateSingle graph Phi (y, x)
@@ -55,7 +68,7 @@ grow graph =
         x = currentX graph
         y = currentY graph
 
-augment :: Graph -> Graph
+augment :: ST s (Graph s) -> ST s (Graph s)
 augment graph = 
     let ((exs, oxs), (eys, oys)) = (pathToRoot graph x, pathToRoot graph y)
         xs = exs `Set.union` oxs

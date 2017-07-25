@@ -24,7 +24,8 @@ executable edmonds-matching
                        text,
                        protolude,
                        array,
-                       hashtables
+                       hashtables,
+                       transformers
   default-extensions:  NoImplicitPrelude
 
   exposed-modules:    Edmond.Algorithm.Core,

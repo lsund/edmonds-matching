@@ -108,6 +108,11 @@ reset graph = do
     return graph' { forest = forest'
                   , scanned = scanned' }
 
+updateX :: ST s (Graph s) -> Vertex -> ST s (Graph s)
+updateX graph x = do
+    graph' <- graph
+    return $ graph' { currentX = x }
+
 update :: ST s (Graph s) -> Property -> [(Vertex, Vertex)] -> ST s (Graph s)
 update graph Ro xs = do
     graph' <- graph
@@ -149,4 +154,5 @@ getScanned graph k = do
     case lookedUp of
         Just flag -> return flag
         Nothing -> undefined
+
 
