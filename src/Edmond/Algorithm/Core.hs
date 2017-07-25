@@ -70,12 +70,12 @@ augment graph = do
     graph' <- graph
     let x = currentX graph'
         y = currentY graph'
-    (exs, oxs) <- pathToRoot graph x -- stuck
+    (exs, oxs) <- pathToRoot graph x
     (eys, oys) <- pathToRoot graph y
-    let xs = exs `Set.union` oxs
-        ys = eys `Set.union` oys
+    let xs = traceShowId $ exs `Set.union` oxs
+        ys = traceShowId $ eys `Set.union` oys
         isect = xs `Set.intersection` ys
-    if null isect
+    if traceShowId $ null isect
         then do
             let ou = oxs `Set.union` oys
             ou' <- mapM (\x -> do

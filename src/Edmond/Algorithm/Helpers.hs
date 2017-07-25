@@ -9,19 +9,19 @@ import qualified Data.Set as Set
 
 pathToRoot :: ST s (Graph s) -> Vertex ->  ST s (Set Vertex, Set Vertex)
 pathToRoot graph v = do
-    let walkToRoot' v False evens odds = do
+    let walkToRoot' v True evens odds = do
             v' <- Graph.getVertex graph Mu v
             if v == v' then
-                return (evens, odds)
+                return (Set.insert v evens, odds)
             else
-                walkToRoot' v True (Set.insert v evens) odds 
-        walkToRoot' v True evens odds = do
+                walkToRoot' v False (Set.insert v evens) odds 
+        walkToRoot' v False evens odds = do
             v' <- Graph.getVertex graph Phi v
             if v == v' then
-                return (evens, odds)
+                return (evens, Set.insert v odds)
             else
-                walkToRoot' v False evens (Set.insert v odds) 
-    walkToRoot' v False Set.empty Set.empty
+                walkToRoot' v True evens (Set.insert v odds) 
+    walkToRoot' v True Set.empty Set.empty
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs
