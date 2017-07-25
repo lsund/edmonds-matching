@@ -5,12 +5,14 @@ import Protolude
 import Edmond.Algorithm.Core
 import qualified Parser
 
--- path = "/home/lsund/Projects/edmonds/data/graphs/K3.dmx"
--- path = "/home/lsund/Projects/edmonds/data/graphs/butterfly.dmx"
--- path = "/home/lsund/Projects/edmonds/data/graphs/peterson.dmx"
--- path = "data/K2-v2.dmx"
+-- path = "/home/lsund/Projects/edmonds-matching/data/graphs/K3.dmx"
+-- path = "/home/lsund/Projects/edmonds-matching/data/graphs/K2.dmx"
+path = "/home/lsund/Projects/edmonds-matching/data/graphs/butterfly-extended.dmx"
 -- path = "data/graphs/pbd984.dmx"
-path = "data/graphs/lu980.dmx"
+-- path = "data/graphs/lu980.dmx"
+-- path = "data/graphs/pma343.dmx"
+-- path = "data/graphs/queen6_6.dmx"
+-- path = "data/graphs/queen7_7.dmx"
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/ar9152.dmx"

@@ -1,22 +1,37 @@
-{-# OPTIONS_GHC -fwarn-unused-imports #-}
-
 module Edmond.Algorithm.Helpers where
 
 import Protolude
 import Util
 import Edmond.Data.Graph as Graph
+import qualified Data.Set as Set
 
 -- type Set = Set.Set
+
+pathToRoot :: ST s (Graph s) -> Vertex ->  ST s (Set Vertex, Set Vertex)
+pathToRoot graph v = do
+    let walkToRoot' v False evens odds = do
+            v' <- Graph.getVertex graph Mu v
+            if v == v' then
+                return (evens, odds)
+            else
+                walkToRoot' v True (Set.insert v evens) odds 
+        walkToRoot' v True evens odds = do
+            v' <- Graph.getVertex graph Phi v
+            if v == v' then
+                return (evens, odds)
+            else
+                walkToRoot' v False evens (Set.insert v odds) 
+    walkToRoot' v False Set.empty Set.empty
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
-pathToRoot :: ST s (Graph s) -> Vertex -> ST s (Set Vertex, Set Vertex)
-pathToRoot graph v = do
-    let mu = Graph.getVertex graph Mu
-        phi = Graph.getVertex graph Phi
-    rootpath <- iterateEveryOther mu phi v
-    return $ takeWhileDifferent rootpath
+-- pathToRoot :: ST s (Graph s) -> Vertex -> ST s (Set Vertex, Set Vertex)
+-- pathToRoot graph v = do
+--     let mu = Graph.getVertex graph Mu
+--         phi = Graph.getVertex graph Phi
+--     rootpath <- iterateEveryOther mu phi v
+--     return $ takeWhileDifferent rootpath --stuck
 
 pathToR :: ST s (Graph s) -> Vertex -> Vertex -> ST s (Set Vertex, Set Vertex)
 pathToR graph v r = do

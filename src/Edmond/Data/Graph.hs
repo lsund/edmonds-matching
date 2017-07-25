@@ -38,9 +38,10 @@ data Property = Mu | Phi | Ro
 
 initialize :: GraphRepresentation -> ST s (Graph s)
 initialize rep = do
-    sInit <- HashTable.new
     let nv = (length . Data.Graph.vertices) rep
         ne = (length . Data.Graph.edges) rep
+    sInit <- HashTable.newSized (ne * nv)
+    mapM_ (\k -> HashTable.insert sInit k False) [1..nv]
     initForest <- AF.initialize rep
     return $
         Graph rep 
@@ -90,17 +91,20 @@ toMatching :: ST s (Graph s) -> ST s [Edge]
 toMatching graph = do
     graph' <- graph
     let mu = (AF.mu . forest) graph'
-    HashTable.foldM (\acc (k, v) -> return ((k, v) : acc)) [] mu
+    HashTable.foldM (\acc (k, v) -> 
+        if k < v then return ((k, v) : acc)
+        else return acc)
+        [] mu
 
 reset :: ST s (Graph s) -> ST s (Graph s)
 reset graph = do
     graph' <- graph
-    scanned' <- HashTable.new
+    let (nv, ne) = dimension graph'
     let nv = (fst . dimension) graph'
+    mapM_ (\k -> HashTable.insert (scanned graph') k False) [1..nv]
     init <- AF.initialize (forward graph')
     let forest' = init { AF.mu = AF.mu (forest graph') }
-    return graph' { forest = forest'
-                  , scanned = scanned' }
+    return graph' { forest = forest' }
 
 updateX :: ST s (Graph s) -> Vertex -> ST s (Graph s)
 updateX graph x = do
@@ -154,7 +158,7 @@ getVertex graph property k = do
     lookedUp <- HashTable.lookup lookupTable k
     case lookedUp of
         Just v -> return v
-        Nothing -> return (-99)
+        Nothing -> undefined
 
 getScanned :: ST s (Graph s) -> Vertex -> ST s Bool
 getScanned graph k = do
@@ -163,5 +167,4 @@ getScanned graph k = do
     case lookedUp of
         Just flag -> return flag
         Nothing -> undefined
-
 

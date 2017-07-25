@@ -70,7 +70,7 @@ augment graph = do
     graph' <- graph
     let x = currentX graph'
         y = currentY graph'
-    (exs, oxs) <- pathToRoot graph x
+    (exs, oxs) <- pathToRoot graph x -- stuck
     (eys, oys) <- pathToRoot graph y
     let xs = exs `Set.union` oxs
         ys = eys `Set.union` oys
@@ -150,5 +150,5 @@ edmonds rep = do
         graph = loadMatching init maximal
         graph' = findRoot graph
         maximum = runST $ toMatching graph'
-    print maximum 
+    print $ length maximum 
 

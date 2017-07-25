@@ -4,7 +4,6 @@ module Util where
 
 import Prelude ()
 import Protolude
-import qualified Data.HashMap.Strict as HashMap
 import qualified Data.List as List
 import qualified Data.Set as Set
 import Data.Text (append)
@@ -12,7 +11,6 @@ import Data.Graph
 import Data.Hashable
 import qualified Data.HashTable.ST.Basic as HashTable
 
-type HashMap = HashMap.HashMap
 type HashTable = HashTable.HashTable
 
 ----------------------------------------------------------------------------
@@ -63,28 +61,16 @@ iterateEveryOther = iterateEveryOther' True
     where
         iterateEveryOther' :: Bool -> (a -> ST s a) -> (a -> ST s a) -> a -> ST s [a]
         iterateEveryOther' True f g x = do
-            let fx = f x
-            x' <- fx
+            x' <- f x
             xs <- iterateEveryOther' False f g x'
             return $ x : xs
         iterateEveryOther' False f g x = do
-            let gx = g x
-            x' <- gx
+            x' <-  g x
             xs <- iterateEveryOther' False f g x'
-            return $ x :  xs
+            return $ x : xs
 
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
-
-adjustMap :: (Eq a, Hashable a) =>  a -> b -> HashMap a b -> HashMap a b
-adjustMap k v = HashMap.adjust (const v) k
-
-adjustMapFor :: (Eq a, Hashable a) =>  [(a, a)] -> HashMap a a -> HashMap a a
-adjustMapFor xs m = foldr (uncurry adjustMap) m xs
-
-adjustMapForSymmetric :: (Eq a, Hashable a) => [(a, a)] -> HashMap a a -> HashMap a a
-adjustMapForSymmetric xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
-
 
 adjustHashTable :: (Eq a, Hashable a) =>
                    (a, b) ->
@@ -124,11 +110,6 @@ adjustHashTableForSymmetric xs ht =
 --  Updates the map with (v, k) if the value applied to the predicate doesn't
 --  match the target.
 --  
-symmetricUpdate :: (Eq a, Hashable a) => (a -> a) -> a -> a -> a -> HashMap a a -> HashMap a a
-symmetricUpdate p t k v m = 
-    let xm = if p k /= t then adjustMap k v m else m
-    in       if p v /= t then adjustMap v k xm else xm
-
 every :: Int -> [a] -> [a]
 every n xs = 
     case drop (pred n) xs of
