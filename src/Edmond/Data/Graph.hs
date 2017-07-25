@@ -55,8 +55,9 @@ initialize rep = do
             let redges = map swap (Data.Graph.edges rep)
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
 
-loadMatching :: ST s (Graph s) -> [Edge] -> ST s (Graph s)
-loadMatching graph matching = do
+loadMatching :: ST s (Graph s) -> ST s [Edge] -> ST s (Graph s)
+loadMatching graph matchingST = do
+    matching <- matchingST
     let xs = map fst matching
         ys = map snd matching
     updateSymmetric graph Mu (zip xs ys)
@@ -81,13 +82,6 @@ neighbours graph v = do
     let forw = forward graph'
         backw = backward graph'
     return $ (forw ! v) `List.union` (backw ! v)
-
--- toMatching :: ST s (Graph s) -> ST s [Edge]
--- toMatching graph = do
---     graph' <-  graph
---     let mu = (AF.mu . forest) graph'
---         xs = zip (HashMap.keys mu) (HashMap.elems mu)
---     return $ filter (uncurry (<)) xs
 
 ----------------------------------------------------------------------------
 -- API for AlternatingForest

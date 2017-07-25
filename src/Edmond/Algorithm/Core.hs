@@ -13,7 +13,7 @@ import qualified Data.Set as Set
 import Control.Monad
 import Control.Monad.Trans.Maybe
 
-findM :: (Monad m) => (a -> m (Maybe b)) -> [a] -> m (Maybe b)
+findM :: (Monad m, Foldable t, Functor t) => (a -> m (Maybe b)) -> t a -> m (Maybe b)
 findM f = runMaybeT . msum . map (MaybeT . f)
 
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
@@ -80,8 +80,9 @@ augment graph = do
             let ou = oxs `Set.union` oys
             ou' <- mapM (\x -> do
                             phix <- getVertex graph Phi x
-                            return (x, phix)) ou
-            let graph' = Graph.updateSymmetric graph Mu (Set.insert (x, y) ou')
+                            return (x, phix))
+                        (Set.toList ou)
+            let graph' = updateSymmetric graph Mu ((x, y) : ou')
                 graph'' = reset graph'
             findRoot graph''
         else shrink graph exs oxs eys oys xs ys isect
@@ -95,41 +96,59 @@ shrink :: ST s (Graph s)
        -> Set Vertex
        -> Set Vertex
        -> ST s (Graph s)
-shrink graph exs oxs eys oys xs ys isect = 
-    let 
-        r       = fromJust $ find (\x -> getVertex graph Ro x  == x) isect
-        ((exsr, oxsr), (eysr, oysr)) = (pathToR graph x r, pathToR graph y r)
-        xsr      = exsr `Set.union` oxsr
+shrink graphST exs oxs eys oys xs ys isect = do
+    graph <- graphST
+    mr <- findM (\x -> do 
+                        rox <- getVertex graphST Ro x
+                        return $ if rox == x then Just x else Nothing)
+                (Set.toList isect)
+    let x = currentX graph
+        y = currentY graph
+        r = fromJust mr
+    (exsr, oxsr) <- pathToR graphST x r
+    (eysr, oysr) <- pathToR graphST y r
+    let xsr      = exsr `Set.union` oxsr
         ysr      = eysr `Set.union` oysr
         u        = xsr `Set.union` ysr
         ou       = oxsr `Set.union` oysr
-        filtered = Set.filter 
-                    (\v -> 
-                        (getVertex graph Ro . getVertex graph Phi)
-                        v /= r)
+    filtered <- foldM
+                    (\acc v -> do
+                        v' <- getVertex graphST Phi v
+                        v'' <- getVertex graphST Ro v'
+                        return $ if v'' /= r then Set.insert v acc else acc)
+                    Set.empty
                     ou
-        zipped   = foldr (\x acc -> (getVertex graph Phi x, x) : acc) [] filtered
-        graph'     = updateSymmetric graph Phi zipped
-        graph''  = if getVertex graph' Ro x /= r
-                    then updateSingle graph' Phi (x, y)
-                    else graph'
-        graph'''   = if getVertex graph'' Ro y /= r
-                    then updateSingle graph'' Phi (y, x)
-                    else graph''
-        keys'    = filter (\x -> getVertex graph''' Ro x `elem` u) 
-                          (vertices graph''')
-        zipped'  = zip keys' (replicate (length keys') r)
-        graph'''' = update graph''' Ro zipped'
-    in findNeighbour graph''''
-    where
-        x = currentX graph
-        y = currentY graph
+    zipped <- foldM 
+                (\acc x -> do
+                    x' <- getVertex graphST Phi x
+                    return $ (x', x) : acc)
+                []
+                filtered
+    let graphST' = updateSymmetric graphST Phi zipped
+    rox <- getVertex graphST' Ro x
+    roy <- getVertex graphST' Ro y
+    let graphST''   = if rox /= r 
+                        then updateSingle graphST' Phi (x, y)
+                        else graphST'
+        graphST'''  = if roy /= r
+                        then updateSingle graphST'' Phi (y, x)
+                        else graphST''
+    vs <- vertices graphST'''
+    keys' <-  filterM 
+                (\x -> do
+                    rox <- getVertex graphST''' Ro x
+                    return $ rox `elem` u) 
+                vs
+    let zipped' = zip keys' (replicate (length keys') r)
+    let graph'''' = update graphST''' Ro zipped'
+    findNeighbour graph''''
 
-edmonds :: Data.Graph.Graph -> IO [Edge]
-edmonds rep =
-    let init = Graph.initialize rep
-        matching = maximalMatching init
-        graph = loadMatching init matching
+edmonds :: Data.Graph.Graph -> IO ()
+edmonds rep = do
+    let init =  Graph.initialize rep
+        maximal = maximalMatching init
+        graph = loadMatching init maximal
         graph' = findRoot graph
-    in return $ toMatching graph'
+        maximum = runST $ toMatching graph'
+    print maximum 
 

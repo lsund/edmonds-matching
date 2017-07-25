@@ -19,6 +19,5 @@ path = "data/graphs/lu980.dmx"
 
 main :: IO ()
 main = do
-    graph <- Parser.fileToGraph path
-    edges <- edmonds graph
-    print $ length edges
+    rep <- Parser.fileToGraph path
+    edmonds rep
