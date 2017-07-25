@@ -3,8 +3,6 @@ module Edmond.Data.AlternatingForest where
 
 import Protolude
 import qualified Data.Graph
-import Data.HashMap.Strict as HashMap
-import Control.Monad.ST
 import Data.HashTable.ST.Basic
 
 type Vertex = Data.Graph.Vertex

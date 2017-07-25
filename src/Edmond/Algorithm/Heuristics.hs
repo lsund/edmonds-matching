@@ -8,20 +8,21 @@ import Protolude
 
 type Matching = [Edge]
 
-maximalMatching :: Graph -> Matching
+maximalMatching :: ST s (Graph s) -> ST s Matching
 maximalMatching = maximalMatching' 1 [] []
 
-maximalMatching' :: Vertex -> [Vertex] -> Matching -> Graph -> Matching
-maximalMatching' x mvs matching graph =
-    let nbs = neighbours graph x
-        my = find (\y -> x `notElem` mvs && y `notElem` mvs) nbs
-    in case my of
+maximalMatching' :: Vertex -> [Vertex] -> Matching -> ST s (Graph s) -> ST s Matching
+maximalMatching' x mvs matching graph = do
+    nbs <- neighbours graph x
+    let  my = find (\y -> x `notElem` mvs && y `notElem` mvs) nbs
+    case my of
         Just y -> maximalMatching' x (x : y :  mvs) ((x, y) : matching) graph
-        Nothing -> 
-            if succ x `elem` vertices graph then
+        Nothing -> do
+            vs <- vertices graph
+            if succ x `elem` vs then
                 maximalMatching' (succ x) mvs matching graph
             else
-                matching
+                return matching
 
 matchingVertices :: Matching -> [Vertex]
 matchingVertices = 

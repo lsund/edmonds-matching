@@ -11,13 +11,15 @@ import Edmond.Data.Graph as Graph
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
-pathToRoot :: Graph -> Vertex -> (Set Vertex, Set Vertex)
-pathToRoot graph v = 
-    takeWhileDifferent (iterateEveryOther mu phi v)
-    where mu = Graph.getVertex graph Mu
-          phi = Graph.getVertex graph Phi
+pathToRoot :: ST s (Graph s) -> Vertex -> ST s (Set Vertex, Set Vertex)
+pathToRoot graph v = do
+    graph' <- graph
+    let mu = Graph.getVertex graph Mu
+        phi = Graph.getVertex graph Phi
+    let rootpath = iterateEveryOther mu phi v
+    return $ takeWhileDifferent rootpath
 
-pathToR :: Graph -> Vertex -> Vertex -> (Set Vertex, Set Vertex)
+pathToR :: ST s (Graph s) -> Vertex -> Vertex -> ST s (Set Vertex, Set Vertex)
 pathToR graph v r =
     takeUntil r (iterateEveryOther mu phi v)
     where mu = Graph.getVertex graph Mu
@@ -26,24 +28,18 @@ pathToR graph v r =
 odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
 odds px py = (every 2 px, every 2 py)
 
+isOuter :: ST s (Graph s) -> Vertex -> ST s Bool
 isOuter graph x = mu x == x || phi (mu x) /= mu x
     where mu = Graph.getVertex graph Mu
           phi = Graph.getVertex graph Phi
 
-isInner :: Graph -> Vertex -> Bool
-isInner graph x = phi (mu x) == mu x && phi x /= x
-    where mu = Graph.getVertex graph Mu
-          phi = Graph.getVertex graph Phi
-
-isOutOfForest :: Graph -> Vertex -> Bool
+isOutOfForest :: ST s (Graph s) -> Vertex -> ST s Bool
 isOutOfForest graph x = mu x /= x && phi x == x && phi (mu x) == mu x
     where mu = Graph.getVertex graph Mu
           phi = Graph.getVertex graph Phi
 
-isScanned :: Graph -> Vertex -> Bool
+isScanned :: ST s (Graph s) -> Vertex -> ST s Bool
 isScanned graph = s
     where s = Graph.getScanned graph
 
-----------------------------------------------------------------------------
--- 
 
