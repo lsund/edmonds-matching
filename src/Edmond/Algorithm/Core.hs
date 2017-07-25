@@ -20,30 +20,33 @@ findM f = runMaybeT . msum . map (MaybeT . f)
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
 -- of the current state.
 findRoot :: ST s (Graph s) -> ST s (Graph s)
-findRoot graph = do
-    vs <- vertices graph
+findRoot graphST = do
+    graph' <- graphST
+    vs <- vertices graphST
     mx <-  findM (\x -> do
-                        xScanned <- isScanned graph x
-                        xOuter <- isOuter graph x
+                        xScanned <- isScanned graphST x
+                        xOuter <- isOuter graphST x
                         return $
                             if not xScanned && xOuter then
                                 Just x
                             else Nothing) vs
     case mx of 
-            Nothing -> graph
-            Just x -> findNeighbour $ updateX graph x
+            Nothing -> graphST
+            Just x -> do
+                let graphST' = updateX graph' x
+                findNeighbour graphST'
             
 
 findNeighbour :: ST s (Graph s) -> ST s (Graph s)
-findNeighbour graph = do
-    graph' <- graph
-    let x = currentX graph'
-    nbs <- neighbours graph x
+findNeighbour graphST = do
+    graph <- graphST
+    let x = currentX graph
+    nbs <- neighbours graphST x
     let pred y = do
-            roy <- getVertex graph Ro y
-            rox <- getVertex graph Ro x
-            yIsOuter <- isOuter graph y
-            yIsOutOfForest <- isOutOfForest graph y
+            roy <- getVertex graphST Ro y
+            rox <- getVertex graphST Ro x
+            yIsOuter <- isOuter graphST y
+            yIsOutOfForest <- isOutOfForest graphST y
             return $ 
                 if (roy /= rox && yIsOuter) || yIsOutOfForest then
                     Just y 
@@ -51,8 +54,10 @@ findNeighbour graph = do
                     Nothing
     my <- findM pred nbs
     case my of
-        Nothing -> findRoot $ updateScanned graph (x, True)
-        Just y -> grow $ updateY graph y
+        Nothing -> findRoot $ updateScanned graphST (x, True)
+        Just y -> do
+            let graphST'= updateY graph y
+            grow graphST'
 
 grow :: ST s (Graph s) -> ST s (Graph s)
 grow graph = do
@@ -72,18 +77,18 @@ augment graph = do
         y = currentY graph'
     (exs, oxs) <- pathToRoot graph x
     (eys, oys) <- pathToRoot graph y
-    let xs = traceShowId $ exs `Set.union` oxs
-        ys = traceShowId $ eys `Set.union` oys
+    let xs = exs `Set.union` oxs
+        ys = eys `Set.union` oys
         isect = xs `Set.intersection` ys
-    if traceShowId $ null isect
+    if null isect
         then do
             let ou = oxs `Set.union` oys
             ou' <- mapM (\x -> do
                             phix <- getVertex graph Phi x
                             return (x, phix))
                         (Set.toList ou)
-            let graph' = updateSymmetric graph Mu ((x, y) : ou')
-                graph'' = reset graph'
+            updateSymmetric graph' Mu ((x, y) : ou')
+            let graph'' = reset (return graph')
             findRoot graph''
         else shrink graph exs oxs eys oys xs ys isect
 
@@ -124,7 +129,8 @@ shrink graphST exs oxs eys oys xs ys isect = do
                     return $ (x', x) : acc)
                 []
                 filtered
-    let graphST' = updateSymmetric graphST Phi zipped
+    updateSymmetric graph Phi zipped
+    let graphST' = return graph
     rox <- getVertex graphST' Ro x
     roy <- getVertex graphST' Ro y
     let graphST''   = if rox /= r 
@@ -140,8 +146,9 @@ shrink graphST exs oxs eys oys xs ys isect = do
                     return $ rox `elem` u) 
                 vs
     let zipped' = zip keys' (replicate (length keys') r)
-    let graph'''' = update graphST''' Ro zipped'
-    findNeighbour graph''''
+    graph''' <- graphST'''
+    update graph''' Ro zipped'
+    findNeighbour (return graph''')
 
 edmonds :: Data.Graph.Graph -> IO ()
 edmonds rep = do

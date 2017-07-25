@@ -58,10 +58,12 @@ initialize rep = do
 
 loadMatching :: ST s (Graph s) -> ST s [Edge] -> ST s (Graph s)
 loadMatching graph matchingST = do
+    graph' <- graph
     matching <- matchingST
     let xs = map fst matching
         ys = map snd matching
-    updateSymmetric graph Mu (zip xs ys)
+    updateSymmetric graph' Mu (zip xs ys)
+    return graph'
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
@@ -102,39 +104,27 @@ reset graph = do
     let (nv, ne) = dimension graph'
     let nv = (fst . dimension) graph'
     mapM_ (\k -> HashTable.insert (scanned graph') k False) [1..nv]
-    init <- AF.initialize (forward graph')
-    let forest' = init { AF.mu = AF.mu (forest graph') }
-    return graph' { forest = forest' }
+    AF.reset (forest graph')
+    graph
 
-updateX :: ST s (Graph s) -> Vertex -> ST s (Graph s)
-updateX graph x = do
-    graph' <- graph
-    return $ graph' { currentX = x }
+updateX :: Graph s -> Vertex -> ST s (Graph s)
+updateX graph x = return $ graph { currentX = x }
 
-updateY :: ST s (Graph s) -> Vertex -> ST s (Graph s)
-updateY graph y = do
-    graph' <- graph
-    return $ graph' { currentY = y }
+updateY :: Graph s -> Vertex -> ST s (Graph s)
+updateY graph y = return $ graph { currentY = y }
 
-update :: ST s (Graph s) -> Property -> [(Vertex, Vertex)] -> ST s (Graph s)
-update graph Ro xs = do
-    graph' <- graph
-    adjustHashTableFor xs $ (AF.ro . forest) graph'
-    return graph'
+update :: Graph s -> Property -> [(Vertex, Vertex)] -> ST s ()
+update graph Ro xs = adjustHashTableFor xs $ (AF.ro . forest) graph
 
 updateSymmetric :: Foldable t
-                => ST s (Graph s)
+                => Graph s
                 -> Property
                 -> t (Vertex, Vertex)
-                -> ST s (Graph s)
-updateSymmetric graph Phi xs = do
-    graph' <- graph
-    adjustHashTableForSymmetric xs $ (AF.phi . forest) graph'
-    return graph'
-updateSymmetric graph Mu xs = do
-    graph' <- graph
-    adjustHashTableForSymmetric xs $ (AF.mu . forest) graph'
-    return graph'
+                -> ST s ()
+updateSymmetric graph Phi xs =
+    adjustHashTableForSymmetric xs $ (AF.phi . forest) graph
+updateSymmetric graph Mu xs =
+    adjustHashTableForSymmetric xs $ (AF.mu . forest) graph
 
 updateSingle :: ST s (Graph s) -> Property -> (Vertex, Vertex) -> ST s (Graph s)
 updateSingle graph Phi (k, v) = do
