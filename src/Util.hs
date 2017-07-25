@@ -87,8 +87,8 @@ adjustMapForSymmetric xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)
 
 
 adjustHashTable :: (Eq a, Hashable a) =>
-                   (a, a) ->
-                    HashTable s a a ->
+                   (a, b) ->
+                    HashTable s a b ->
                     ST s ()
 adjustHashTable (k, v) ht = HashTable.insert ht k v
 

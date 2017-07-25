@@ -32,7 +32,7 @@ data Graph s = Graph { forward   :: Data.Graph.Graph
                      , currentX  :: Vertex
                      , currentY  :: Vertex }
 
-data Property = Mu | Phi | Ro | Scanned
+data Property = Mu | Phi | Ro
 ----------------------------------------------------------------------------
 -- Initialize
 
@@ -113,6 +113,11 @@ updateX graph x = do
     graph' <- graph
     return $ graph' { currentX = x }
 
+updateY :: ST s (Graph s) -> Vertex -> ST s (Graph s)
+updateY graph y = do
+    graph' <- graph
+    return $ graph' { currentY = y }
+
 update :: ST s (Graph s) -> Property -> [(Vertex, Vertex)] -> ST s (Graph s)
 update graph Ro xs = do
     graph' <- graph
@@ -133,6 +138,12 @@ updateSingle :: ST s (Graph s) -> Property -> (Vertex, Vertex) -> ST s (Graph s)
 updateSingle graph Phi (k, v) = do
     graph' <- graph
     adjustHashTable (k, v) $ (AF.phi . forest) graph'
+    return graph'
+
+updateScanned :: ST s (Graph s) -> (Vertex, Bool) -> ST s (Graph s)
+updateScanned graph (k, v) = do
+    graph' <- graph
+    adjustHashTable (k, v) (scanned graph')
     return graph'
 
 getVertex :: ST s (Graph s) -> Property -> Vertex -> ST s Vertex

@@ -29,35 +29,30 @@ findRoot graph = do
                             if not xScanned && xOuter then
                                 Just x
                             else Nothing) vs
-
     case mx of 
             Nothing -> graph
             Just x -> findNeighbour $ updateX graph x
             
 
--- Map.assocs has RT O(n)
--- At this point, we need to decide where to grow our tree.
--- Finds two vertices (x, y) such that x is an outer vertex with scanned(x) =
--- false, y is a neighbour of x such that y is out-of-forest or y is outer and
--- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
--- tree
---
--- Given a graph and a vertex x, finds a neighbour y of x such that y is either
--- out-of-forest or (y is outer and ro(y) =/ ro(x)
 findNeighbour :: ST s (Graph s) -> ST s (Graph s)
-findNeighbour graph =
-    let outerAndDisjoint y = isOuter graph y && 
-                       getVertex graph Ro y
-                    /= getVertex graph Ro x
-        nbs = neighbours graph x
-        mnb = find (\x' -> outerAndDisjoint x' || isOutOfForest graph x') nbs
-    in case mnb of
-        Nothing ->
-            let scanned' = adjustMap x True $ scanned graph
-            in findRoot (graph { scanned = scanned' })
-        Just nb -> grow (graph { currentY = nb })
-    where
-        x = currentX graph
+findNeighbour graph = do
+    graph' <- graph
+    let x = currentX graph'
+    nbs <- neighbours graph x
+    let pred y = do
+            roy <- getVertex graph Ro y
+            rox <- getVertex graph Ro x
+            yIsOuter <- isOuter graph y
+            yIsOutOfForest <- isOutOfForest graph y
+            return $ 
+                if (roy /= rox && yIsOuter) || yIsOutOfForest then
+                    Just y 
+                else 
+                    Nothing
+    my <- findM pred nbs
+    case my of
+        Nothing -> findRoot $ updateScanned graph (x, True)
+        Just y -> grow $ updateY graph y
 
 grow :: ST s (Graph s) -> ST s (Graph s)
 grow graph = 
