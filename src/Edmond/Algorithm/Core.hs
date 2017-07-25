@@ -55,33 +55,46 @@ findNeighbour graph = do
         Just y -> grow $ updateY graph y
 
 grow :: ST s (Graph s) -> ST s (Graph s)
-grow graph = 
-    if isOutOfForest graph y
-        then findNeighbour $ updateSingle graph Phi (y, x)
-        else augment graph
-    where
-        x = currentX graph
-        y = currentY graph
+grow graph = do
+    graph' <- graph
+    let x = currentX graph'
+        y = currentY graph'
+    yIsOutOfForest <- isOutOfForest graph y
+    if yIsOutOfForest then
+        findNeighbour $ updateSingle graph Phi (y, x)
+    else 
+        augment graph
 
 augment :: ST s (Graph s) -> ST s (Graph s)
-augment graph = 
-    let ((exs, oxs), (eys, oys)) = (pathToRoot graph x, pathToRoot graph y)
-        xs = exs `Set.union` oxs
+augment graph = do
+    graph' <- graph
+    let x = currentX graph'
+        y = currentY graph'
+    (exs, oxs) <- pathToRoot graph x
+    (eys, oys) <- pathToRoot graph y
+    let xs = exs `Set.union` oxs
         ys = eys `Set.union` oys
         isect = xs `Set.intersection` ys
-    in if null isect
-        then
+    if null isect
+        then do
             let ou = oxs `Set.union` oys
-                ou' = foldr (\x acc -> (x, getVertex graph Phi x) : acc) [] ou
-                graph' = Graph.updateSymmetric graph Mu ((x, y) : ou')
+            ou' <- mapM (\x -> do
+                            phix <- getVertex graph Phi x
+                            return (x, phix)) ou
+            let graph' = Graph.updateSymmetric graph Mu (Set.insert (x, y) ou')
                 graph'' = reset graph'
-            in findRoot graph''
+            findRoot graph''
         else shrink graph exs oxs eys oys xs ys isect
-    where
-        x  = currentX graph
-        y  = currentY graph
 
--- shrink :: Graph -> Graph
+shrink :: ST s (Graph s)
+       -> Set Vertex
+       -> Set Vertex
+       -> Set Vertex
+       -> Set Vertex
+       -> Set Vertex
+       -> Set Vertex
+       -> Set Vertex
+       -> ST s (Graph s)
 shrink graph exs oxs eys oys xs ys isect = 
     let 
         r       = fromJust $ find (\x -> getVertex graph Ro x  == x) isect

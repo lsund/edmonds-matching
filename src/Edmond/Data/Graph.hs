@@ -124,7 +124,11 @@ update graph Ro xs = do
     adjustHashTableFor xs $ (AF.ro . forest) graph'
     return graph'
 
-updateSymmetric :: ST s (Graph s) -> Property -> [(Vertex, Vertex)] -> ST s (Graph s)
+updateSymmetric :: Foldable t
+                => ST s (Graph s)
+                -> Property
+                -> t (Vertex, Vertex)
+                -> ST s (Graph s)
 updateSymmetric graph Phi xs = do
     graph' <- graph
     adjustHashTableForSymmetric xs $ (AF.phi . forest) graph'

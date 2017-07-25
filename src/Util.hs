@@ -99,8 +99,8 @@ adjustHashTableFor :: (Eq a, Hashable a) =>
                       ST s ()
 adjustHashTableFor xs ht = mapM_ (uncurry (HashTable.insert ht)) xs
      
-adjustHashTableForSymmetric :: (Eq a, Hashable a) =>
-                               [(a, a)] ->
+adjustHashTableForSymmetric :: (Eq a, Hashable a, Foldable t) =>
+                               t (a, a) ->
                                HashTable s a a ->
                                ST s ()
 adjustHashTableForSymmetric xs ht =
