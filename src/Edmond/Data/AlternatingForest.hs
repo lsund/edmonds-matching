@@ -14,17 +14,8 @@ data AlternatingForest s =
                        , phi :: ST s (HashTable s Vertex Vertex)
                        , ro :: ST s (HashTable s Vertex Vertex) }
 
-initialize :: Data.Graph.Graph -> AlternatingForest s
-initialize rep =
-    let nv = (length . Data.Graph.vertices) rep
-        mu = HashTable.new 
-        phi = HashTable.new
-        ro = HashTable.new
-    in AlternatingForest mu phi ro
+initialize :: AlternatingForest s
+initialize = AlternatingForest HashTable.new HashTable.new HashTable.new
 
-reset :: AlternatingForest s -> Data.Graph.Graph -> AlternatingForest s
-reset forest rep =
-    let nv = (length . Data.Graph.vertices) rep
-        phi = HashTable.new
-        ro = HashTable.new
-    in AlternatingForest (mu forest) phi ro
+reset :: AlternatingForest s -> AlternatingForest s
+reset forest = AlternatingForest (mu forest) HashTable.new HashTable.new

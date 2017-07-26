@@ -40,7 +40,7 @@ initialize rep =
     let nv         = (length . Data.Graph.vertices) rep
         ne         = (length . Data.Graph.edges) rep
         sInit      = HashTable.new
-        initForest = AF.initialize rep
+        initForest = AF.initialize
     in Graph rep 
             (toBackward rep)
             initForest 
@@ -90,7 +90,7 @@ reset :: Graph s -> Graph s
 reset graph =
     let (nv, ne) = dimension graph
         scanned' = HashTable.new
-        forest' = AF.reset (forest graph) (forward graph)
+        forest' = AF.reset (forest graph)
     in  graph { forest = forest',
                scanned = scanned' }
 

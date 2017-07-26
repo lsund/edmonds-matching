@@ -21,15 +21,16 @@ findRoot :: Graph s -> ST s (Graph s)
 findRoot graph = do
     let vs = vertices graph
     mx <-  findM (\x -> do
-                        xScanned <- getScanned graph x
-                        xOuter <- isOuter graph x
-                        return $
-                            if not xScanned && xOuter then
-                                Just x
-                            else Nothing) vs
+                    xScanned <- getScanned graph x
+                    xOuter <- isOuter graph x
+                    return $
+                        if not xScanned && xOuter then
+                            Just x
+                        else Nothing) 
+                  vs
     case mx of 
-            Nothing -> return graph
-            Just x -> findNeighbour $ updateX graph x
+        Nothing -> return graph
+        Just x -> findNeighbour $ updateX graph x
             
 
 findNeighbour :: Graph s -> ST s (Graph s)
@@ -48,9 +49,7 @@ findNeighbour graph = do
                     Nothing
     my <- findM pred nbs
     case my of
-        Nothing -> do
-            graph' <- updateScanned graph (x, True)
-            findRoot graph'
+        Nothing -> updateScanned graph (x, True) >>= findRoot
         Just y -> grow $ updateY graph y
 
 grow :: Graph s -> ST s (Graph s)
@@ -58,9 +57,8 @@ grow graph = do
     let x = currentX graph
         y = currentY graph
     yIsOutOfForest <- isOutOfForest graph y
-    if yIsOutOfForest then do
-        vGraph <- updateSingle graph Phi (y, x)
-        findNeighbour vGraph
+    if yIsOutOfForest then
+        updateSingle graph Phi (y, x) >>= findNeighbour
     else 
         augment graph
 
@@ -80,9 +78,7 @@ augment graph = do
                             phix <- getVertex graph Phi x
                             return (x, phix))
                         (Set.toList ou)
-            vGraph <- updateSymmetric graph Mu ((x, y) : ou')
-            let graph' = reset vGraph
-            findRoot graph'
+            updateSymmetric graph Mu ((x, y) : ou') >>= (findRoot . reset)
         else shrink graph exs oxs eys oys xs ys isect
 
 shrink :: Graph s
@@ -112,8 +108,8 @@ shrink graph exs oxs eys oys xs ys isect = do
                     (\acc v -> do
                         v' <- getVertex graph Phi v
                         v'' <- getVertex graph Ro v'
-                        return $ if v'' /= r then Set.insert v acc else acc)
-                    Set.empty
+                        return $ if v'' /= r then v : acc else acc)
+                    []
                     ou
     zipped <- foldM 
                 (\acc x -> do
@@ -142,21 +138,13 @@ shrink graph exs oxs eys oys xs ys isect = do
                     return $ rox `elem` u) 
                 vs
     let zipped' = zip keys' (replicate (length keys') r)
-    vGraph''' <- update vGraph'' Ro zipped'
-    findNeighbour vGraph'''
-
-
-runAlgorithm :: ST s (Graph s) -> ST s (Graph s)
-runAlgorithm graph = do
-    graph' <- graph
-    findRoot graph'
+    update vGraph'' Ro zipped' >>= findNeighbour
 
 edmonds :: Data.Graph.Graph -> IO ()
 edmonds rep = do
     let init =  Graph.initialize rep
         maximal = maximalMatching init
-        graph = loadMatching init maximal
-        graph' = runAlgorithm graph
-        maximum = runST $ toMatching graph'
+        graph = loadMatching init maximal >>= findRoot
+        maximum = runST $ toMatching graph
     print $ length maximum 
 

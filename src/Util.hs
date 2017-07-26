@@ -5,7 +5,6 @@ module Util where
 import Prelude ()
 import Protolude
 import qualified Data.List as List
-import Data.Text (append)
 import Data.Graph
 import Data.Hashable
 import qualified Data.HashTable.ST.Basic as HashTable
