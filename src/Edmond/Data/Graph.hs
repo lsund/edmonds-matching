@@ -25,7 +25,7 @@ type AlternatingForest = AF.AlternatingForest
 data Graph s = Graph { forward   :: Data.Graph.Graph
                      , backward  :: Data.Graph.Graph
                      , forest    :: AlternatingForest s
-                     , scanned   :: HashTable s Vertex Bool
+                     , scanned   :: ST s (HashTable s Vertex Bool)
                      , dimension :: (Int, Int)
                      , currentX  :: Vertex
                      , currentY  :: Vertex }
@@ -35,39 +35,36 @@ data Property = Mu | Phi | Ro
 -- Initialize
 
 
-initialize :: GraphRepresentation -> ST s (Graph s)
-initialize rep = do
-    let nv = (length . Data.Graph.vertices) rep
-        ne = (length . Data.Graph.edges) rep
-    sInit <- HashTable.newSized nv
-    initForest <- AF.initialize rep
-    return $
-        Graph rep 
+initialize :: GraphRepresentation -> Graph s
+initialize rep =
+    let nv         = (length . Data.Graph.vertices) rep
+        ne         = (length . Data.Graph.edges) rep
+        sInit      = HashTable.new
+        initForest = AF.initialize rep
+    in Graph rep 
             (toBackward rep)
             initForest 
             sInit
             (nv, ne)
-            (-4)
-            (-3)
+            (-1)
+            (-1)
     where
         toBackward rep = 
             let edges = Data.Graph.edges rep
                 redges = map swap edges
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
 
-loadMatching :: ST s (Graph s) -> ST s [Edge] -> ST s (Graph s)
-loadMatching graph matchingST = do
-    graph' <- graph
-    matching <- matchingST
+loadMatching :: Graph s -> [Edge] -> ST s (Graph s)
+loadMatching graph matching = do
     let xs = map fst matching
         ys = map snd matching
-    updateSymmetric graph' Mu (zip xs ys)
-    return graph'
+    updateSymmetric graph Mu (zip xs ys)
+    return graph
 
 toMatching :: ST s (Graph s) -> ST s [Edge]
 toMatching graph = do
     graph' <- graph
-    let mu = (AF.mu . forest) graph'
+    mu <- (AF.mu . forest) graph'
     HashTable.foldM (\acc (k, v) -> 
         if k < v then return ((k, v) : acc)
         else return acc)
@@ -76,56 +73,71 @@ toMatching graph = do
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties
 
-vertices :: Graph s -> ST s [Vertex]
-vertices graph = return $ (Data.Graph.vertices . forward) graph
+vertices :: Graph s -> [Vertex]
+vertices = Data.Graph.vertices . forward
 
-neighbours :: Graph s -> Vertex -> ST s [Vertex]
-neighbours graph v = do
+neighbours :: Graph s -> Vertex -> [Vertex]
+neighbours graph v =
     let forw = forward graph
         backw = backward graph
-    return $ (forw ! v) `List.union` (backw ! v)
+    in (forw ! v) `List.union` (backw ! v)
 
 ----------------------------------------------------------------------------
 -- API for AlternatingForest
 
-reset :: Graph s -> ST s (Graph s)
-reset graph = do
+reset :: Graph s -> Graph s
+reset graph =
     let (nv, ne) = dimension graph
-    let nv = (fst . dimension) graph
-    scanned' <- HashTable.newSized nv
-    forest' <- AF.initialize (forward graph)
-    let graph' = graph { forest = forest' }
-    return graph'
+        scanned' = HashTable.new
+        forest' = AF.reset (forest graph) (forward graph)
+    in  graph { forest = forest',
+               scanned = scanned' }
 
-updateX :: Graph s -> Vertex -> ST s (Graph s)
-updateX graph x = return $ graph { currentX = x }
+updateX :: Graph s -> Vertex -> Graph s
+updateX graph x = graph { currentX = x }
 
-updateY :: Graph s -> Vertex -> ST s (Graph s)
-updateY graph y = return $ graph { currentY = y }
+updateY :: Graph s -> Vertex -> Graph s
+updateY graph y = graph { currentY = y }
 
-update :: Graph s -> Property -> [(Vertex, Vertex)] -> ST s ()
-update graph Ro xs = adjustHashTableFor xs $ (AF.ro . forest) graph
+update :: Graph s -> Property -> [(Vertex, Vertex)] -> ST s (Graph s)
+update graph Ro xs = do
+    ro' <- AF.ro $ forest graph
+    adjustHashTableFor xs ro'
+    let forest' = (forest graph) { AF.ro = return ro' }
+    return $ graph { forest = forest' }
 
 updateSymmetric :: Foldable t
                 => Graph s
                 -> Property
                 -> t (Vertex, Vertex)
-                -> ST s ()
-updateSymmetric graph Phi xs =
-    adjustHashTableForSymmetric xs $ (AF.phi . forest) graph
-updateSymmetric graph Mu xs =
-    adjustHashTableForSymmetric xs $ (AF.mu . forest) graph
+                -> ST s (Graph s)
+updateSymmetric graph Phi xs = do
+    phi' <- AF.phi $ forest graph
+    adjustHashTableForSymmetric xs phi'
+    let forest' = (forest graph) { AF.phi = return phi' }
+    return $ graph { forest = forest' }
+updateSymmetric graph Mu xs = do
+    mu' <- AF.mu $ forest graph
+    adjustHashTableForSymmetric xs mu'
+    let forest' = (forest graph) { AF.mu = return mu' }
+    return $ graph { forest = forest' }
 
-updateSingle :: Graph s -> Property -> (Vertex, Vertex) -> ST s ()
-updateSingle graph Phi (k, v) =
-    adjustHashTable (k, v) $ (AF.phi . forest) graph
+updateSingle :: Graph s -> Property -> (Vertex, Vertex) -> ST s (Graph s)
+updateSingle graph Phi (k, v) = do
+    phi' <- AF.phi $ forest graph
+    adjustHashTable (k, v) phi'
+    let forest' = (forest graph) { AF.phi = return phi' }
+    return $ graph { forest = forest' }
 
-updateScanned :: Graph s -> (Vertex, Bool) -> ST s ()
-updateScanned graph (k, v) = adjustHashTable (k, v) (scanned graph)
+updateScanned :: Graph s -> (Vertex, Bool) -> ST s (Graph s)
+updateScanned graph (k, v) = do
+    scanned' <- scanned graph
+    adjustHashTable (k, v) scanned'
+    return $ graph { scanned = return scanned' }
 
 getVertex :: Graph s -> Property -> Vertex -> ST s Vertex
 getVertex graph property k = do
-    let lookupTable = case property of
+    lookupTable <- case property of
             Mu  -> AF.mu (forest graph)
             Phi -> AF.phi (forest graph)
             Ro  -> AF.ro (forest graph)
@@ -136,7 +148,8 @@ getVertex graph property k = do
 
 getScanned :: Graph s -> Vertex -> ST s Bool
 getScanned graph k = do
-    lookedUp <- HashTable.lookup (scanned graph) k
+    scanned' <- scanned graph
+    lookedUp <- HashTable.lookup scanned' k
     case lookedUp of
         Just flag -> return flag
         Nothing -> return False

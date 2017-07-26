@@ -1,6 +1,5 @@
 module Edmond.Algorithm.Core where
 
-import Util
 import Edmond.Data.Graph as Graph
 import Edmond.Algorithm.Helpers
 import Edmond.Algorithm.Heuristics
@@ -10,7 +9,6 @@ import Data.Maybe
 import qualified Data.Graph
 import qualified Data.Set as Set
 
-import Control.Monad
 import Control.Monad.Trans.Maybe
 
 findM :: (Monad m, Foldable t, Functor t) => (a -> m (Maybe b)) -> t a -> m (Maybe b)
@@ -19,9 +17,9 @@ findM f = runMaybeT . msum . map (MaybeT . f)
 -- Finds an x such that x is not scanned and x is outer. If success, proceed
 -- with calling findGrowth with the found x. If unsuccessful, return the graph
 -- of the current state.
-findRoot :: Graph s -> ST s ()
+findRoot :: Graph s -> ST s (Graph s)
 findRoot graph = do
-    vs <- vertices graph
+    let vs = vertices graph
     mx <-  findM (\x -> do
                         xScanned <- getScanned graph x
                         xOuter <- isOuter graph x
@@ -30,17 +28,15 @@ findRoot graph = do
                                 Just x
                             else Nothing) vs
     case mx of 
-            Nothing -> return ()
-            Just x -> do
-                graph' <- updateX graph x
-                findNeighbour graph'
+            Nothing -> return graph
+            Just x -> findNeighbour $ updateX graph x
             
 
-findNeighbour :: Graph s -> ST s ()
+findNeighbour :: Graph s -> ST s (Graph s)
 findNeighbour graph = do
     let x = currentX graph
-    nbs <- neighbours graph x
-    let pred y = do
+        nbs = neighbours graph x
+        pred y = do
             roy <- getVertex graph Ro y
             rox <- getVertex graph Ro x
             yIsOuter <- isOuter graph y
@@ -53,24 +49,22 @@ findNeighbour graph = do
     my <- findM pred nbs
     case my of
         Nothing -> do
-            updateScanned graph (x, True)
-            findRoot graph
-        Just y -> do
-            graph' <- updateY graph y
-            grow graph'
+            graph' <- updateScanned graph (x, True)
+            findRoot graph'
+        Just y -> grow $ updateY graph y
 
-grow :: Graph s -> ST s ()
+grow :: Graph s -> ST s (Graph s)
 grow graph = do
     let x = currentX graph
         y = currentY graph
     yIsOutOfForest <- isOutOfForest graph y
     if yIsOutOfForest then do
-        updateSingle graph Phi (y, x)
-        findNeighbour graph
+        vGraph <- updateSingle graph Phi (y, x)
+        findNeighbour vGraph
     else 
         augment graph
 
-augment :: Graph s -> ST s ()
+augment :: Graph s -> ST s (Graph s)
 augment graph = do
     let x = currentX graph
         y = currentY graph
@@ -86,8 +80,8 @@ augment graph = do
                             phix <- getVertex graph Phi x
                             return (x, phix))
                         (Set.toList ou)
-            updateSymmetric graph Mu ((x, y) : ou')
-            graph' <- reset graph
+            vGraph <- updateSymmetric graph Mu ((x, y) : ou')
+            let graph' = reset vGraph
             findRoot graph'
         else shrink graph exs oxs eys oys xs ys isect
 
@@ -99,7 +93,7 @@ shrink :: Graph s
        -> Set Vertex
        -> Set Vertex
        -> Set Vertex
-       -> ST s ()
+       -> ST s (Graph s)
 shrink graph exs oxs eys oys xs ys isect = do
     mr <- findM (\x -> do 
                         rox <- getVertex graph Ro x
@@ -127,29 +121,35 @@ shrink graph exs oxs eys oys xs ys isect = do
                     return $ (x', x) : acc)
                 []
                 filtered
-    updateSymmetric graph Phi zipped
-    rox <- getVertex graph Ro x
-    roy <- getVertex graph Ro y
-    when (rox /= r) $
-        updateSingle graph Phi (x, y)
-    when (roy /= r) $
-        updateSingle graph Phi (y, x)
-    vs <- vertices graph
+    vGraph <- updateSymmetric graph Phi zipped
+    rox <- getVertex vGraph Ro x
+    roy <- getVertex vGraph Ro y
+    let graph' = 
+            if rox /= r then
+                updateSingle vGraph Phi (x, y)
+            else
+                    return graph
+    let graph'' =
+            if roy /= r then
+                updateSingle graph Phi (y, x)
+            else
+                graph'
+    let vs = vertices graph
+    vGraph'' <- graph''
     keys' <-  filterM 
                 (\x -> do
-                    rox <- getVertex graph Ro x
+                    rox <- getVertex vGraph'' Ro x
                     return $ rox `elem` u) 
                 vs
     let zipped' = zip keys' (replicate (length keys') r)
-    update graph Ro zipped'
-    findNeighbour graph
+    vGraph''' <- update vGraph'' Ro zipped'
+    findNeighbour vGraph'''
 
 
 runAlgorithm :: ST s (Graph s) -> ST s (Graph s)
 runAlgorithm graph = do
     graph' <- graph
     findRoot graph'
-    return graph'
 
 edmonds :: Data.Graph.Graph -> IO ()
 edmonds rep = do
