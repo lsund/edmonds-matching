@@ -54,6 +54,7 @@ initialize rep =
                 redges = map swap edges
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
 
+
 loadMatching :: Graph s -> [Edge] -> ST s (Graph s)
 loadMatching graph matching = do
     let xs = map fst matching
