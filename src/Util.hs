@@ -22,8 +22,8 @@ adjustHashTable (k, v) ht = HashTable.insert ht k v
 
 
 adjustHashTableFor :: (Eq a, Hashable a) =>
-                      [(a, a)] ->
-                      HashTable s a a ->
+                      [(a, b)] ->
+                      HashTable s a b ->
                       ST s ()
 adjustHashTableFor xs ht = mapM_ (uncurry (HashTable.insert ht)) xs
      

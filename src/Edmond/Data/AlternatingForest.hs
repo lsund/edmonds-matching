@@ -18,4 +18,4 @@ initialize :: AlternatingForest s
 initialize = AlternatingForest HashTable.new HashTable.new HashTable.new
 
 reset :: AlternatingForest s -> AlternatingForest s
-reset forest = AlternatingForest (mu forest) HashTable.new HashTable.new
+reset forest = AlternatingForest (mu forest) HashTable.new (ro forest)

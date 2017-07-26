@@ -78,7 +78,9 @@ augment graph = do
                             phix <- getVertex graph Phi x
                             return (x, phix))
                         (Set.toList ou)
-            updateSymmetric graph Mu ((x, y) : ou') >>= (findRoot . reset)
+            graph' <- resetScanned graph
+            graph'' <- resetRo graph'
+            updateSymmetric graph'' Mu ((x, y) : ou') >>= (findRoot . reset)
         else shrink graph exs oxs eys oys xs ys isect
 
 shrink :: Graph s
