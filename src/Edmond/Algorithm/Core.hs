@@ -87,8 +87,8 @@ augment graph = do
                             return (x, phix))
                         (Set.toList ou)
             updateSymmetric graph Mu ((x, y) : ou')
-            reset graph
-            findRoot graph
+            graph' <- reset graph
+            findRoot graph'
         else shrink graph exs oxs eys oys xs ys isect
 
 shrink :: Graph s

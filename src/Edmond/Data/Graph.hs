@@ -34,12 +34,12 @@ data Property = Mu | Phi | Ro
 ----------------------------------------------------------------------------
 -- Initialize
 
+
 initialize :: GraphRepresentation -> ST s (Graph s)
 initialize rep = do
     let nv = (length . Data.Graph.vertices) rep
         ne = (length . Data.Graph.edges) rep
-    sInit <- HashTable.newSized (ne * nv)
-    mapM_ (\k -> HashTable.insert sInit k False) [1..nv]
+    sInit <- HashTable.newSized nv
     initForest <- AF.initialize rep
     return $
         Graph rep 
@@ -51,7 +51,8 @@ initialize rep = do
             (-3)
     where
         toBackward rep = 
-            let redges = map swap (Data.Graph.edges rep)
+            let edges = Data.Graph.edges rep
+                redges = map swap edges
             in Data.Graph.buildG (1, length (Data.Graph.vertices rep)) redges
 
 loadMatching :: ST s (Graph s) -> ST s [Edge] -> ST s (Graph s)
@@ -87,12 +88,14 @@ neighbours graph v = do
 ----------------------------------------------------------------------------
 -- API for AlternatingForest
 
-reset :: Graph s -> ST s ()
+reset :: Graph s -> ST s (Graph s)
 reset graph = do
     let (nv, ne) = dimension graph
     let nv = (fst . dimension) graph
-    mapM_ (\k -> HashTable.insert (scanned graph) k False) [1..nv]
-    AF.reset (forest graph)
+    scanned' <- HashTable.newSized nv
+    forest' <- AF.initialize (forward graph)
+    let graph' = graph { forest = forest' }
+    return graph'
 
 updateX :: Graph s -> Vertex -> ST s (Graph s)
 updateX graph x = return $ graph { currentX = x }
@@ -129,12 +132,12 @@ getVertex graph property k = do
     lookedUp <- HashTable.lookup lookupTable k
     case lookedUp of
         Just v -> return v
-        Nothing -> undefined
+        Nothing -> return k
 
 getScanned :: Graph s -> Vertex -> ST s Bool
 getScanned graph k = do
     lookedUp <- HashTable.lookup (scanned graph) k
     case lookedUp of
         Just flag -> return flag
-        Nothing -> undefined
+        Nothing -> return False
 
