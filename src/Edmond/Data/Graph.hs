@@ -1,6 +1,4 @@
-{-# OPTIONS_GHC -fwarn-unused-imports #-}
 {-# LANGUAGE OverloadedStrings #-}
-
 module Edmond.Data.Graph where
 
 import Prelude ()
@@ -49,8 +47,8 @@ initialize rep = do
             initForest 
             sInit
             (nv, ne)
-            (-1)
-            (-1)
+            (-4)
+            (-3)
     where
         toBackward rep = 
             let redges = map swap (Data.Graph.edges rep)
@@ -65,30 +63,6 @@ loadMatching graph matchingST = do
     updateSymmetric graph' Mu (zip xs ys)
     return graph'
 
-----------------------------------------------------------------------------
--- 'Usual' Graph properties
-
-edges :: ST s (Graph s) -> ST s [Edge]
-edges graph = graph >>= return . Data.Graph.edges . forward
-
-vertices :: ST s (Graph s) -> ST s [Vertex]
-vertices graph = graph >>= return . Data.Graph.vertices . forward
-
-containsEdges :: [Edge] -> ST s (Graph s) -> ST s Bool
-containsEdges es graph = do
-    graphEdges <- edges graph
-    return $ all (\e -> containsOne [e, swap e] graphEdges) es
-
-neighbours :: ST s (Graph s) -> Vertex -> ST s [Vertex]
-neighbours graph v = do
-    graph' <- graph
-    let forw = forward graph'
-        backw = backward graph'
-    return $ (forw ! v) `List.union` (backw ! v)
-
-----------------------------------------------------------------------------
--- API for AlternatingForest
-
 toMatching :: ST s (Graph s) -> ST s [Edge]
 toMatching graph = do
     graph' <- graph
@@ -98,14 +72,27 @@ toMatching graph = do
         else return acc)
         [] mu
 
-reset :: ST s (Graph s) -> ST s (Graph s)
+----------------------------------------------------------------------------
+-- 'Usual' Graph properties
+
+vertices :: Graph s -> ST s [Vertex]
+vertices graph = return $ (Data.Graph.vertices . forward) graph
+
+neighbours :: Graph s -> Vertex -> ST s [Vertex]
+neighbours graph v = do
+    let forw = forward graph
+        backw = backward graph
+    return $ (forw ! v) `List.union` (backw ! v)
+
+----------------------------------------------------------------------------
+-- API for AlternatingForest
+
+reset :: Graph s -> ST s ()
 reset graph = do
-    graph' <- graph
-    let (nv, ne) = dimension graph'
-    let nv = (fst . dimension) graph'
-    mapM_ (\k -> HashTable.insert (scanned graph') k False) [1..nv]
-    AF.reset (forest graph')
-    graph
+    let (nv, ne) = dimension graph
+    let nv = (fst . dimension) graph
+    mapM_ (\k -> HashTable.insert (scanned graph) k False) [1..nv]
+    AF.reset (forest graph)
 
 updateX :: Graph s -> Vertex -> ST s (Graph s)
 updateX graph x = return $ graph { currentX = x }
@@ -126,34 +113,27 @@ updateSymmetric graph Phi xs =
 updateSymmetric graph Mu xs =
     adjustHashTableForSymmetric xs $ (AF.mu . forest) graph
 
-updateSingle :: ST s (Graph s) -> Property -> (Vertex, Vertex) -> ST s (Graph s)
-updateSingle graph Phi (k, v) = do
-    graph' <- graph
-    adjustHashTable (k, v) $ (AF.phi . forest) graph'
-    return graph'
+updateSingle :: Graph s -> Property -> (Vertex, Vertex) -> ST s ()
+updateSingle graph Phi (k, v) =
+    adjustHashTable (k, v) $ (AF.phi . forest) graph
 
-updateScanned :: ST s (Graph s) -> (Vertex, Bool) -> ST s (Graph s)
-updateScanned graph (k, v) = do
-    graph' <- graph
-    adjustHashTable (k, v) (scanned graph')
-    return graph'
+updateScanned :: Graph s -> (Vertex, Bool) -> ST s ()
+updateScanned graph (k, v) = adjustHashTable (k, v) (scanned graph)
 
-getVertex :: ST s (Graph s) -> Property -> Vertex -> ST s Vertex
+getVertex :: Graph s -> Property -> Vertex -> ST s Vertex
 getVertex graph property k = do
-    graph' <- graph
     let lookupTable = case property of
-            Mu  -> AF.mu (forest graph')
-            Phi -> AF.phi (forest graph')
-            Ro  -> AF.ro (forest graph')
+            Mu  -> AF.mu (forest graph)
+            Phi -> AF.phi (forest graph)
+            Ro  -> AF.ro (forest graph)
     lookedUp <- HashTable.lookup lookupTable k
     case lookedUp of
         Just v -> return v
         Nothing -> undefined
 
-getScanned :: ST s (Graph s) -> Vertex -> ST s Bool
+getScanned :: Graph s -> Vertex -> ST s Bool
 getScanned graph k = do
-    graph' <- graph
-    lookedUp <- HashTable.lookup (scanned graph') k
+    lookedUp <- HashTable.lookup (scanned graph) k
     case lookedUp of
         Just flag -> return flag
         Nothing -> undefined

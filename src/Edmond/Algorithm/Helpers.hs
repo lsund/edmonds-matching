@@ -7,7 +7,7 @@ import qualified Data.Set as Set
 
 -- type Set = Set.Set
 
-pathToRoot :: ST s (Graph s) -> Vertex ->  ST s (Set Vertex, Set Vertex)
+pathToRoot :: Graph s -> Vertex ->  ST s (Set Vertex, Set Vertex)
 pathToRoot graph v = do
     let walkToRoot' v True evens odds = do
             v' <- Graph.getVertex graph Mu v
@@ -23,7 +23,7 @@ pathToRoot graph v = do
                 walkToRoot' v' True evens (Set.insert v odds) 
     walkToRoot' v True Set.empty Set.empty
 
-pathToR :: ST s (Graph s) -> Vertex -> Vertex ->  ST s (Set Vertex, Set Vertex)
+pathToR :: Graph s -> Vertex -> Vertex ->  ST s (Set Vertex, Set Vertex)
 pathToR graph v r = do
     let pathToR' v r True evens odds = do
             v' <- Graph.getVertex graph Mu v
@@ -42,23 +42,19 @@ pathToR graph v r = do
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
-isOuter :: ST s (Graph s) -> Vertex -> ST s Bool
+isOuter :: Graph s -> Vertex -> ST s Bool
 isOuter graph x = do
+    let  mu = Graph.getVertex graph Mu
+         phi = Graph.getVertex graph Phi
     mux <- mu x
     phimux <- phi mux
     return $ mux == x || phimux /= mux
-    where mu = Graph.getVertex graph Mu
-          phi = Graph.getVertex graph Phi
 
-isOutOfForest :: ST s (Graph s) -> Vertex -> ST s Bool
+isOutOfForest :: Graph s -> Vertex -> ST s Bool
 isOutOfForest graph x = do
+    let  mu = Graph.getVertex graph Mu
+         phi = Graph.getVertex graph Phi
     mux <- mu x
     phix <- phi x
     phimux <- phi mux
     return $ mux /= x && phix == x && phimux == mux
-    where mu = Graph.getVertex graph Mu
-          phi = Graph.getVertex graph Phi
-
-isScanned :: ST s (Graph s) -> Vertex -> ST s Bool
-isScanned graph = s
-    where s = Graph.getScanned graph

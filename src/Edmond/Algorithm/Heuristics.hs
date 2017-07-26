@@ -13,12 +13,14 @@ maximalMatching = maximalMatching' 1 [] []
 
 maximalMatching' :: Vertex -> [Vertex] -> Matching -> ST s (Graph s) -> ST s Matching
 maximalMatching' x mvs matching graph = do
-    nbs <- neighbours graph x
+    graph' <- graph
+    nbs <- neighbours graph' x
     let  my = find (\y -> x `notElem` mvs && y `notElem` mvs) nbs
     case my of
         Just y -> maximalMatching' x (x : y :  mvs) ((x, y) : matching) graph
         Nothing -> do
-            vs <- vertices graph
+            graph' <- graph
+            vs <- vertices graph'
             if succ x `elem` vs then
                 maximalMatching' (succ x) mvs matching graph
             else
