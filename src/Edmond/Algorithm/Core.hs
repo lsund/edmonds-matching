@@ -30,7 +30,7 @@ findRoot graph = do
                   vs
     case mx of 
         Nothing -> return graph
-        Just x -> findNeighbour $ updateX graph x
+        Just x -> findNeighbour $ updateX graph (traceShowId x)
             
 
 findNeighbour :: Graph s -> ST s (Graph s)
@@ -143,7 +143,8 @@ edmonds :: Data.Graph.Graph -> IO ()
 edmonds rep = do
     let init =  Graph.initialize rep
         maximal = maximalMatching init
-        graph = loadMatching init maximal >>= findRoot
+        -- graph = loadMatching init maximal >>= findRoot
+        graph = findRoot init
         maximum = runST $ toMatching graph
     print $ length maximum 
 

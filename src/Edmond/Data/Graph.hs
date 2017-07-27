@@ -56,10 +56,7 @@ initialize rep =
 
 
 loadMatching :: Graph s -> [Edge] -> ST s (Graph s)
-loadMatching graph matching = do
-    mu' <- AF.mu (forest graph)
-    let mu'' = adjustHashTableForSymmetric matching mu'
-    return $ graph { forest = (forest graph) { AF.mu = mu'' } }
+loadMatching graph = updateSymmetric graph Mu 
 
 toMatching :: ST s (Graph s) -> ST s [Edge]
 toMatching graph = do
@@ -113,13 +110,13 @@ updateSymmetric :: Foldable t
                 -> ST s (Graph s)
 updateSymmetric graph Phi xs = do
     phi' <- AF.phi $ forest graph
-    let phi'' = adjustHashTableForSymmetric xs phi'
-    let forest' = (forest graph) { AF.phi = phi'' }
+    adjustHashTableForSymmetric xs phi'
+    let forest' = (forest graph) { AF.phi = return phi' }
     return $ graph { forest = forest' }
 updateSymmetric graph Mu xs = do
     mu' <- AF.mu $ forest graph
-    let mu'' = adjustHashTableForSymmetric xs mu'
-    return $ graph { forest = (forest graph) { AF.mu = mu'' } }
+    adjustHashTableForSymmetric xs mu'
+    return $ graph { forest = (forest graph) { AF.mu = return mu' } }
 
 updateSingle :: Graph s -> Property -> (Vertex, Vertex) -> ST s (Graph s)
 updateSingle graph Phi (k, v) = do

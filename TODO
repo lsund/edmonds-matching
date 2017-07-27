@@ -157,3 +157,5 @@ should only be exposed to alternatingforest.
 
 initialize hash tables properly []
 
+returning a hashtable seems slower than not
+
