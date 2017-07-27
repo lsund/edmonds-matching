@@ -28,9 +28,7 @@ data Graph s = Graph { forward   :: Data.Graph.Graph
                      , scanned   :: ST s (HashTable s Vertex Bool)
                      , dimension :: (Int, Int)
                      , currentX  :: Vertex
-                     , currentY  :: Vertex
-                     , trues     :: [Vertex]
-                     , ros       :: [(Vertex, Vertex)] }
+                     , currentY  :: Vertex }
 
 data Property = Mu | Phi | Ro
 ----------------------------------------------------------------------------
@@ -50,8 +48,6 @@ initialize rep =
             (nv, ne)
             (-1)
             (-1)
-            []
-            []
     where
         toBackward rep = 
             let edges = Data.Graph.edges rep
@@ -93,8 +89,10 @@ neighbours graph v =
 reset :: Graph s -> Graph s
 reset graph =
     let (nv, ne) = dimension graph
+        scanned' = HashTable.new
         forest' = AF.reset (forest graph)
-    in  graph { forest = forest' }
+    in  graph { forest = forest',
+               scanned = scanned' }
 
 updateX :: Graph s -> Vertex -> Graph s
 updateX graph x = graph { currentX = x }
@@ -107,16 +105,7 @@ update graph Ro xs = do
     ro' <- AF.ro $ forest graph
     adjustHashTableFor xs ro'
     let forest' = (forest graph) { AF.ro = return ro' }
-    return $ graph { forest = forest'
-                   , ros = xs ++ ros graph }
-
-resetRo :: Graph s -> ST s (Graph s)
-resetRo graph = do
-    ro' <- AF.ro $ forest graph
-    adjustHashTableFor (map (\(k, v) -> (k, k)) (ros graph)) ro'
-    let forest' = (forest graph) { AF.ro = return ro' }
-    return $ graph { forest = forest'
-                   , ros = [] }
+    return $ graph { forest = forest' }
 
 updateSymmetric :: Foldable t
                 => Graph s
@@ -145,16 +134,7 @@ updateScanned :: Graph s -> (Vertex, Bool) -> ST s (Graph s)
 updateScanned graph (k, v) = do
     scanned' <- scanned graph
     adjustHashTable (k, v) scanned'
-    return $ graph { scanned = return scanned'
-                   ,trues = k : trues graph }
-
-resetScanned :: Graph s -> ST s (Graph s)
-resetScanned graph = do
-    scanned' <- scanned graph
-    adjustHashTableFor (zip (trues graph) (repeat False)) scanned'
-    return $ graph { scanned = return scanned'
-                   , trues = [] }
-
+    return $ graph { scanned = return scanned' }
 
 getVertex :: Graph s -> Property -> Vertex -> ST s Vertex
 getVertex graph property k = do
