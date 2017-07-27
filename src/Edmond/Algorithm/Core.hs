@@ -79,25 +79,24 @@ augment graph = do
                             return (x, phix))
                         (Set.toList ou)
             updateSymmetric graph Mu ((x, y) : ou') >>= (findRoot . reset)
-        else shrink graph exs oxs eys oys xs ys isect
+        else shrink graph
 
-shrink :: Graph s
-       -> Set Vertex
-       -> Set Vertex
-       -> Set Vertex
-       -> Set Vertex
-       -> Set Vertex
-       -> Set Vertex
-       -> Set Vertex
-       -> ST s (Graph s)
-shrink graph exs oxs eys oys xs ys isect = do
+shrink :: Graph s -> ST s (Graph s)
+shrink graph = do
+    let x = currentX graph
+        y = currentY graph
+    (exs, oxs) <- pathToRoot graph x
+    (eys, oys) <- pathToRoot graph y
+    let xs = exs `Set.union` oxs
+        ys = eys `Set.union` oys
+        isect = xs `Set.intersection` ys
     mr <- findM (\x -> do 
                         rox <- getVertex graph Ro x
                         return $ if rox == x then Just x else Nothing)
                 (Set.toList isect)
     let x = currentX graph
         y = currentY graph
-        r = fromJust mr
+        r = fromMaybe undefined mr
     (exsr, oxsr) <- pathToR graph x r
     (eysr, oysr) <- pathToR graph y r
     let xsr      = exsr `Set.union` oxsr

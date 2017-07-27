@@ -4,6 +4,7 @@ module Main where
 import Protolude
 import Edmond.Algorithm.Core
 import qualified Parser
+import Data.HashTable.ST.Basic as HashTable
 
 -- path = "/home/lsund/Projects/edmonds-matching/data/graphs/K3.dmx"
 -- path = "/home/lsund/Projects/edmonds-matching/data/graphs/K2.dmx"
