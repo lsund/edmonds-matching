@@ -30,7 +30,7 @@ findRoot graph = do
                   vs
     case mx of 
         Nothing -> return graph
-        Just x -> findNeighbour $ updateX graph (traceShowId x)
+        Just x -> findNeighbour $ updateX graph x
             
 
 findNeighbour :: Graph s -> ST s (Graph s)
