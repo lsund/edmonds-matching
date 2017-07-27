@@ -30,12 +30,12 @@ adjustHashTableFor xs ht = mapM_ (uncurry (HashTable.insert ht)) xs
 adjustHashTableForSymmetric :: (Eq a, Hashable a, Foldable t) =>
                                t (a, a) ->
                                HashTable s a a ->
-                               ST s ()
-adjustHashTableForSymmetric xs ht =
+                               ST s (HashTable s a a)
+adjustHashTableForSymmetric xs ht = do
     mapM_ (\(k, v) -> do
             HashTable.insert ht k v
-            HashTable.insert ht v k)
-          xs
+            HashTable.insert ht v k) xs
+    return ht
 
 uniqueElements :: Ord a => [a] -> Bool
 uniqueElements xs = length (List.nub xs) == length xs
