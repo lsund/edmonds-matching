@@ -10,34 +10,34 @@ import qualified Data.Set as Set
 pathToRoot :: Graph s -> Vertex ->  ST s (Set Vertex, Set Vertex)
 pathToRoot graph v = do
     let walkToRoot' v True evens odds = do
-            v' <- Graph.getVertex graph Mu v
-            if v == v' then
-                return (Set.insert v evens, odds)
-            else
-                walkToRoot' v' False (Set.insert v evens) odds 
-        walkToRoot' v False evens odds = do
             v' <- Graph.getVertex graph Phi v
             if v == v' then
                 return (evens, Set.insert v odds)
             else
-                walkToRoot' v' True evens (Set.insert v odds) 
-    walkToRoot' v True Set.empty Set.empty
+                walkToRoot' v' False evens (Set.insert v odds)
+        walkToRoot' v False evens odds = do
+            v' <- Graph.getVertex graph Mu v
+            if v == v' then
+                return (Set.insert v evens, odds)
+            else
+                walkToRoot' v' True (Set.insert v evens) odds
+    walkToRoot' v False Set.empty Set.empty
 
 pathToR :: Graph s -> Vertex -> Vertex ->  ST s (Set Vertex, Set Vertex)
 pathToR graph v r = do
     let pathToR' v r True evens odds = do
-            v' <- Graph.getVertex graph Mu v
-            if v == r then
-                return (Set.insert v evens, odds)
-            else
-                pathToR' v' r False (Set.insert v evens) odds 
-        pathToR' v r False evens odds = do
             v' <- Graph.getVertex graph Phi v
             if v == r then
                 return (evens, Set.insert v odds)
             else
-                pathToR' v' r True evens (Set.insert v odds) 
-    pathToR' v r True Set.empty Set.empty
+                pathToR' v' r False evens (Set.insert v odds)
+        pathToR' v r False evens odds = do
+            v' <- Graph.getVertex graph Mu v
+            if v == r then
+                return (Set.insert v evens, odds)
+            else
+                pathToR' v' r True (Set.insert v evens) odds
+    pathToR' v r False Set.empty Set.empty
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs

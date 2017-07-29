@@ -10,12 +10,19 @@ type Edge = Data.Graph.Edge
 type HashTable = HashTable.HashTable
 
 data AlternatingForest s = 
-    AlternatingForest {  mu :: ST s (HashTable s Vertex Vertex)
-                       , phi :: ST s (HashTable s Vertex Vertex)
-                       , ro :: ST s (HashTable s Vertex Vertex) }
+    AlternatingForest {  mu :: !(HashTable s Vertex Vertex)
+                       , phi :: !(HashTable s Vertex Vertex)
+                       , ro :: !(HashTable s Vertex Vertex) }
 
-initialize :: AlternatingForest s
-initialize = AlternatingForest HashTable.new HashTable.new HashTable.new
+initialize :: ST s (AlternatingForest s)
+initialize = do
+    mu <- HashTable.new
+    phi <- HashTable.new
+    ro <- HashTable.new
+    return $ AlternatingForest mu phi ro
 
-reset :: AlternatingForest s -> AlternatingForest s
-reset forest = AlternatingForest (mu forest) HashTable.new HashTable.new
+reset :: AlternatingForest s -> ST s (AlternatingForest s)
+reset forest = do
+    phi <- HashTable.new
+    ro <- HashTable.new
+    return $ AlternatingForest (mu forest) phi ro

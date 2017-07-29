@@ -62,40 +62,40 @@ grow graph = do
     else 
         augment graph
 
-augment :: Graph s -> ST s (Graph s)
-augment graph = do
+rootPathIntersection :: Graph s -> ST s ((Vertex, Vertex), Set Vertex, Set Vertex)
+rootPathIntersection graph = do
     let x = currentX graph
         y = currentY graph
     (exs, oxs) <- pathToRoot graph x
     (eys, oys) <- pathToRoot graph y
     let xs = exs `Set.union` oxs
         ys = eys `Set.union` oys
-        isect = xs `Set.intersection` ys
+    return ( (x, y)
+           , xs `Set.intersection` ys
+           , oxs `Set.union` oys
+           )
+
+augment :: Graph s -> ST s (Graph s)
+augment graph = do
+    ((x, y), isect, ou) <- rootPathIntersection graph
     if null isect
         then do
-            let ou = oxs `Set.union` oys
             ou' <- mapM (\x -> do
                             phix <- getVertex graph Phi x
                             return (x, phix))
                         (Set.toList ou)
-            updateSymmetric graph Mu ((x, y) : ou') >>= (findRoot . reset)
+            updateSymmetric graph Mu ((x, y) : ou') >>= reset >>= findRoot
         else shrink graph
 
 shrink :: Graph s -> ST s (Graph s)
 shrink graph = do
-    let x = currentX graph
-        y = currentY graph
-    (exs, oxs) <- pathToRoot graph x
-    (eys, oys) <- pathToRoot graph y
-    let xs = exs `Set.union` oxs
-        ys = eys `Set.union` oys
-        isect = xs `Set.intersection` ys
+    ((x, y), isect, _) <- rootPathIntersection graph
     mr <- findM (\x -> do 
                         rox <- getVertex graph Ro x
                         return $ if rox == x then Just x else Nothing)
                 (Set.toList isect)
     let x = currentX graph
-        y = currentY graph
+        y =currentY graph
         r = fromMaybe undefined mr
     (exsr, oxsr) <- pathToR graph x r
     (eysr, oysr) <- pathToR graph y r
@@ -117,8 +117,8 @@ shrink graph = do
                 []
                 filtered
     vGraph <- updateSymmetric graph Phi zipped
-    rox <- getVertex vGraph Ro x
-    roy <- getVertex vGraph Ro y
+    rox <- getVertex graph Ro x
+    roy <- getVertex graph Ro y
     let graph' = 
             if rox /= r then
                 updateSingle vGraph Phi (x, y)
@@ -142,9 +142,8 @@ shrink graph = do
 edmonds :: Data.Graph.Graph -> IO ()
 edmonds rep = do
     let init =  Graph.initialize rep
-        maximal = maximalMatching init
-        -- graph = loadMatching init maximal >>= findRoot
-        graph = findRoot init
+        graph = init >>= (\x -> loadMatching (maximalMatching x) x) >>= findRoot
+        -- graph = init >>= findRoot
         maximum = runST $ toMatching graph
     print $ length maximum 
 

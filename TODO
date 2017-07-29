@@ -159,3 +159,5 @@ initialize hash tables properly []
 
 returning a hashtable seems slower than not
 
+let r be the FIRST vertex ... can be a problem? sets doesnt preserve order
+
