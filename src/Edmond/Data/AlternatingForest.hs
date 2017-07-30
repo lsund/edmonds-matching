@@ -8,9 +8,9 @@ import Data.Map as Map
 type Vertex = Data.Graph.Vertex
 type Edge = Data.Graph.Edge
 
-data AlternatingForest = AlternatingForest { mu :: Map Vertex Vertex
-                                           , phi :: Map Vertex Vertex
-                                           , ro :: Map Vertex Vertex }
+data AlternatingForest = AlternatingForest { mu :: !(Map Vertex Vertex)
+                                           , phi :: !(Map Vertex Vertex)
+                                           , ro :: !(Map Vertex Vertex) }
 
 
 initialize :: Data.Graph.Graph -> AlternatingForest

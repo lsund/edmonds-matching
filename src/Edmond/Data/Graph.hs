@@ -12,7 +12,7 @@ import qualified Edmond.Data.AlternatingForest as AF
 import Data.Array
 import qualified Data.Graph
 import qualified Data.List as List
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
 
 -- Structures for holding a graph and an associated alternating forest
 
@@ -24,12 +24,12 @@ type Edge = Data.Graph.Edge
 type GraphRepresentation = Data.Graph.Graph
 type AlternatingForest = AF.AlternatingForest
 
-data Graph = Graph { forward :: Data.Graph.Graph
-                   , backward :: Data.Graph.Graph
-                   , forest :: AlternatingForest
-                   , scanned :: Map Vertex Bool 
-                   , currentX :: Vertex
-                   , currentY :: Vertex }
+data Graph = Graph { forward  :: !Data.Graph.Graph
+                   , backward :: !Data.Graph.Graph
+                   , forest   :: !AlternatingForest
+                   , scanned  :: !(Map Vertex Bool)
+                   , currentX :: !Vertex
+                   , currentY :: !Vertex }
 ----------------------------------------------------------------------------
 -- Initialize
 

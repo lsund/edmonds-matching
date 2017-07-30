@@ -6,7 +6,6 @@ import Prelude ()
 import Protolude
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List
-import qualified Data.Set as Set
 import Data.Text (append)
 import Data.Graph
 
@@ -31,13 +30,6 @@ takeWhileDifferent []                    = []
 takeWhileDifferent [x]                   = [x]
 takeWhileDifferent (x : y : xs) | x == y = [x]
 takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
-
-takeWhileDifferentSet :: Ord a => [a] -> Bool -> Set (a, Bool) -> Set (a, Bool)
-takeWhileDifferentSet [] odd acc = acc
-takeWhileDifferentSet [x] odd acc = Set.insert (x, odd) acc
-takeWhileDifferentSet (x : y : xs) odd acc | x == y = Set.insert (x, odd) acc
-takeWhileDifferentSet (x : y : xs) odd acc =
-    takeWhileDifferentSet (y : xs) (not odd) (Set.insert (x, odd) acc)
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 iterateEveryOther = iterateEveryOther' True

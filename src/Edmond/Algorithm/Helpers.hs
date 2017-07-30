@@ -7,21 +7,12 @@ import Util
 import Edmond.Data.Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Data.Map.Strict ((!))
-import Data.Set as Set
-
--- type Set = Set.Set
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
 pathToRoot :: Graph -> Vertex -> [Vertex]
 pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
-    where mu = ((!) . AF.mu . forest) graph
-          phi = ((!) . AF.phi . forest) graph
-
-pathToRootSet :: Graph -> Vertex -> Set (Vertex, Bool)
-pathToRootSet graph v = 
-    takeWhileDifferentSet (iterateEveryOther mu phi v) False Set.empty
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 

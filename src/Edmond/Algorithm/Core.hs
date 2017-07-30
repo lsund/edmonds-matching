@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -fwarn-unused-imports #-}
-
 module Edmond.Algorithm.Core where
 
 import Util
@@ -68,8 +66,6 @@ augment graph =
     where
         x  = currentX graph
         y  = currentY graph
-        nv = (length . vertices) graph
-        ne = (length . edges) graph
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
@@ -86,10 +82,9 @@ shrink graph =
         phi'           = adjustMapFor (map (phi !) filtered) filtered phi
         phi''          = symmetricUpdate (ro !) r x y phi'
         keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)
-        ro'            = adjustMapFor keys' (replicate (length keys') r) ro
+        ro'            = adjustMapFor keys' (repeat r) ro
         forest'        = (forest graph) { AF.phi = phi''
-                                        , AF.ro = ro'
-                                        }
+                                        , AF.ro = ro' }
     in findNeighbour $ graph { forest = forest' }
     where
         x = currentX graph
@@ -105,9 +100,3 @@ edmonds rep =
         graph = loadMatching init matching
         graph' = findRoot graph
     in return $ toMatching graph'
-
--- edmonds :: Data.Graph.Graph -> IO [Edge]
--- edmonds rep =
---     let init = Graph.initialize rep
---         graph = findRoot init
---     in return $ toMatching graph
