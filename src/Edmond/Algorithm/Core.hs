@@ -14,9 +14,6 @@ import qualified Data.Graph
 import qualified Data.List as List
 import Data.Map.Strict ((!))
 
--- Finds an x such that x is not scanned and x is outer. If success, proceed
--- with calling findGrowth with the found x. If unsuccessful, return the graph
--- of the current state.
 findRoot :: Graph -> Graph
 findRoot graph =
     let mx = find (\x -> all ($ x) [not . isScanned graph, isOuter graph]) vs
@@ -25,16 +22,6 @@ findRoot graph =
             Just x -> findNeighbour $ graph { currentX = x }
     where vs = vertices graph
             
-
--- Map.assocs has RT O(n)
--- At this point, we need to decide where to grow our tree.
--- Finds two vertices (x, y) such that x is an outer vertex with scanned(x) =
--- false, y is a neighbour of x such that y is out-of-forest or y is outer and
--- phi(x) =/ phi(y). (x, y) represents the edge, which we can use to grow the
--- tree
---
--- Given a graph and a vertex x, finds a neighbour y of x such that y is either
--- out-of-forest or (y is outer and ro(y) =/ ro(x)
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
     let pred' y = isOuter graph y && 

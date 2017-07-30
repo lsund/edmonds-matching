@@ -54,7 +54,7 @@ genFilenames n = genFilenames' n n
     where
         emsg = "can't gen more than 999 filenames" 
         genFilenames' n count | count == 0 = []
-        genFilenames' n count | count > 999 = error emsg
+        genFilenames' n count | count > 999 = undefined
         genFilenames' n count = name count : genFilenames' n (pred count)
             where 
                 name c | c < 10 = "00" ++ show count ++ ".dmx"

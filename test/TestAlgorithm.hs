@@ -37,7 +37,7 @@ expectedLengths = [ 2
 
 checkIfMatching :: Graph -> Assertion
 checkIfMatching graph =
-    let m = matching graph
+    let m = toMatching graph
     in assertBool "Should be a matching" $ isMatching m && containsEdges m graph
 
 checkMatchingLen :: Int -> [Edge] -> Assertion 
@@ -68,7 +68,6 @@ tests1 = do content <- parseFile "data/optima-stripped.txt"
             return $ 
                 zipWith (curry testMatchingLen) paths optima
                 ++ map testIfMatching paths
-                
 
 mAlgoTests :: IO Test
 mAlgoTests = do
