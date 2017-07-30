@@ -3,14 +3,14 @@ module Edmond.Data.AlternatingForest where
 
 import Protolude
 import qualified Data.Graph
-import Data.Map as Map
+import Data.IntMap.Strict as Map
 
 type Vertex = Data.Graph.Vertex
 type Edge = Data.Graph.Edge
 
-data AlternatingForest = AlternatingForest { mu :: !(Map Vertex Vertex)
-                                           , phi :: !(Map Vertex Vertex)
-                                           , ro :: !(Map Vertex Vertex) }
+data AlternatingForest = AlternatingForest { mu :: !(IntMap Vertex)
+                                           , phi :: !(IntMap Vertex)
+                                           , ro :: !(IntMap Vertex) }
 
 
 initialize :: Data.Graph.Graph -> AlternatingForest

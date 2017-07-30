@@ -4,7 +4,7 @@ module Util where
 
 import Prelude ()
 import Protolude
-import qualified Data.Map.Strict as Map
+import qualified Data.IntMap.Strict as Map
 import qualified Data.List as List
 import Data.Text (append)
 import Data.Graph
@@ -41,13 +41,13 @@ iterateEveryOther = iterateEveryOther' True
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
 
-adjustMap :: Ord a =>  a -> b -> Map a b -> Map a b
+adjustMap :: Int -> b -> IntMap b -> IntMap b
 adjustMap k v = Map.adjust (const v) k
 
-adjustMapFor :: Ord a =>  [a] -> [b] -> Map a b -> Map a b
+adjustMapFor :: [Int] -> [b] -> IntMap b -> IntMap b
 adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
 
-adjustMapFor2 :: Ord a => [(a, a)] -> Map a a -> Map a a
+adjustMapFor2 :: [(Int, Int)] -> IntMap Int -> IntMap Int
 adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
 
 --  Arguments:
@@ -65,7 +65,7 @@ adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs
 --  Updates the map with (v, k) if the value applied to the predicate doesn't
 --  match the target.
 --  
-symmetricUpdate :: Ord a => (a -> a) -> a -> a -> a -> Map a a -> Map a a
+symmetricUpdate :: (Int -> Int) -> Int -> Int -> Int -> IntMap Int -> IntMap Int
 symmetricUpdate p t k v m = 
     let xm = if p k /= t then adjustMap k v m else m
     in       if p v /= t then adjustMap v k xm else xm

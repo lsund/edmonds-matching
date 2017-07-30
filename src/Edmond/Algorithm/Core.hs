@@ -10,7 +10,7 @@ import Protolude
 import Data.Maybe
 import qualified Data.Graph
 import qualified Data.List as List
-import Data.Map.Strict ((!))
+import Data.IntMap.Strict ((!))
 import qualified Data.IntSet as Set
 
 findRoot :: Graph -> Graph
@@ -93,12 +93,11 @@ shrink graph =
         y = currentY graph
         phi = (AF.phi . forest) graph
         ro = (AF.ro . forest) graph
-        adjustMapForS :: IntSet -> Map Int Int -> Map Int Int
+        adjustMapForS :: IntSet -> IntMap Int -> IntMap Int
         adjustMapForS keys m = 
             Set.foldr (\k acc -> adjustMap k (phi ! k) acc) m keys
 
-
-
+-- Uses a greedy initial matching
 edmondsHeuristic :: Data.Graph.Graph -> IO [Edge]
 edmondsHeuristic rep =
     let init = Graph.initialize rep
@@ -107,6 +106,7 @@ edmondsHeuristic rep =
         graph' = findRoot graph
     in return $ toMatching graph'
 
+-- Starts with the empty mathching
 edmonds :: Data.Graph.Graph -> IO [Edge]
 edmonds rep =
     let init = Graph.initialize rep

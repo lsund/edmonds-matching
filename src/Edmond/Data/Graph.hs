@@ -12,7 +12,7 @@ import qualified Edmond.Data.AlternatingForest as AF
 import Data.Array
 import qualified Data.Graph
 import qualified Data.List as List
-import qualified Data.Map.Strict as Map
+import qualified Data.IntMap.Strict as Map
 
 -- Structures for holding a graph and an associated alternating forest
 
@@ -27,7 +27,7 @@ type AlternatingForest = AF.AlternatingForest
 data Graph = Graph { forward  :: !Data.Graph.Graph
                    , backward :: !Data.Graph.Graph
                    , forest   :: !AlternatingForest
-                   , scanned  :: !(Map Vertex Bool)
+                   , scanned  :: !(IntMap Bool)
                    , currentX :: !Vertex
                    , currentY :: !Vertex }
 ----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ toMatching graph = filter (uncurry (<)) xs
     where xs = zip (Map.keys mu) (Map.elems mu)
           mu = (AF.mu . forest) graph
 
-resetForest :: Graph -> Map Vertex Vertex -> Graph
+resetForest :: Graph -> IntMap Vertex -> Graph
 resetForest graph mu' =
     let newForest' = AF.initialize (forward graph)
         newScanned = Map.fromList [(x, False) | x <- [1..nv]]
