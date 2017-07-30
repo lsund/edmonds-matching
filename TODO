@@ -161,3 +161,28 @@ returning a hashtable seems slower than not
 
 let r be the FIRST vertex ... can be a problem? sets doesnt preserve order
 
+commit 6165f82 works,
+commit accc531 fails
+
+probably because of this change:
+
+-takeWhileDifferentSet :: Ord a => [a] -> Bool -> Set (a, Bool) -> Set (a, Bool)
+-takeWhileDifferentSet [] odd acc = acc
+-takeWhileDifferentSet [x] odd acc = Set.insert (x, odd) acc
+-takeWhileDifferentSet (x : y : xs) odd acc | x == y = Set.insert (x, odd) acc
+-takeWhileDifferentSet (x : y : xs) odd acc =
+-    takeWhileDifferentSet (y : xs) (not odd) (Set.insert (x, odd) acc)
++takeWhileDifferentSet :: Ord a => 
++                         [a]
++                         -> Bool
++                         -> Set (a, Bool)
++                         -> Set (a, Bool)
++                         -> Set (a, Bool)
++takeWhileDifferentSet [] isodd all odds = all
++takeWhileDifferentSet [x] isodd all odds = Set.insert (x, isodd) all
++takeWhileDifferentSet (x : y : xs) isodd all odds | x == y = Set.insert (x, isodd) all
++takeWhileDifferentSet (x : y : xs) isodd all odds =
++    takeWhileDifferentSet (y : xs) (not isodd) (Set.insert (x, isodd) all) odds
+ 
+
+
