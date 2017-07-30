@@ -58,8 +58,8 @@ augment graph =
     in if null isect
         then
             let (oddpx, oddpy) = odds px py
-                u = oddpx ++ oddpy
-                pu = foldr (\x acc -> (x, phi ! x) : acc) [] u
+                u = oddpx `Set.union` oddpy
+                pu = Set.foldr (\x acc -> (x, phi ! x) : acc) [] u
                 mu' = adjustMapFor2 ((x, y) : (y, x) : pu) mu
                 graph' = resetForest graph mu'
             in findRoot graph'
@@ -77,11 +77,11 @@ shrink graph =
         r              = fromJust $ find (\x -> ro ! x == x) isect
         (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
-        lunion         = sort $ pxr `List.union` pyr
-        union          = Set.fromDistinctAscList $ lunion
-        oddUnion       = oddpx `List.union` oddpy
-        filtered       = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
-        phi'           = adjustMapFor (map (phi !) filtered) filtered phi
+        lunion         = pxr `List.union` pyr
+        union          = Set.fromDistinctAscList $ sort lunion
+        oddUnion       = oddpx `Set.union` oddpy
+        filtered       = Set.filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
+        phi'           = adjustMapForS filtered phi
         phi''          = symmetricUpdate (ro !) r x y phi'
         keys'          = filter (\x -> (ro !) x `Set.member` union) (vertices graph)
         ro'            = adjustMapFor keys' (repeat r) ro
@@ -93,12 +93,23 @@ shrink graph =
         y = currentY graph
         phi = (AF.phi . forest) graph
         ro = (AF.ro . forest) graph
+        adjustMapForS :: IntSet -> Map Int Int -> Map Int Int
+        adjustMapForS keys m = 
+            Set.foldr (\k acc -> adjustMap k (phi ! k) acc) m keys
 
+
+
+edmondsHeuristic :: Data.Graph.Graph -> IO [Edge]
+edmondsHeuristic rep =
+    let init = Graph.initialize rep
+        matching = maximalMatching init
+        graph = loadMatching init matching
+        graph' = findRoot graph
+    in return $ toMatching graph'
 
 edmonds :: Data.Graph.Graph -> IO [Edge]
 edmonds rep =
     let init = Graph.initialize rep
         matching = maximalMatching init
-        graph = loadMatching init matching
-        graph' = findRoot graph
+        graph' = findRoot init
     in return $ toMatching graph'

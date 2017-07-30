@@ -70,11 +70,11 @@ symmetricUpdate p t k v m =
     let xm = if p k /= t then adjustMap k v m else m
     in       if p v /= t then adjustMap v k xm else xm
 
-every :: Int -> [a] -> [a]
-every n xs = 
+every :: Int -> [Int] -> IntSet -> IntSet
+every n xs acc = 
     case drop (pred n) xs of
-        y : ys -> y : every n ys
-        []    -> []
+        y : ys -> every n ys (Set.insert y acc)
+        []    -> acc
 
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs = if p then x : xs else xs

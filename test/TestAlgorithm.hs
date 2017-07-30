@@ -56,6 +56,13 @@ testMatchingLen (path, len) =
         matching <- edmonds rep
         checkMatchingLen len matching)
 
+testMatchingLenHeuristic :: (FilePath, Int) -> Test
+testMatchingLenHeuristic (path, len) = 
+    TestCase (do
+        rep <- fileToGraph path
+        matching <- edmondsHeuristic rep
+        checkMatchingLen len matching)
+
 ----------------------------------------------------------------------------
 -- tests
 
@@ -66,8 +73,10 @@ tests1 = do content <- parseFile "data/optima-stripped.txt"
                 paths = map ("data/graphs/" ++) names
                 optima  = map Parser.optima optimas
             return $ 
-                zipWith (curry testMatchingLen) paths optima
-                ++ map testIfMatching paths
+                    zipWith (curry testMatchingLen) paths optima 
+                ++  zipWith (curry testMatchingLenHeuristic) paths optima
+                ++  map testIfMatching paths
+
 
 mAlgoTests :: IO Test
 mAlgoTests = do

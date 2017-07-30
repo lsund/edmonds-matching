@@ -7,6 +7,7 @@ import Util
 import Edmond.Data.Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Data.Map.Strict ((!))
+import Data.IntSet as Set
 
 ----------------------------------------------------------------------------
 -- Used by Core.hs
@@ -16,8 +17,8 @@ pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
-odds :: [Vertex] -> [Vertex] -> ([Vertex], [Vertex])
-odds px py = (every 2 px, every 2 py)
+odds :: [Vertex] -> [Vertex] -> (IntSet, IntSet)
+odds px py = (every 2 px Set.empty, every 2 py Set.empty)
 
 isOuter graph x = mu x == x || phi (mu x) /= mu x
     where mu = ((!) . AF.mu . forest) graph
