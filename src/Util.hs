@@ -8,6 +8,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 import Data.Text (append)
 import Data.Graph
+import qualified Data.IntSet as Set
 
 ----------------------------------------------------------------------------
 -- Debug

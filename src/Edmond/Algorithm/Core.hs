@@ -11,6 +11,7 @@ import Data.Maybe
 import qualified Data.Graph
 import qualified Data.List as List
 import Data.Map.Strict ((!))
+import qualified Data.IntSet as Set
 
 findRoot :: Graph -> Graph
 findRoot graph =
@@ -76,12 +77,13 @@ shrink graph =
         r              = fromJust $ find (\x -> ro ! x == x) isect
         (pxr, pyr)     = (takeUntil r px, takeUntil r py)
         (oddpx, oddpy) = odds pxr pyr
-        union          = pxr `List.union` pyr
+        lunion         = sort $ pxr `List.union` pyr
+        union          = Set.fromDistinctAscList $ lunion
         oddUnion       = oddpx `List.union` oddpy
         filtered       = filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
         phi'           = adjustMapFor (map (phi !) filtered) filtered phi
         phi''          = symmetricUpdate (ro !) r x y phi'
-        keys'          = filter (\x -> (ro !) x `elem` union) (vertices graph)
+        keys'          = filter (\x -> (ro !) x `Set.member` union) (vertices graph)
         ro'            = adjustMapFor keys' (repeat r) ro
         forest'        = (forest graph) { AF.phi = phi''
                                         , AF.ro = ro' }
