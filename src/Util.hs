@@ -6,15 +6,8 @@ import Prelude ()
 import Protolude
 import qualified Data.IntMap.Strict as Map
 import qualified Data.List as List
-import Data.Text (append)
 import Data.Graph
 import qualified Data.IntSet as Set
-
-----------------------------------------------------------------------------
--- Debug
-
-(+++) :: Text -> Text -> Text
-a +++ b = a `append` b
 
 -- True if the second list contains at least one of the elements in the first
 -- list

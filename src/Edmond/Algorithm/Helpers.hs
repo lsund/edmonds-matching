@@ -9,11 +9,16 @@ import qualified Edmond.Data.AlternatingForest as AF
 import Data.IntMap.Strict ((!))
 import Data.IntSet as Set
 
+data Dimension = X | Y
+
 ----------------------------------------------------------------------------
 -- Used by Core.hs
 
-pathToRoot :: Graph -> Vertex -> [Vertex]
-pathToRoot graph v = takeWhileDifferent (iterateEveryOther mu phi v)
+pathToRoot :: Graph -> Dimension -> [Vertex]
+pathToRoot graph dim = 
+    case dim of
+        X -> takeWhileDifferent (iterateEveryOther mu phi (currentX graph))
+        Y -> takeWhileDifferent (iterateEveryOther mu phi (currentY graph))
     where mu = ((!) . AF.mu . forest) graph
           phi = ((!) . AF.phi . forest) graph
 
