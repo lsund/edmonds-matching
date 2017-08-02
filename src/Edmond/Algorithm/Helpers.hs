@@ -40,8 +40,7 @@ isOutOfForest graph x = mu x /= x && phi x == x && phi (mu x) == mu x
           phi = ((!) . AF.phi . forest) graph
 
 isScanned :: Graph -> Vertex -> Bool
-isScanned graph = s
-    where s = ((!) . scanned) graph
+isScanned graph v = scanned graph ! v
 
 ----------------------------------------------------------------------------
 -- 

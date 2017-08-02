@@ -70,6 +70,7 @@ augment graph =
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
+findR :: Graph -> [Vertex] -> [Vertex] -> Int
 findR graph px py =
     let
         (spx, spy)       = (Set.fromList px, Set.fromList py)
@@ -77,6 +78,7 @@ findR graph px py =
         ro               = (AF.ro . forest) graph
     in fromJust $ find (\x -> ro ! x == x) isect
 
+getBlossom :: Graph -> (Int, IntSet, IntSet)
 getBlossom graph = 
     let 
         (phi, ro)        = ((AF.phi . forest) graph, (AF.ro . forest) graph)

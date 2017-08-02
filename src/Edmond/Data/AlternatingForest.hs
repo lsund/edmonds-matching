@@ -13,9 +13,8 @@ data AlternatingForest = AlternatingForest { mu :: !(IntMap Vertex)
                                            , ro :: !(IntMap Vertex) }
 
 
-initialize :: Data.Graph.Graph -> AlternatingForest
-initialize rep = 
-    let nv = (length . Data.Graph.vertices) rep
-        idMap = Map.fromList [(x, x) | x <- [1..nv]]
+initialize :: Int -> AlternatingForest
+initialize nv = 
+    let idMap = Map.fromList [(x, x) | x <- [1..nv]]
     in AlternatingForest idMap idMap idMap
 
