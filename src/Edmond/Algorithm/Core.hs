@@ -70,35 +70,37 @@ augment graph =
         mu  = (AF.mu . forest) graph
         phi  = (AF.phi . forest) graph
 
--- getUnions :: Graph -> (IntSet, IntSet)
-getUnions graph = 
-    let 
-        (px, py)         = (pathToRoot graph X, pathToRoot graph Y)
-        spx              = Set.fromDistinctAscList $ sort px
-        spy              = Set.fromDistinctAscList $ sort py
+findR graph px py =
+    let
+        (spx, spy)       = (Set.fromList px, Set.fromList py)
         isect            = px `List.intersect` py
-        (phi, ro)         = ((AF.phi . forest) graph, (AF.ro . forest) graph)
-        r                = fromJust $ find (\x -> ro ! x == x) isect
+        ro               = (AF.ro . forest) graph
+    in fromJust $ find (\x -> ro ! x == x) isect
+
+getBlossom graph = 
+    let 
+        (phi, ro)        = ((AF.phi . forest) graph, (AF.ro . forest) graph)
+        (px, py)         = (pathToRoot graph X, pathToRoot graph Y)
+        r                = findR graph px py
         (pxr, pyr)       = (takeUntil r px, takeUntil r py)
-        (oddpx, oddpy)   = odds pxr pyr
-        lunion           = pxr `List.union` pyr
-        union            = Set.fromDistinctAscList $ sort lunion
-        oddUnion         = oddpx `Set.union` oddpy
+        (spxr, spyr)     = (Set.fromList pxr, Set.fromList pyr)
+        oddUnion         = let (ox, oy) = odds pxr pyr in ox `Set.union` oy
+        union            = spxr `Set.union` spyr
         filtered          = Set.filter (\v -> ((ro !) . (phi !)) v /= r) oddUnion
     in (r, union, filtered)
 
 shrink :: Graph -> Graph
 shrink graph = 
     let
-        (x, y)           = (currentX graph, currentY graph)
-        (r, union, filtered) = getUnions graph
-        (phi, ro)         = ((AF.phi . forest) graph, (AF.ro . forest) graph)
-        adjustPhi keys m  = Set.foldr (\k acc -> adjustMap k (phi ! k) acc) m keys
-        phi'              = adjustPhi filtered phi
-        phi''             = symmetricUpdate (ro !) r x y phi'
-        keys'             = filter (\x -> (ro !) x `Set.member` union) (vertices graph)
-        ro'               = adjustMapFor keys' (repeat r) ro
-        forest'           = (forest graph) { AF.phi = phi'' , AF.ro = ro' }
+        (x, y, vs)           = (currentX graph, currentY graph, vertices graph)
+        (r, union, filtered) = getBlossom graph
+        (phi, ro)            = ((AF.phi . forest) graph, (AF.ro . forest) graph)
+        adjustPhi keys m     = Set.foldr (\k acc -> adjustMap k (phi ! k) acc) m keys
+        phi'                 = adjustPhi filtered phi
+        phi''                = symmetricUpdate (ro !) r x y phi'
+        keys'                = filter (\x -> (ro !) x `Set.member` union) vs
+        ro'                  = adjustMapFor keys' (repeat r) ro
+        forest'              = (forest graph) { AF.phi = phi'', AF.ro = ro' }
     in findNeighbour $ graph { forest = forest' }
 
 -- Uses a greedy initial matching
