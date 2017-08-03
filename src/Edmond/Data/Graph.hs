@@ -56,11 +56,8 @@ initialize rep =
 
 loadMatching :: Graph -> [Edge] -> Graph
 loadMatching graph matching =
-    let xs = map fst matching
-        ys = map snd matching
-        mu' = insertList xs ys ((AF.mu . forest) graph)
-        mu'' = insertList ys xs mu'
-    in graph { forest = (forest graph) { AF.mu = mu'' }}
+    let mu' = insertListSymmetric matching ((AF.mu . forest) graph)
+    in graph { forest = (forest graph) { AF.mu = mu' }}
 
 ----------------------------------------------------------------------------
 -- 'Usual' Graph properties

@@ -23,7 +23,7 @@ findRoot graph =
             
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
-    let pred' y = isOuter graph y && Graph.get ro y /= Graph.get ro x
+    let pred' y = isOuter graph y && ro y /= ro x
         pred'' = isOutOfForest graph
         pred y = pred'' y || pred' y
         nbs = neighbours graph x
@@ -35,39 +35,37 @@ findNeighbour graph =
         Just y -> grow (graph { currentY = y })
     where
         x = currentX graph
-        ro = (AF.ro . forest) graph
+        ro = Graph.get $ (AF.ro . forest) graph
 
 grow :: Graph -> Graph
 grow graph = 
-    if isOutOfForest graph y
-        then 
-            let phi' = Map.insert y x m
-                forest' = (forest graph) { AF.phi = phi' }
-            in findNeighbour (graph { forest = forest' })
-        else augment graph
-    where
-        m = (AF.phi . forest) graph
-        x = currentX graph
-        y = currentY graph
+    let 
+        (x, y) = (currentX graph, currentY graph)
+        phi = (AF.phi . forest) graph
+    in 
+        if isOutOfForest graph y
+            then 
+                let forest' = (forest graph) { AF.phi = Map.insert y x phi }
+                in findNeighbour (graph { forest = forest' })
+            else augment graph
 
 augment :: Graph -> Graph
 augment graph = 
-    let (px, py) = (pathToRoot graph X, pathToRoot graph Y)
-        isect = px `List.intersect` py
-    in if null isect
+    let 
+        (x, y)   = (currentX graph, currentY graph)
+        (px, py) = (pathToRoot graph X, pathToRoot graph Y)
+        mu       = (AF.mu . forest) graph
+        phi      = (AF.phi . forest) graph
+        isect    = Set.fromList px `Set.intersection` Set.fromList py
+    in if Set.null isect
         then
             let (oddpx, oddpy) = odds px py
                 u = oddpx `Set.union` oddpy
                 pu = Set.foldr (\x acc -> (x, Graph.get phi x) : acc) [] u
-                mu' = insertList' ((x, y) : (y, x) : pu) mu
+                mu' = insertListSymmetric ((x, y) : (y, x) : pu) mu
                 graph' = resetForest graph mu'
             in findRoot graph'
         else shrink graph
-    where
-        x  = currentX graph
-        y  = currentY graph
-        mu  = (AF.mu . forest) graph
-        phi  = (AF.phi . forest) graph
 
 findR :: Graph -> [Vertex] -> [Vertex] -> Int
 findR graph px py =
@@ -105,7 +103,7 @@ shrink graph =
         phi'                 = adjustPhi filtered phi
         phi''                = symmetricUpdate (Graph.get ro) r x y phi'
         keys'                = filter (\x -> Graph.get ro x `Set.member` union) vs
-        ro'                  = insertList keys' (repeat r) ro
+        ro'                  = insertList (zip keys' (repeat r)) ro
         forest'              = (forest graph) { AF.phi = phi'', AF.ro = ro' }
     in findNeighbour $ graph { forest = forest' }
 

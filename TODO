@@ -137,3 +137,6 @@ check if I can use Set instead of list.
         lists of vertices to update preserves the order. Sets doesn't preserve
         the order of their elements.
 
+r needs to be the first element in the intersection that satisfies the
+predicate. If using sets, the order gets shuffeled, and so the aswer is
+incorrect.

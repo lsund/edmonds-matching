@@ -34,11 +34,11 @@ iterateEveryOther = iterateEveryOther' True
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
 
-insertList :: [Int] -> [b] -> IntMap b -> IntMap b
-insertList keys vals m = foldr (uncurry Map.insert) m (zip keys vals)
+insertList :: [(Int, Int)] -> IntMap Int -> IntMap Int
+insertList xs m = foldr (uncurry Map.insert) m xs
 
-insertList' :: [(Int, Int)] -> IntMap Int -> IntMap Int
-insertList' xs m = foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)) m xs 
+insertListSymmetric :: [(Int, Int)] -> IntMap Int -> IntMap Int
+insertListSymmetric xs m = foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)) m xs 
 
 --  Arguments:
 --
