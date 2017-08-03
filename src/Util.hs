@@ -34,14 +34,11 @@ iterateEveryOther = iterateEveryOther' True
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
 
-adjustMap :: Int -> b -> IntMap b -> IntMap b
-adjustMap k v = Map.adjust (const v) k
+insertList :: [Int] -> [b] -> IntMap b -> IntMap b
+insertList keys vals m = foldr (uncurry Map.insert) m (zip keys vals)
 
-adjustMapFor :: [Int] -> [b] -> IntMap b -> IntMap b
-adjustMapFor keys vals m = foldr (uncurry adjustMap) m (zip keys vals)
-
-adjustMapFor2 :: [(Int, Int)] -> IntMap Int -> IntMap Int
-adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs 
+insertList' :: [(Int, Int)] -> IntMap Int -> IntMap Int
+insertList' xs m = foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)) m xs 
 
 --  Arguments:
 --
@@ -60,8 +57,8 @@ adjustMapFor2 xs m = foldr (\(x, y) m -> adjustMap x y (adjustMap y x m)) m xs
 --  
 symmetricUpdate :: (Int -> Int) -> Int -> Int -> Int -> IntMap Int -> IntMap Int
 symmetricUpdate p t k v m = 
-    let xm = if p k /= t then adjustMap k v m else m
-    in       if p v /= t then adjustMap v k xm else xm
+    let xm = if p k /= t then Map.insert k v m else m
+    in       if p v /= t then Map.insert v k xm else xm
 
 every :: Int -> [Int] -> IntSet -> IntSet
 every n xs acc = 

@@ -13,6 +13,7 @@ import Data.Array
 import qualified Data.Graph
 import qualified Data.List as List
 import qualified Data.IntMap.Strict as Map
+import qualified Data.IntSet as Set
 
 -- Structures for holding a graph and an associated alternating forest
 
@@ -29,7 +30,7 @@ data Graph = Graph { forward     :: !Data.Graph.Graph
                    , vertices    :: ![Vertex]
                    , numVertices :: !Int
                    , forest      :: !AlternatingForest
-                   , scanned     :: !(IntMap Bool)
+                   , scanned     :: !IntSet
                    , currentX    :: !Vertex
                    , currentY    :: !Vertex }
 ----------------------------------------------------------------------------
@@ -40,7 +41,6 @@ initialize rep =
     let
         vertices = Data.Graph.vertices rep
         nv = length vertices
-        sInit = Map.fromList [(x, False) | x <- [1..nv]]
         toBackward rep = 
             let redges = map swap (Data.Graph.edges rep)
             in Data.Graph.buildG (1, nv) redges
@@ -49,8 +49,8 @@ initialize rep =
         (toBackward rep)
         vertices
         nv
-        (AF.initialize nv)
-        sInit
+        AF.initialize
+        Set.empty
         (-1)
         (-1)
 
@@ -58,8 +58,8 @@ loadMatching :: Graph -> [Edge] -> Graph
 loadMatching graph matching =
     let xs = map fst matching
         ys = map snd matching
-        mu' = adjustMapFor xs ys ((AF.mu . forest) graph)
-        mu'' = adjustMapFor ys xs mu'
+        mu' = insertList xs ys ((AF.mu . forest) graph)
+        mu'' = insertList ys xs mu'
     in graph { forest = (forest graph) { AF.mu = mu'' }}
 
 ----------------------------------------------------------------------------
@@ -85,8 +85,9 @@ toMatching graph = filter (uncurry (<)) xs
 
 resetForest :: Graph -> IntMap Vertex -> Graph
 resetForest graph mu' =
-    let newForest' = AF.initialize (numVertices graph)
-        newScanned = Map.fromList [(x, False) | x <- [1..numVertices graph]]
+    let newForest' = AF.initialize
     in graph { forest = newForest' { AF.mu = mu' }
-             , scanned = newScanned }
+             , scanned = Set.empty }
 
+get :: IntMap Vertex -> Int -> Vertex
+get m v = fromMaybe v (Map.lookup v m)

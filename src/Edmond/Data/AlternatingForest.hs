@@ -13,8 +13,6 @@ data AlternatingForest = AlternatingForest { mu :: !(IntMap Vertex)
                                            , ro :: !(IntMap Vertex) }
 
 
-initialize :: Int -> AlternatingForest
-initialize nv = 
-    let idMap = Map.fromList [(x, x) | x <- [1..nv]]
-    in AlternatingForest idMap idMap idMap
+initialize :: AlternatingForest
+initialize = AlternatingForest Map.empty Map.empty Map.empty
 
