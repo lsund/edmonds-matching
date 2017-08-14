@@ -2,12 +2,12 @@
 
 module Util where
 
+import Data.Graph
+import qualified Data.IntMap.Strict as Map
+import qualified Data.IntSet as Set
+import qualified Data.List as List
 import Prelude ()
 import Protolude
-import qualified Data.IntMap.Strict as Map
-import qualified Data.List as List
-import Data.Graph
-import qualified Data.IntSet as Set
 
 -- True if the second list contains at least one of the elements in the first
 -- list
@@ -15,21 +15,23 @@ containsOne :: Eq a => [a] -> [a] -> Bool
 containsOne xs ys = any (`elem` ys) xs
 
 takeUntil :: Eq a => a -> [a] -> [a]
-takeUntil _ []                = []
-takeUntil v (x : xs) | v == x = [v]
-takeUntil v (x : xs)          = x : takeUntil v xs
+takeUntil _ [] = []
+takeUntil v (x:xs)
+  | v == x = [v]
+takeUntil v (x:xs) = x : takeUntil v xs
 
 takeWhileDifferent :: Eq a => [a] -> [a]
-takeWhileDifferent []                    = []
-takeWhileDifferent [x]                   = [x]
-takeWhileDifferent (x : y : xs) | x == y = [x]
-takeWhileDifferent (x : y : xs)          = x : takeWhileDifferent (y : xs)
+takeWhileDifferent [] = []
+takeWhileDifferent [x] = [x]
+takeWhileDifferent (x:y:xs)
+  | x == y = [x]
+takeWhileDifferent (x:y:xs) = x : takeWhileDifferent (y : xs)
 
 iterateEveryOther :: (a -> a) -> (a -> a) -> a -> [a]
 iterateEveryOther = iterateEveryOther' True
-    where
-        iterateEveryOther' True f g x  = x : iterateEveryOther' False f g (f x)
-        iterateEveryOther' False f g x = x :  iterateEveryOther' True f g (g x)
+  where
+    iterateEveryOther' True f g x = x : iterateEveryOther' False f g (f x)
+    iterateEveryOther' False f g x = x : iterateEveryOther' True f g (g x)
 
 areDisjoint :: Ord a => [a] -> [a] -> Bool
 areDisjoint xs ys = null (xs `List.intersect` ys)
@@ -38,7 +40,8 @@ insertList :: [(Int, Int)] -> IntMap Int -> IntMap Int
 insertList xs m = foldr (uncurry Map.insert) m xs
 
 insertListSymmetric :: [(Int, Int)] -> IntMap Int -> IntMap Int
-insertListSymmetric xs m = foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)) m xs 
+insertListSymmetric xs m =
+  foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)) m xs
 
 --  Arguments:
 --
@@ -56,23 +59,31 @@ insertListSymmetric xs m = foldr (\(x, y) m -> Map.insert x y (Map.insert y x m)
 --  match the target.
 --  
 symmetricUpdate :: (Int -> Int) -> Int -> Int -> Int -> IntMap Int -> IntMap Int
-symmetricUpdate p t k v m = 
-    let xm = if p k /= t then Map.insert k v m else m
-    in       if p v /= t then Map.insert v k xm else xm
+symmetricUpdate p t k v m =
+  let xm =
+        if p k /= t
+          then Map.insert k v m
+          else m
+  in if p v /= t
+       then Map.insert v k xm
+       else xm
 
 every :: Int -> [Int] -> IntSet -> IntSet
-every n xs acc = 
-    case drop (pred n) xs of
-        y : ys -> every n ys (Set.insert y acc)
-        []    -> acc
+every n xs acc =
+  case drop (pred n) xs of
+    y:ys -> every n ys (Set.insert y acc)
+    [] -> acc
 
 appendIf :: Bool -> a -> [a] -> [a]
-appendIf p x xs = if p then x : xs else xs
+appendIf p x xs =
+  if p
+    then x : xs
+    else xs
 
 uniqueElements :: Ord a => [a] -> Bool
 uniqueElements xs = length (List.nub xs) == length xs
 
 isMatching :: [Edge] -> Bool
 isMatching xs = uniqueElements vs
-    where vs = map fst xs ++ map snd xs
-
+  where
+    vs = map fst xs ++ map snd xs

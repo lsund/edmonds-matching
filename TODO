@@ -113,16 +113,16 @@ make sure that the graph is exactly as specified by the file [done]
 
 figure out how to run the code in TestMain [done]
 
-check so that the number of vertices and edges are correct in DIMACSPARSER []
+check so that the number of vertices and edges are correct in DIMACSPARSER
+[done]
 
-profiling []
+profiling [done]
     bottleneck: computing backward edges each iteration. Store them. [done]
-    profile for fixed.dmx []
+    profile for fixed.dmx [done]
 
-check if I can use Set instead of list.
+check if I can use Set instead of list. [done]
     Problems arise in shrink and augment, where eg pathToRoot, odds, takeuntil
     is dependent on insertion order.
-
     Augment:
         pathToRoot: (px, py) does not need to be lists
                     (oddpx, oddpy) could potentially be retrieved by instead of
@@ -140,3 +140,11 @@ check if I can use Set instead of list.
 r needs to be the first element in the intersection that satisfies the
 predicate. If using sets, the order gets shuffeled, and so the aswer is
 incorrect.
+
+korte/vygen claims that grow/augment/shrink can be done in linear time. Find out
+some way to do this. (Adrian)   [done]
+    As treversing, build the intersection as a hashtable.
+    Finding ro(x) is done in constant time
+    quering ro(x) on the intersection is then done in constant time
+
+Refactor Core.hs, especially shrink []

@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module Edmond.Algorithm.Helpers where
+module Edmond.Algorithm.General.Helpers where
 
 import Protolude
 import Util
