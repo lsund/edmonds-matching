@@ -87,8 +87,9 @@ test-suite edmonds-test
                         array,
                         vector,
                         HUnit
-    other-modules:      Edmond.Algorithm.Core,
-                        Edmond.Algorithm.Helpers,
+    other-modules:      Edmond.Algorithm.General.Core,
+                        Edmond.Algorithm.General.Helpers,
+                        Edmond.Algorithm.Bipartite.Core,
                         Edmond.Algorithm.Heuristics,
                         Edmond.Data.AlternatingForest,
                         Edmond.Data.Graph,

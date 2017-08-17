@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TestAlgorithm where
+module TestGeneral where
 
 import Protolude
 import Test.HUnit
@@ -9,7 +9,7 @@ import qualified Data.Text as Text
 
 import Edmond.Data.Graph as Graph
 import Parser
-import Edmond.Algorithm.Core
+import Edmond.Algorithm.General.Core
 
 ----------------------------------------------------------------------------
 -- Data
@@ -53,14 +53,14 @@ testMatchingLen :: (FilePath, Int) -> Test
 testMatchingLen (path, len) = 
     TestCase (do
         rep <- fileToGraph path
-        matching <- edmonds rep
+        let matching = edmonds rep
         checkMatchingLen len matching)
 
 testMatchingLenHeuristic :: (FilePath, Int) -> Test
 testMatchingLenHeuristic (path, len) = 
     TestCase (do
         rep <- fileToGraph path
-        matching <- edmondsHeuristic rep
+        let matching = edmondsHeuristic rep
         checkMatchingLen len matching)
 
 ----------------------------------------------------------------------------
@@ -78,8 +78,8 @@ tests1 = do content <- parseFile "data/optima-stripped.txt"
                 ++  map testIfMatching paths
 
 
-mAlgoTests :: IO Test
-mAlgoTests = do
+mGeneralTests :: IO Test
+mGeneralTests = do
     t1 <- tests1
     return $ TestList t1
 
