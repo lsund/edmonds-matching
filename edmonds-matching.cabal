@@ -86,7 +86,7 @@ test-suite edmonds-test
                         directory,
                         array,
                         vector,
-                        HUnit
+                        hunit
     other-modules:      Edmond.Algorithm.General.Core,
                         Edmond.Algorithm.General.Helpers,
                         Edmond.Algorithm.Bipartite.Core,

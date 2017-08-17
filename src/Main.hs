@@ -7,10 +7,11 @@ import Edmond.Algorithm.Bipartite.Core
 import Edmond.Data.Graph as Graph
 import qualified Parser
 
-path = "data/graphs/K3.dmx"
+-- path = "data/graphs/K3.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/butterfly.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/peterson.dmx"
--- path = "data/K2-v2.dmx"
+path = "data/graphs/bipartite.dmx"
+-- path = "data/graphs/K2.dmx"
 -- path = "data/graphs/pbd984.dmx"
 -- path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
@@ -28,5 +29,5 @@ path = "data/graphs/K3.dmx"
 main :: IO ()
 main = do
     graph <- Parser.fileToGraph path
-    let es = maximumMatching graph
-    print $ length es
+    let res = maximumMatching graph
+    print res
