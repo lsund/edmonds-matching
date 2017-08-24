@@ -148,3 +148,7 @@ some way to do this. (Adrian)   [done]
     quering ro(x) on the intersection is then done in constant time
 
 Refactor Core.hs, especially shrink []
+
+transform graph into bipartite graph []
+
+merge functions in bipartite.core and genreal.core

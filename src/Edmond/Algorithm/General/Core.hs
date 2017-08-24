@@ -1,9 +1,9 @@
 module Edmond.Algorithm.General.Core where
 
 import Edmond.Algorithm.General.Helpers
-import Edmond.Algorithm.Heuristics
+import Edmond.Algorithm.Heuristics.MaximalMatching
 import qualified Edmond.Data.AlternatingForest as AF
-import Edmond.Data.Graph as Graph
+import Edmond.Data.Graph.Core as Graph
 import Util
 
 import qualified Data.Graph

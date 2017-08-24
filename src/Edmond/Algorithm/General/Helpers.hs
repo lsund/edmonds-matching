@@ -4,7 +4,7 @@ module Edmond.Algorithm.General.Helpers where
 
 import Protolude
 import Util
-import Edmond.Data.Graph as Graph
+import Edmond.Data.Graph.Core as Graph
 import qualified Edmond.Data.AlternatingForest as AF
 import Data.IntSet as Set
 

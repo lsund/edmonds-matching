@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Edmond.Data.Graph where
+module Edmond.Data.Graph.Core where
 
 import Prelude ()
 import Protolude
