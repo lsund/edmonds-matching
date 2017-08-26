@@ -151,4 +151,4 @@ Refactor Core.hs, especially shrink []
 
 transform graph into bipartite graph []
 
-merge functions in bipartite.core and genreal.core
+merge functions in bipartite.core and genreal.core []

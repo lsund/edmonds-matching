@@ -3,16 +3,15 @@ module Main where
 
 import Protolude
 -- import Edmond.Algorithm.General.Core
-import Edmond.Algorithm.Bipartite.Core
 import Edmond.Algorithm.Heuristics.BGraphMaximumMatching
 import Edmond.Data.Graph.Core as Graph
 import qualified Parser
 
--- path = "data/graphs/K3.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/butterfly.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/peterson.dmx"
 -- path = "data/graphs/bipartite.dmx"
-path = "data/graphs/K2.dmx"
+-- path = "data/graphs/K2.dmx"
+path = "data/graphs/K3.dmx"
 -- path = "data/graphs/pbd984.dmx"
 -- path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
@@ -31,5 +30,5 @@ main :: IO ()
 main = do
     rep <- Parser.fileToGraph path
     let graph = Graph.initialize rep
-        res = graphToBGraph graph
+        res = runHeuristic graph
     print res

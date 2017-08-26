@@ -57,10 +57,13 @@ augment graph =
       mu = (AF.mu . forest) graph
       phi = (AF.phi . forest) graph
       isect = Set.fromList px `Set.intersection` Set.fromList py
-  in 
+  in
     let (oddpx, oddpy) = odds px py
         u = oddpx `Set.union` oddpy
         pu = Set.foldr (\x acc -> (x, Graph.get phi x) : acc) [] u
         mu' = insertListSymmetric ((x, y) : (y, x) : pu) mu
         graph' = resetForest graph mu'
      in findRoot graph'
+
+run :: Graph -> [Edge]
+run graph = toMatching $ findRoot graph

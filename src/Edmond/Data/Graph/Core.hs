@@ -37,15 +37,15 @@ data Graph = Graph { forward     :: !Data.Graph.Graph
 -- Initialize
 
 initialize :: GraphRepresentation -> Graph
-initialize rep = 
+initialize rep =
     let
         vertices = Data.Graph.vertices rep
         nv = length vertices
-        toBackward rep = 
+        toBackward rep =
             let redges = map swap (Data.Graph.edges rep)
             in Data.Graph.buildG (1, nv) redges
-    in Graph 
-        rep 
+    in Graph
+        rep
         (toBackward rep)
         vertices
         nv
@@ -66,7 +66,7 @@ edges :: Graph -> [Edge]
 edges = Data.Graph.edges . forward
 
 containsEdges :: [Edge] -> Graph -> Bool
-containsEdges es graph = 
+containsEdges es graph =
     all (\e -> containsOne [e, swap e] (edges graph)) es
 
 neighbours :: Graph -> Vertex -> [Vertex]
