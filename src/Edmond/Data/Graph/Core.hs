@@ -41,9 +41,7 @@ initialize rep =
     let
         vertices = Data.Graph.vertices rep
         nv = length vertices
-        toBackward rep =
-            let redges = map swap (Data.Graph.edges rep)
-            in Data.Graph.buildG (1, nv) redges
+        toBackward rep = Data.Graph.buildG (1, nv) $ map swap (Data.Graph.edges rep)
     in Graph
         rep
         (toBackward rep)
@@ -64,6 +62,9 @@ loadMatching graph matching =
 
 edges :: Graph -> [Edge]
 edges = Data.Graph.edges . forward
+
+redges :: Graph -> [Edge]
+redges = Data.Graph.edges . backward
 
 containsEdges :: [Edge] -> Graph -> Bool
 containsEdges es graph =

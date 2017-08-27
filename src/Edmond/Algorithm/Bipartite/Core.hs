@@ -65,5 +65,5 @@ augment graph =
         graph' = resetForest graph mu'
      in findRoot graph'
 
-run :: Graph -> [Edge]
-run graph = toMatching $ findRoot graph
+run :: Graph -> Graph
+run graph = findRoot graph

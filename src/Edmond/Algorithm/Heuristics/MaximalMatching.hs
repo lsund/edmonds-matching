@@ -17,12 +17,12 @@ maximalMatching' x mvs matching graph =
         my = find (\y -> x `notElem` mvs && y `notElem` mvs) nbs
     in case my of
         Just y -> maximalMatching' x (x : y :  mvs) ((x, y) : matching) graph
-        Nothing -> 
+        Nothing ->
             if succ x `elem` vertices graph then
                 maximalMatching' (succ x) mvs matching graph
             else
                 matching
 
 matchingVertices :: Matching -> [Vertex]
-matchingVertices = 
+matchingVertices =
     foldr (\(x, y) acc -> List.nub ([x, y] ++ acc)) []

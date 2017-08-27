@@ -7,6 +7,7 @@ import TestParser (dimacsTests)
 import TestGeneral (mGeneralTests)
 import TestUtil (utilTests)
 import TestGraph (mGraphTests)
+import TestHeuristics (mHeuristicTests)
 
 import Data.List
 
@@ -22,7 +23,8 @@ runtests :: IO Counts
 runtests = do
     algoTests <- mGeneralTests
     graphTests <- mGraphTests
-    runTestTT $ TestList [utilTests, dimacsTests, graphTests, algoTests]
+    heuristicTests <- mHeuristicTests
+    runTestTT $ TestList [utilTests, dimacsTests, graphTests, algoTests, heuristicTests]
 
 main :: IO ()
 main = runtests >>= print

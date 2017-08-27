@@ -3,7 +3,7 @@ version:                0.1.0.0
 synopsis:               An implementation of a maximum-matching algorithm
 description:            An implementation of Jack Edmonds famous blossom
                         algorihm for finding maximum matchings of unweighted
-                        graphs, as proposed in 1961. 
+                        graphs, as proposed in 1961.
                         The implementation follows the specifications given in
                         Combinatorial Optimization by Korte and Vygen 2001.
 homepage:               https://github.com/lsund/edmonds-matching
@@ -44,7 +44,8 @@ executable edmonds-matching
                         directory,
                         array,
                         vector,
-                        split
+                        split,
+                        HUnit
 
     default-language:   Haskell2010
 
@@ -65,8 +66,8 @@ executable edmonds-matching
     other-modules:      Edmond.Algorithm.General.Core,
                         Edmond.Algorithm.General.Helpers,
                         Edmond.Algorithm.Bipartite.Core,
-                        Edmond.Algorithm.Heuristics.MaxmialMatching,
-                        Edmond.Algorithm.Heuristics.BGraphMaximumMatching,
+                        Edmond.Algorithm.Heuristics.MaximalMatching,
+                        Edmond.Algorithm.Heuristics.ExpandContract,
                         Edmond.Data.AlternatingForest,
                         Edmond.Data.Graph.Core,
                         Util,
@@ -76,9 +77,9 @@ test-suite edmonds-test
     type:               exitcode-stdio-1.0
     hs-source-dirs:     test, src
     main-is:            Spec.hs
-    
+
     default-extensions: NoImplicitPrelude
-    
+
     build-depends:      base,
                         protolude,
                         containers,
@@ -87,22 +88,26 @@ test-suite edmonds-test
                         directory,
                         array,
                         vector,
-                        hunit
+                        HUnit
+
     other-modules:      Edmond.Algorithm.General.Core,
                         Edmond.Algorithm.General.Helpers,
                         Edmond.Algorithm.Bipartite.Core,
-                        Edmond.Algorithm.Heuristics.MaxmimalMatching,
-                        Edmond.Algorithm.Heuristics.BGraphMaximumMatching,
+                        Edmond.Algorithm.Heuristics.MaximalMatching,
+                        Edmond.Algorithm.Heuristics.ExpandContract,
                         Edmond.Data.AlternatingForest,
                         Edmond.Data.Graph.Core,
                         Util,
                         Parser,
+                        TestFiles,
+                        TestGeneral,
                         TestGraph,
+                        TestHeuristics,
                         TestParser,
-                        TestAlgorithm,
+                        Tests,
                         TestUtil,
                         Generator
-    
+
     ghc-options:         -threaded -rtsopts -with-rtsopts=-N
     default-language:    Haskell2010
 

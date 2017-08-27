@@ -3,7 +3,7 @@
 module TestGraph where
 
 import Prelude ()
-import qualified Edmond.Data.Graph as Graph
+import qualified Edmond.Data.Graph.Core as Graph
 import Test.HUnit
 import Protolude
 import Parser
@@ -13,7 +13,7 @@ import Generator
 -- tests
 
 mGraphTests :: IO Test
-mGraphTests = do 
+mGraphTests = do
     rep <- fileToGraph "data/graphs/fixed.dmx"
     let graph = Graph.initialize rep
         nv = length $ Graph.vertices graph

@@ -16,7 +16,7 @@ As in the lecture
 
 ## (3) Transform B-graph back to normal
 
-forall. {$vx, $vy} in M let {$v, $w} in M
+forall. {$vx, $wy} in M let {$v, $w} in M
 
 ## (4) Repair
 
@@ -25,7 +25,9 @@ Look at G' = (V(G), M)
 (a) Find all paths of matchings of even length and repair them (remove every
 second edge (Cannot exist any path of odd length)
 
-(b) Find all cycles of even and odd length and repair them. (Remove every second
+(b) Find all cycles of even length and repair them
+
+(c) Find all cycles odd length and repair them. (Remove every second
 edge.)
 
 OBSERVE: Must take care of paths first.

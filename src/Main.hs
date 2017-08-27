@@ -2,8 +2,9 @@
 module Main where
 
 import Protolude
--- import Edmond.Algorithm.General.Core
-import Edmond.Algorithm.Heuristics.BGraphMaximumMatching
+import Edmond.Algorithm.General.Core
+import Edmond.Algorithm.Heuristics.ExpandContract as ExpandContract
+import Edmond.Algorithm.Heuristics.MaximalMatching as MaximalMatching
 import Edmond.Data.Graph.Core as Graph
 import qualified Parser
 
@@ -11,9 +12,10 @@ import qualified Parser
 -- path = "/home/lsund/Projects/edmonds/data/graphs/peterson.dmx"
 -- path = "data/graphs/bipartite.dmx"
 -- path = "data/graphs/K2.dmx"
-path = "data/graphs/K3.dmx"
+-- path = "data/graphs/P4.dmx"
+-- path = "data/graphs/K3.dmx"
 -- path = "data/graphs/pbd984.dmx"
--- path = "data/graphs/lu980.dmx"
+path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/ar9152.dmx"
@@ -30,5 +32,6 @@ main :: IO ()
 main = do
     rep <- Parser.fileToGraph path
     let graph = Graph.initialize rep
-        res = runHeuristic graph
-    print res
+        -- res = MaximalMatching.maximalMatching graph
+        res = ExpandContract.expandContract graph
+    print $ length res

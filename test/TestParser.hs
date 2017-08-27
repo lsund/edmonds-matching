@@ -4,12 +4,12 @@ module TestParser where
 import Protolude
 import Test.HUnit
 
-import Edmond.Data.Graph as Graph
+import Edmond.Data.Graph.Core as Graph
 import qualified Data.Graph
 import Parser
 
 test00 = TestCase (do x <- fileToGraph "data/graphs/K2.dmx"
-                      assertEqual 
+                      assertEqual
                             "Should be 2 vertices"
                             2 $
                             length $ Data.Graph.vertices x)

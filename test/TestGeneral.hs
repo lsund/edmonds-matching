@@ -7,7 +7,7 @@ import Test.HUnit
 import Util
 import qualified Data.Text as Text
 
-import Edmond.Data.Graph as Graph
+import Edmond.Data.Graph.Core as Graph
 import Parser
 import Edmond.Algorithm.General.Core
 
@@ -50,14 +50,14 @@ testIfMatching path = TestCase  (do rep <- fileToGraph path
                                     checkIfMatching (findRoot init))
 
 testMatchingLen :: (FilePath, Int) -> Test
-testMatchingLen (path, len) = 
+testMatchingLen (path, len) =
     TestCase (do
         rep <- fileToGraph path
         let matching = edmonds rep
         checkMatchingLen len matching)
 
 testMatchingLenHeuristic :: (FilePath, Int) -> Test
-testMatchingLenHeuristic (path, len) = 
+testMatchingLenHeuristic (path, len) =
     TestCase (do
         rep <- fileToGraph path
         let matching = edmondsHeuristic rep
@@ -72,8 +72,8 @@ tests1 = do content <- parseFile "data/optima-stripped.txt"
                 names   = map Parser.path optimas
                 paths = map ("data/graphs/" ++) names
                 optima  = map Parser.optima optimas
-            return $ 
-                    zipWith (curry testMatchingLen) paths optima 
+            return $
+                    zipWith (curry testMatchingLen) paths optima
                 ++  zipWith (curry testMatchingLenHeuristic) paths optima
                 ++  map testIfMatching paths
 

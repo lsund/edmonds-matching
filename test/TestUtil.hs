@@ -2,7 +2,7 @@ module TestUtil where
 
 import Protolude
 import Test.HUnit
-import Edmond.Data.Graph
+import Edmond.Data.Graph.Core
 
 import Util
 
