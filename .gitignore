@@ -7,3 +7,5 @@ third_party
 data/graphs/random-graphs/
 data/testdata/
 .stack-work
+*~
+*#
