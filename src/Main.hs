@@ -1,4 +1,3 @@
-
 module Main where
 
 import Protolude
@@ -21,7 +20,7 @@ path = "data/graphs/K4.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/ar9152.dmx"
 -- path = "data/graphs/fixed.dmx"
--- path = "/home/lsund/Projects/edmonds/data/graphs/random-graphs/haskell/100/024.dmx"
+-- path = "data/graphs/random-graphs/haskell/100/024.dmx"
 
 -- main :: IO ()
 -- main = do
@@ -36,4 +35,3 @@ main = do
       -- res = MaximalMatching.maximalMatching graph
       res = ExpandContract.expandContract graph
   print res
-

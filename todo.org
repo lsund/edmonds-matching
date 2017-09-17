@@ -1,5 +1,6 @@
 Todo file for edmonds-matching
 
+* Done
 ** DONE initialize mu, phi and ro in edmonds
 ** DONE rename phiMap etc
 ** DONE constructor function for VertexAssoc
@@ -37,6 +38,8 @@ Todo file for edmonds-matching
 ** DONE check so that the number of vertices and edges are correct in DIMACSPARSER
 ** DONE profiling
 ** DONE check if I can use Set instead of list.
+
+* TO-DO
 ** TODO Refactor Core.hs, especially shrink
 ** TODO transform graph into bipartite graph
 ** TODO merge functions in bipartite.core and genreal.core
