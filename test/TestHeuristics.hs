@@ -8,17 +8,23 @@ import Edmond.Algorithm.Heuristics.ExpandContract
 import qualified Edmond.Data.Graph.Core as Graph
 import Test.HUnit
 
-testMaximalMatching :: Graph -> Test
-testMaximalMatching graph =
+testMaximalMatching :: (FilePath, Graph) -> Test
+testMaximalMatching (fpath, graph) =
     let matching = maximalMatching graph
-    in TestCase $ assertEqual "MaximalMatching: Should be a matching" True (isMatching matching)
+    in
+      TestCase $ assertEqual
+      ("maximalMatching: file: " ++ fpath ++ " Should be a matching")
+      True (isMatching matching)
 
-testExpandContract :: Graph -> Test
-testExpandContract graph =
+testExpandContract :: (FilePath, Graph) -> Test
+testExpandContract (fpath, graph) =
     let matching = expandContract graph
-    in TestCase $ assertEqual "expandContract: Should be a matching" True (isMatching matching)
+    in
+      TestCase $ assertEqual
+      ("expandContract: file: " ++ fpath ++ " Should be a matching")
+      True (isMatching matching)
 
-isMatchingTests :: (Graph -> Test) -> IO Test
+isMatchingTests :: ((FilePath, Graph) -> Test) -> IO Test
 isMatchingTests heuristic = do
     content <- parseFile "data/optima-stripped.txt"
     let optimas = [x | x@Optima {} <- map parse content]
@@ -26,7 +32,7 @@ isMatchingTests heuristic = do
         paths   = map ("data/graphs/" ++) files
     reps <- mapM Parser.fileToGraph paths
     let graphs = map Graph.initialize reps
-        tests = map heuristic graphs
+        tests = map heuristic (zip paths graphs)
     return $ TestList tests
 
 mHeuristicTests :: IO Test

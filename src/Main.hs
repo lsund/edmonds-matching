@@ -1,5 +1,6 @@
 module Main where
 
+import Prelude ()
 import Protolude
 import Edmond.Algorithm.General.Core
 import Edmond.Algorithm.Heuristics.ExpandContract as ExpandContract

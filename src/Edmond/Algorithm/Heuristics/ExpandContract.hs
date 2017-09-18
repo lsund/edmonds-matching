@@ -16,6 +16,7 @@ type Graph = Graph.Graph
 type Edge = Data.Graph.Edge
 type Vertex = Data.Graph.Vertex
 type Matching = [Edge]
+type Tree = Tree.Tree
 
 expandEdge :: Int -> Edge -> [Edge]
 expandEdge max (v, w) = [(v, w + max), (w, v + max)]
@@ -30,22 +31,15 @@ expand graph =
             len = Graph.numVertices graph
             maxVertex = List.last vs
 
+fullDirected :: Matching -> Matching
+fullDirected = concatMap (\(x, y) -> [(x, y), (y, x)])
+
 contract :: Graph -> Matching
 contract graph =
     let brokenMatching =
           map (\(x, y) -> (x, y - nv `div` 2)) (Graph.toMatching graph)
-    in filter (uncurry (<)) brokenMatching
+    in fullDirected brokenMatching
     where nv = length $ Graph.vertices graph
-
-dist :: Vertex -> Vertex -> [Vertex] -> Int
-dist a b xs = length $ takeWhile (/= b) $ dropWhile (/= a) xs
-
-candidates :: [Vertex] -> [Edge]
-candidates path = [(y, x) | (x : ys) <- tails path, y <- ys, dist x y path >= 2]
-
-findBackEdge :: [Vertex] -> Graph -> Maybe Edge
-findBackEdge path graph =
-    find (\(x, y) -> (x, y) `elem` Graph.redges graph) $ candidates path
 
 createCycle :: [Vertex] -> Edge -> [Edge]
 createCycle path e = zip path (List.tail path) ++ [e]
@@ -62,83 +56,93 @@ every' n xs acc =
     y : ys -> every' n ys (y : acc)
     [] -> acc
 
-findPath :: Matching -> Graph -> Maybe [Edge]
-findPath matching graph =
-    let allPaths = map Tree.flatten $
-          Data.Graph.dfs
-          (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
-    in
-        case
-          find
-             (\path -> odd (length path)
-               && isNothing (findBackEdge path graph)) allPaths
-        of
-            Nothing -> Nothing
-            Just path -> Just $ createPath path
+-- findPath :: Matching -> Graph -> Maybe [Edge]
+-- findPath matching graph =
+--     let allPaths = map Tree.flatten $
+--           Data.Graph.dfs
+--           (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
+--     in
+--         case
+--           find
+--              (\path -> odd (length path)
+--                && isNothing (findBackEdge path graph)) allPaths
+--         of
+--             Nothing -> Nothing
+--             Just path -> Just $ createPath path
+
+evenDistance :: [a] -> [(a, a)]
+evenDistance (a : b : c : d : xs) = (a, d) : (evenDistance (b : c : d : xs))
+evenDistance xs = []
+
+candidates :: ([a], [a]) -> [(a, a)]
+candidates (xs, ys) = [(x, y) | x <- xs, y <- ys]
+
+backEdges levels = concatMap candidates (evenDistance levels)
+
+pathsToNode :: Eq a => a -> Tree a -> [[a]]
+pathsToNode x (Tree.Node y ns) = [[x] | x == y] ++ map (y:) (pathsToNode x =<< ns)
 
 findEvenCycle :: Matching -> Graph -> Maybe [Edge]
 findEvenCycle matching graph =
-    let allPaths =
-          map Tree.flatten $
-          Data.Graph.dfs
-          (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
+    let
+      dfsTree = fromMaybe undefined $ head $
+                Data.Graph.dfs
+                (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
+      levels = Tree.levels dfsTree
+      path = fromMaybe undefined $ head $ pathsToNode 2 dfsTree
+      backEdge = head $ backEdges levels
     in
-        case
-          find
-          (\path -> odd (length path)
-            && isJust (findBackEdge path graph))
-          allPaths
-        of
-            Nothing -> Nothing
-            Just path ->
-                let backEdge = fromJust $ findBackEdge path graph
-                in Just $ createCycle path backEdge
+      case backEdge of
+        Nothing -> Nothing
+        Just edge -> Just $ createCycle path edge
 
-findOddCycle :: Matching -> Graph -> Maybe [Edge]
-findOddCycle matching graph =
-    let allPaths =
-          map Tree.flatten $
-          Data.Graph.dfs
-          (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
-    in
-        case
-          find
-          (\path -> even (length path)
-            && isJust (findBackEdge path graph)) allPaths
-        of
-            Nothing -> Nothing
-            Just path ->
-                let backEdge = fromJust $ findBackEdge path graph
-                in Just $ createCycle path backEdge
+-- findOddCycle :: Matching -> Graph -> Maybe [Edge]
+-- findOddCycle matching graph =
+--     let allPaths =
+--           map Tree.flatten $
+--           Data.Graph.dfs
+--           (Data.Graph.buildG (1, Graph.numVertices graph) matching) [1]
+--     in
+--         case
+--           find
+--           (\path -> even (length path)
+--             && isJust (findBackEdge path graph)) allPaths
+--         of
+--             Nothing -> Nothing
+--             Just path ->
+--                 let backEdge = fromJust $ findBackEdge path graph
+--                 in Just $ createCycle path backEdge
 
-repairMatching :: Matching -> Graph -> Matching
-repairMatching = repairPaths
+-- repairMatching :: Matching -> Graph -> Matching
+-- repairMatching = repairPaths
+repairMatching = repairEvenCycles
 
-repairPaths :: Matching -> Graph -> Matching
-repairPaths matching graph =
-    case findPath matching graph of
-        Nothing -> repairEvenCycles matching graph
-        Just path ->
-            let rest = matching \\ path
-            in repairPaths (rest ++ every 2 path) graph
+-- repairPaths :: Matching -> Graph -> Matching
+-- repairPaths matching graph =
+--     case findPath matching graph of
+--         Nothing -> repairEvenCycles matching graph
+--         Just path ->
+--             let rest = matching \\ path
+--             in repairPaths (rest ++ every 2 path) graph
 
 repairEvenCycles :: Matching -> Graph -> Matching
 repairEvenCycles matching graph =
     case findEvenCycle matching graph of
-        Nothing -> repairOddCycles matching graph
-        Just cycle ->
-            let rest = matching \\ cycle
-            in repairEvenCycles (rest ++ every 2 cycle) graph
-
-repairOddCycles :: Matching -> Graph -> Matching
-repairOddCycles matching graph =
-    case findOddCycle matching graph of
+        -- Nothing -> repairOddCycles matching graph
         Nothing -> matching
         Just cycle ->
-            let rest = matching \\ cycle
-            in repairOddCycles (rest ++ every 2 cycle) graph
+            let rest = matching \\ (fullDirected cycle)
+            in repairEvenCycles (rest ++ every 2 cycle) graph
 
-expandContract :: Graph -> Matching
+-- repairOddCycles :: Matching -> Graph -> Matching
+-- repairOddCycles matching graph =
+--     case findOddCycle matching graph of
+--         Nothing -> matching
+--         Just cycle ->
+--             let rest = matching \\ cycle
+--             in repairOddCycles (rest ++ every 2 cycle) graph
+
+-- expandContract :: Graph -> Matching
 expandContract graph =
     let expandedGraph = BipartiteMaximumMatching.run $ expand graph
         brokenMatching = contract expandedGraph
