@@ -10,10 +10,10 @@ import qualified Parser
 
 -- path = "/home/lsund/Projects/edmonds/data/graphs/butterfly.dmx"
 -- path = "/home/lsund/Projects/edmonds/data/graphs/peterson.dmx"
--- path = "data/graphs/bipartite.dmx"
+path = "data/graphs/bipartite.dmx"
 -- path = "data/graphs/K2.dmx"
 -- path = "data/graphs/P4.dmx"
-path = "data/graphs/K3.dmx"
+-- path = "data/graphs/K3.dmx"
 -- path = "data/graphs/K4.dmx"
 -- path = "data/graphs/pbd984.dmx"
 -- path = "data/graphs/lu980.dmx"
@@ -23,16 +23,26 @@ path = "data/graphs/K3.dmx"
 -- path = "data/graphs/fixed.dmx"
 -- path = "data/graphs/random-graphs/haskell/100/024.dmx"
 
--- main :: IO ()
--- main = do
---     graph <- Parser.fileToGraph path
---     let edges = edmondsHeuristic graph
---     print $ length edges
+runEdmonds :: IO ()
+runEdmonds = do
+    graph <- Parser.fileToGraph path
+    let es = edmondsHeuristic graph
+    print $ length es
 
-main :: IO ()
-main = do
+runMaximalMatching :: IO ()
+runMaximalMatching = do
   rep <- Parser.fileToGraph path
   let graph = Graph.initialize rep
-      -- res = MaximalMatching.maximalMatching graph
+      res = MaximalMatching.maximalMatching graph
+  print res
+
+runExpandContract :: IO ()
+runExpandContract = do
+  rep <- Parser.fileToGraph path
+  let graph = Graph.initialize rep
       res = ExpandContract.expandContract graph
   print res
+
+main :: IO ()
+main = runExpandContract
+

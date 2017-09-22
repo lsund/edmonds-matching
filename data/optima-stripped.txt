@@ -7,9 +7,11 @@ c gr9882.dmx                  4931
 K2.dmx                         1
 K3.dmx                         1
 K4.dmx                         2
+peterson.dmx                   5
+bipartite.dmx                  4
+
 c lu980.dmx                    490
 c pbd984.dmx                   492
-c peterson.dmx                   5
 c pma343.dmx                   171
 c queen10_10.dmx                50
 c queen11_11.dmx                60

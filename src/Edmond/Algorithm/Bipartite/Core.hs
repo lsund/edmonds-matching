@@ -2,10 +2,8 @@
 module Edmond.Algorithm.Bipartite.Core where
 
 import Protolude
-import Data.Maybe
 import Edmond.Data.Graph.Core as Graph
 import Util
-import qualified Data.Graph
 import qualified Data.IntSet as Set
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.General.Helpers
