@@ -3,10 +3,12 @@ module TestHeuristics where
 import Protolude
 import Parser
 import Util
-import Edmond.Algorithm.Heuristics.MaximalMatching
-import Edmond.Algorithm.Heuristics.ExpandContract
-import qualified Edmond.Data.Graph.Core as Graph
+import Algorithm.Heuristics.MaximalMatching
+import Algorithm.Heuristics.ExpandContract
+import qualified Data.Graph.Core as Graph
 import Test.HUnit
+
+type Graph = Graph.Graph
 
 testMaximalMatching :: (FilePath, Graph) -> Test
 testMaximalMatching (fpath, graph) =

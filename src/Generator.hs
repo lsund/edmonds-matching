@@ -9,7 +9,7 @@ import System.Random
 import Data.List (nub)
 import System.Directory (createDirectory)
 
-sparseness = 0.0025 :: Float
+sparseness = 0.4 :: Float
 
 shapeTupleList :: [(Int, Int)] -> [(Int, Int)]
 shapeTupleList ts = Data.List.nub $ filter (uncurry (/=)) sorted

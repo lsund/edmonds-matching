@@ -4,7 +4,7 @@ module TestParser where
 import Protolude
 import Test.HUnit
 
-import Edmond.Data.Graph.Core as Graph
+import Data.Graph.Core as Graph
 import qualified Data.Graph
 import Parser
 

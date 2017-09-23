@@ -3,7 +3,7 @@
 module TestGraph where
 
 import Prelude ()
-import qualified Edmond.Data.Graph.Core as Graph
+import qualified Data.Graph.Core as Graph
 import Test.HUnit
 import Protolude
 import Parser

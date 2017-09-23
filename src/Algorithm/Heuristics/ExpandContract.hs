@@ -1,4 +1,4 @@
-module Edmond.Algorithm.Heuristics.ExpandContract where
+module Algorithm.Heuristics.ExpandContract where
 
 import Prelude ()
 import Protolude hiding (cycle, some)
@@ -7,9 +7,9 @@ import qualified Data.Graph
 import qualified Data.Tree as Tree
 import Util (oddElements)
 
-import qualified Edmond.Data.Graph.Core as Graph
-import Edmond.Data.Graph.Core (Graph, Vertex, Edge, Matching)
-import Edmond.Algorithm.Bipartite.Core as BipartiteMaximumMatching
+import qualified Data.Graph.Core as Graph
+import Data.Graph.Core (Graph, Vertex, Edge, Matching)
+import Algorithm.Edmonds.Bipartite.Core as BipartiteMaximumMatching
 
 data Component = Path | EvenCycle | OddCycle deriving Eq
 type Tree = Tree.Tree

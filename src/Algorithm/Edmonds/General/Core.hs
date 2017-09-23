@@ -1,14 +1,11 @@
-module Edmond.Algorithm.General.Core where
+module Algorithm.Edmonds.General.Core (findRoot, findNeighbour)
+where
 
-import Edmond.Algorithm.General.Helpers
-import Edmond.Algorithm.Heuristics.Core
-import Edmond.Algorithm.Heuristics.MaximalMatching
-import Edmond.Algorithm.Heuristics.ExpandContract
-import qualified Edmond.Data.AlternatingForest as AF
-import Edmond.Data.Graph.Core as Graph
+import Algorithm.Edmonds.General.Helpers
+import qualified Data.AlternatingForest as AF
+import Data.Graph.Core as Graph
 import Util
 
-import qualified Data.Graph
 import qualified Data.IntMap as Map
 import qualified Data.IntSet as Set
 import qualified Data.List as List
@@ -26,11 +23,11 @@ findRoot graph =
 
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
-  let pred' y = isOuter graph y && ro y /= ro x
-      pred'' = isOutOfForest graph
-      pred y = pred'' y || pred' y
+  let match y =
+        ( isOutOfForest graph y
+        || (isOuter graph y && (not . sameBlossom graph x) y))
       nbs = neighbours graph x
-      found = find pred nbs
+      found = find match nbs
   in case found of
        Nothing ->
          let scanned' = Set.insert x $ scanned graph
@@ -38,7 +35,6 @@ findNeighbour graph =
        Just y -> grow (graph {currentY = y})
   where
     x = currentX graph
-    ro = Graph.get $ (AF.ro . forest) graph
 
 grow :: Graph -> Graph
 grow graph =
@@ -100,14 +96,3 @@ shrink graph =
       ro'                  = insertList (zip keys' (repeat r)) ro
       forest'              = (forest graph) {AF.phi = phi'', AF.ro = ro'}
   in findNeighbour $ graph {forest = forest'}
-
-runEdmonds :: Heuristic -> Data.Graph.Graph -> [Edge]
-runEdmonds heuristic rep =
-  let graph = Graph.initialize rep
-      initMatching =
-        case heuristic of
-          GreedyMaximal  -> maximalMatching graph
-          ExpandContract -> expandContract graph
-          None           -> []
-      graph' = loadMatching graph initMatching
-  in toMatching $ findRoot graph'

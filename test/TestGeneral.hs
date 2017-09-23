@@ -7,9 +7,11 @@ import Test.HUnit
 import Util
 import qualified Data.Text as Text
 
-import Edmond.Data.Graph.Core as Graph
+import Data.Graph.Core as Graph
 import Parser
-import Edmond.Algorithm.General.Core
+import Algorithm.Edmonds.Core
+import Algorithm.Edmonds.General.Core
+import Algorithm.Heuristics.Core
 
 ----------------------------------------------------------------------------
 -- Data
@@ -53,14 +55,14 @@ testMatchingLen :: (FilePath, Int) -> Test
 testMatchingLen (path, len) =
     TestCase (do
         rep <- fileToGraph path
-        let matching = edmonds rep
+        let matching = findMatching None rep
         checkMatchingLen len matching)
 
 testMatchingLenHeuristic :: (FilePath, Int) -> Test
 testMatchingLenHeuristic (path, len) =
     TestCase (do
         rep <- fileToGraph path
-        let matching = edmondsHeuristic rep
+        let matching = findMatching GreedyMaximal rep
         checkMatchingLen len matching)
 
 ----------------------------------------------------------------------------

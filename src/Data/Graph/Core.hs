@@ -1,13 +1,13 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Edmond.Data.Graph.Core where
+module Data.Graph.Core where
 
 import Prelude ()
 import Protolude
 
 import Util
-import qualified Edmond.Data.AlternatingForest as AF
+import qualified Data.AlternatingForest as AF
 
 import Data.Array
 import qualified Data.Graph

@@ -1,5 +1,5 @@
 
-module Edmond.Data.AlternatingForest where
+module Data.AlternatingForest where
 
 import Protolude
 import qualified Data.Graph

@@ -1,11 +1,11 @@
 {-# OPTIONS_GHC -fwarn-unused-imports #-}
 
-module Edmond.Algorithm.General.Helpers where
+module Algorithm.Edmonds.General.Helpers where
 
 import Protolude
 import Util
-import Edmond.Data.Graph.Core as Graph
-import qualified Edmond.Data.AlternatingForest as AF
+import Data.Graph.Core as Graph
+import qualified Data.AlternatingForest as AF
 import Data.IntSet as Set
 
 data Dimension = X | Y
@@ -41,6 +41,7 @@ isOutOfForest graph x = mu x /= x && phi x == x && phi (mu x) == mu x
 isScanned :: Graph -> Vertex -> Bool
 isScanned graph v = v `Set.member` scanned graph
 
-----------------------------------------------------------------------------
--- 
-
+sameBlossom :: Graph -> Vertex -> Vertex -> Bool
+sameBlossom    graph    x         y       = ro y == ro x
+  where
+    ro = Graph.get $ (AF.ro . forest) graph

@@ -1,37 +1,38 @@
 
-module Edmond.Algorithm.Bipartite.Core where
+module Algorithm.Edmonds.Bipartite.Core where
 
 import Protolude
-import Edmond.Data.Graph.Core as Graph
+import Data.Graph.Core as Graph
+import Algorithm.Edmonds.General.Core
+import Algorithm.Edmonds.General.Helpers
 import Util
 import qualified Data.IntSet as Set
-import qualified Edmond.Data.AlternatingForest as AF
-import Edmond.Algorithm.General.Helpers
+import qualified Data.AlternatingForest as AF
 import qualified Data.IntMap as Map
 
-findRoot :: Graph -> Graph
-findRoot graph =
-  let mx = find (\x -> x `Set.notMember` scanned graph && isOuter graph x) vs
-  in case mx of
-       Nothing -> graph
-       Just x -> findNeighbour $ graph {currentX = x}
-  where
-    vs = vertices graph
+-- findRoot :: Graph -> Graph
+-- findRoot graph =
+--   let mx = find (\x -> x `Set.notMember` scanned graph && isOuter graph x) vs
+--   in case mx of
+--        Nothing -> graph
+--        Just x -> findNeighbour $ graph {currentX = x}
+--   where
+--     vs = vertices graph
 
-findNeighbour :: Graph -> Graph
-findNeighbour graph =
-  let f' = isOuter graph
-      f'' = isOutOfForest graph
-      f y = f'' y || f' y
-      nbs = neighbours graph x
-      found = find f nbs
-  in case found of
-       Nothing ->
-         let scanned' = Set.insert x $ scanned graph
-         in findRoot (graph {scanned = scanned'})
-       Just y -> grow (graph {currentY = y})
-  where
-    x = currentX graph
+-- findNeighbour :: Graph -> Graph
+-- findNeighbour graph =
+--   let f' = isOuter graph
+--       f'' = isOutOfForest graph
+--       f y = f'' y || f' y
+--       nbs = neighbours graph x
+--       found = find f nbs
+--   in case found of
+--        Nothing ->
+--          let scanned' = Set.insert x $ scanned graph
+--          in findRoot (graph {scanned = scanned'})
+--        Just y -> grow (graph {currentY = y})
+--   where
+--     x = currentX graph
 
 grow :: Graph -> Graph
 grow graph =

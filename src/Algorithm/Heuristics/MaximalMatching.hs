@@ -1,9 +1,9 @@
 
-module Edmond.Algorithm.Heuristics.MaximalMatching where
+module Algorithm.Heuristics.MaximalMatching where
 
 import Prelude ()
 import Protolude
-import Edmond.Data.Graph.Core as Graph
+import Data.Graph.Core as Graph
 import Data.List as List
 
 maximalMatching :: Graph -> Matching
