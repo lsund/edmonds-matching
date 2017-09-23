@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -fwarn-unused-imports #-}
-
 module Util where
 
 import Data.Graph
@@ -16,9 +14,9 @@ containsOne xs ys = any (`elem` ys) xs
 
 takeUntil :: Eq a => a -> [a] -> [a]
 takeUntil _ [] = []
-takeUntil v (x:xs)
+takeUntil v (x : xs)
   | v == x = [v]
-takeUntil v (x:xs) = x : takeUntil v xs
+takeUntil v (x : xs) = x : takeUntil v xs
 
 takeWhileDifferent :: Eq a => [a] -> [a]
 takeWhileDifferent [] = []
@@ -73,6 +71,24 @@ every n xs acc =
   case drop (pred n) xs of
     y:ys -> every n ys (Set.insert y acc)
     [] -> acc
+
+-- In unspecified order
+oddElements :: [a] -> [a]
+oddElements = oddElements' []
+  where
+    oddElements' acc xs =
+      case xs of
+        y : ys -> oddElements'  (y : acc) (drop 2 xs)
+        [] -> acc
+
+-- In unspecified order
+evenElements :: [a] -> [a]
+evenElements = evenElements' []
+  where
+    evenElements' acc xs =
+      case drop 1 xs of
+        y : ys -> evenElements' (y : acc) ys 
+        [] -> acc
 
 appendIf :: Bool -> a -> [a] -> [a]
 appendIf p x xs =

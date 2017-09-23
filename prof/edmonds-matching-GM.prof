@@ -1,0 +1,398 @@
+	Sat Sep 23 11:01 2017 Time and Allocation Profiling Report  (Final)
+
+	   edmonds-matching +RTS -N -p -RTS
+
+	total time  =        0.48 secs   (483 ticks @ 1000 us, 1 processor)
+	total alloc = 398,957,800 bytes  (excludes profiling overheads)
+
+COST CENTRE                          MODULE                                      SRC                                                                %time %alloc
+
+get                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                               28.6    4.6
+insertList                           Util                                        src/Util.hs:38:1-49                                                 15.5   41.2
+shrink.keys'.\                       Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:99:44-76                       12.0    0.0
+findR.isect                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:71:7-36                         4.8    1.0
+isOuter.mu                           Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:28:11-49                     3.9    6.8
+isOuter                              Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(27,1)-(29,51)               3.5    0.0
+findRoot.mx.\                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:20:24-73                        3.5    0.9
+shrink.keys'                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:99:7-80                         3.1    6.0
+maximalMatching'.my.\                Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:15:26-59          2.9    0.0
+maximalMatching'                     Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:(13,1)-(22,24)    2.7    0.0
+isOuter.phi                          Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:29:11-51                     2.1    3.9
+shrink.ro'                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:100:7-65                        1.7    8.5
+takeWhileDifferent                   Util                                        src/Util.hs:(22,1)-(26,61)                                           1.2    2.4
+neighbours                           Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(75,1)-(78,30)                         1.0    3.2
+findNeighbour                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(28,1)-(41,43)                  1.0    0.4
+iterateEveryOther.iterateEveryOther' Util                                        src/Util.hs:(31,5)-(32,74)                                           1.0    3.7
+every                                Util                                        src/Util.hs:(70,1)-(73,13)                                           1.0    1.1
+augment.isect                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:58:7-64                         0.8    3.1
+isOutOfForest.mu                     Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:38:11-49                     0.6    1.4
+isOutOfForest.phi                    Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:39:11-51                     0.6    1.4
+getBlossom.(...)                     Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:81:7-57                         0.4    2.7
+takeUntil                            Util                                        src/Util.hs:(16,1)-(19,41)                                           0.2    1.1
+
+
+                                                                                                                                                                                      individual      inherited
+COST CENTRE                                         MODULE                                      SRC                                                               no.      entries  %time %alloc   %time %alloc
+
+MAIN                                                MAIN                                        <built-in>                                                         702          0    0.0    0.0   100.0  100.0
+ CAF                                                GHC.IO.Exception                            <entire-module>                                                    750          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.Handle.FD                            <entire-module>                                                    748          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.Handle.Internals                     <entire-module>                                                    747          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.Handle.Text                          <entire-module>                                                    746          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.Event.Thread                            <entire-module>                                                    740          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.Conc.Signal                             <entire-module>                                                    729          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.Encoding                             <entire-module>                                                    727          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.FD                                   <entire-module>                                                    723          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.Event.EPoll                             <entire-module>                                                    720          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.Event.Poll                              <entire-module>                                                    717          0    0.0    0.0     0.0    0.0
+ CAF                                                GHC.IO.Encoding.Iconv                       <entire-module>                                                    715          0    0.0    0.0     0.0    0.0
+ CAF:$fIsStringText_$cfromString                    Data.Text                                   Data/Text.hs:353:5-14                                             1225          0    0.0    0.0     0.0    0.0
+  fromString                                        Data.Text                                   Data/Text.hs:353:5-21                                             1467          1    0.0    0.0     0.0    0.0
+ CAF:$fShowHeuristic7                               Edmond.Algorithm.Heuristics.Core            <no location info>                                                1340          0    0.0    0.0     0.0    0.0
+  showsPrec                                         Edmond.Algorithm.Heuristics.Core            src/Edmond/Algorithm/Heuristics/Core.hs:6:65-68                   1433          0    0.0    0.0     0.0    0.0
+ CAF:empty                                          Data.Text.Array                             Data/Text/Array.hs:173:1-5                                        1197          0    0.0    0.0     0.0    0.0
+  empty                                             Data.Text.Array                             Data/Text/Array.hs:173:1-38                                       1428          1    0.0    0.0     0.0    0.0
+   shiftL                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1429          1    0.0    0.0     0.0    0.0
+   shiftR                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1430          1    0.0    0.0     0.0    0.0
+ CAF:empty                                          Data.Text.Internal                          Data/Text/Internal.hs:82:1-5                                      1045          0    0.0    0.0     0.0    0.0
+ CAF:initialize                                     Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:17:1-10                      1329          0    0.0    0.0     0.0    0.0
+  initialize                                        Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:17:1-60                      1499          1    0.0    0.0     0.0    0.0
+ CAF:iterateEveryOther                              Util                                        src/Util.hs:29:1-17                                               1355          0    0.0    0.0     0.0    0.0
+  iterateEveryOther                                 Util                                        src/Util.hs:(29,1)-(32,74)                                        1602          1    0.0    0.0     0.0    0.0
+ CAF:loadLines                                      Parser                                      src/Parser.hs:44:1-9                                              1401          0    0.0    0.0     0.0    0.0
+  loadLines                                         Parser                                      src/Parser.hs:44:1-26                                             1437          1    0.0    0.0     0.0    0.0
+   map                                              Protolude                                   src/Protolude.hs:379:1-10                                         1438          1    0.0    0.0     0.0    0.0
+ CAF:lvl10_r9gM                                     Parser                                      <no location info>                                                1377          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1470          0    0.0    0.0     0.0    0.0
+ CAF:lvl11_r9gN                                     Parser                                      <no location info>                                                1378          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1466          0    0.0    0.0     0.0    0.0
+   shiftL                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1468          1    0.0    0.0     0.0    0.0
+   shiftR                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1469          1    0.0    0.0     0.0    0.0
+ CAF:lvl12_r9gO                                     Parser                                      <no location info>                                                1379          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1475          0    0.0    0.0     0.0    0.0
+ CAF:lvl13_r9gP                                     Parser                                      <no location info>                                                1380          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1472          0    0.0    0.0     0.0    0.0
+   shiftL                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1473          1    0.0    0.0     0.0    0.0
+   shiftR                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1474          1    0.0    0.0     0.0    0.0
+ CAF:lvl16_r9gS                                     Parser                                      <no location info>                                                1383          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1488          0    0.0    0.0     0.0    0.0
+ CAF:lvl17_r9gT                                     Parser                                      <no location info>                                                1384          0    0.0    0.0     0.0    0.0
+  parse                                             Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1485          0    0.0    0.0     0.0    0.0
+   shiftL                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1486          1    0.0    0.0     0.0    0.0
+   shiftR                                           Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1487          1    0.0    0.0     0.0    0.0
+ CAF:lvl52_r5qdO                                    Data.Text                                   <no location info>                                                1258          0    0.0    0.0     0.0    0.0
+  concat                                            Data.Text                                   Data/Text.hs:(894,1)-(906,36)                                     1447          0    0.0    0.0     0.0    0.0
+   concat.len                                       Data.Text                                   Data/Text.hs:900:5-48                                             1448          0    0.0    0.0     0.0    0.0
+    sumP                                            Data.Text                                   Data/Text.hs:(1724,1)-(1729,27)                                   1449          1    0.0    0.0     0.0    0.0
+ CAF:main1                                          Main                                        <no location info>                                                1347          0    0.0    0.0     0.0    0.0
+  main                                              Main                                        src/Main.hs:(52,1)-(55,19)                                        1404          1    0.0    0.0     0.0    0.0
+   run                                              Main                                        src/Main.hs:(30,1)-(34,21)                                        1405          1    0.0    0.0     0.0    0.0
+ CAF:main3                                          Main                                        <no location info>                                                1344          0    0.0    0.0     0.0    0.0
+  run                                               Main                                        src/Main.hs:(30,1)-(34,21)                                        1434          0    0.0    0.0     0.0    0.0
+   print                                            Protolude                                   src/Protolude.hs:396:1-28                                         1435          1    0.0    0.0     0.0    0.0
+ CAF:main4                                          Main                                        <no location info>                                                1346          0    0.0    0.0     0.0    0.0
+  run                                               Main                                        src/Main.hs:(30,1)-(34,21)                                        1408          0    0.0    0.0     0.0    0.0
+   fileToGraph                                      Parser                                      src/Parser.hs:(50,1)-(57,32)                                      1409          1    0.0    0.0     0.0    0.0
+ CAF:maximalMatching                                Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:10:1-15        1337          0    0.0    0.0     0.0    0.0
+  maximalMatching                                   Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:10:1-42        1501          1    0.0    0.0     0.0    0.0
+ CAF:path                                           Main                                        src/Main.hs:22:1-4                                                1345          0    0.0    0.0     0.0    0.0
+  path                                              Main                                        src/Main.hs:22:1-30                                               1413          1    0.0    0.0     0.0    0.0
+ main                                               Main                                        src/Main.hs:(52,1)-(55,19)                                        1406          0    0.0    0.0   100.0  100.0
+  run                                               Main                                        src/Main.hs:(30,1)-(34,21)                                        1407          0    0.0    0.0   100.0  100.0
+   print                                            Protolude                                   src/Protolude.hs:396:1-28                                         1431          1    0.0    0.0     0.0    0.0
+    showsPrec                                       Edmond.Algorithm.Heuristics.Core            src/Edmond/Algorithm/Heuristics/Core.hs:6:65-68                   1432          1    0.0    0.0     0.0    0.0
+   run.es                                           Main                                        src/Main.hs:32:9-37                                               1436          1    0.0    0.0    98.8   97.4
+    runEdmonds                                      Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(105,1)-(113,33)             1492          1    0.0    0.0    98.8   97.4
+     findRoot                                       Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(19,1)-(25,23)               1521       1804    0.0    0.1    92.8   95.8
+      findNeighbour                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(28,1)-(41,43)               1536       5387    1.0    0.4    74.7   85.1
+       findNeighbour.found                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:33:7-27                      1543       5387    0.6    0.0     9.7    6.0
+        findNeighbour.pred                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:31:7-34                      1544      54211    0.4    0.0     9.1    6.0
+         findNeighbour.pred'                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:29:7-47                      1576      52195    0.2    0.2     4.1    2.7
+          isOuter                                   Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(27,1)-(29,51)            1577      52195    0.4    0.0     3.1    2.3
+           isOuter.mu                               Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:28:11-49                  1578      52195    1.2    1.3     2.1    1.5
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1581      52195    0.2    0.0     0.2    0.0
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1579      52195    0.6    0.2     0.6    0.2
+            mu                                      Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1580      52195    0.0    0.0     0.0    0.0
+           isOuter.phi                              Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:29:11-51                  1582      51962    0.4    0.7     0.6    0.9
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1584      51962    0.0    0.0     0.0    0.0
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1585      51962    0.0    0.2     0.0    0.2
+            phi                                     Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1583      51962    0.2    0.0     0.2    0.0
+          findNeighbour.ro                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:41:5-43                      1591          0    0.0    0.0     0.8    0.1
+           get                                      Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1592      38658    0.8    0.1     0.8    0.1
+         findNeighbour.pred''                       Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:30:7-34                      1546          0    0.0    0.2     4.6    3.2
+          isOutOfForest                             Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(37,1)-(39,51)            1547      54211    0.6    0.0     4.6    3.0
+           isOutOfForest.mu                         Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:38:11-49                  1548      54211    0.6    1.3     2.1    1.5
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1551      54211    0.0    0.0     0.0    0.0
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1549      54211    1.4    0.2     1.4    0.2
+            mu                                      Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1550      54211    0.0    0.0     0.0    0.0
+           isOutOfForest.phi                        Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:39:11-51                  1552      53978    0.6    1.3     1.9    1.5
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1553      57596    1.0    0.2     1.0    0.2
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1555      53978    0.0    0.0     0.0    0.0
+            phi                                     Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1554      53978    0.2    0.0     0.2    0.0
+       findNeighbour.nbs                            Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:32:7-30                      1539       5387    0.0    0.2     0.6    2.5
+        neighbours                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(75,1)-(78,30)                      1540       5387    0.6    2.3     0.6    2.3
+         neighbours.forw                            Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:77:9-28                             1541       5387    0.0    0.0     0.0    0.0
+          forward                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:29:22-28                            1542       5387    0.0    0.0     0.0    0.0
+         neighbours.backw                           Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:78:9-30                             1586       2494    0.0    0.0     0.0    0.0
+          backward                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:30:22-29                            1587       2494    0.0    0.0     0.0    0.0
+       findNeighbour.pred''                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:30:7-34                      1545       5387    0.0    0.0     0.0    0.0
+       findNeighbour.x                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:40:5-22                      1537       5387    0.0    0.0     0.0    0.0
+        currentX                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1538       5387    0.0    0.0     0.0    0.0
+       findNeighbour.ro                             Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:41:5-43                      1590       4623    0.0    0.0     0.0    0.0
+        forest                                      Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1593       4623    0.0    0.0     0.0    0.0
+        ro                                          Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:13:46-47                     1594       4623    0.0    0.0     0.0    0.0
+       grow                                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(44,1)-(50,25)               1556       3608    0.2    0.2    63.1   76.0
+        grow.(...)                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:45:7-47                      1558       3608    0.0    0.0     0.0    0.0
+         currentY                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:36:22-29                            1559       3608    0.0    0.0     0.0    0.0
+         currentX                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1575       2016    0.0    0.0     0.0    0.0
+        grow.y                                      Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:45:7-47                      1557       3608    0.0    0.0     0.0    0.0
+        isOutOfForest                               Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(37,1)-(39,51)            1560       3608    0.0    0.0     0.0    0.2
+         isOutOfForest.mu                           Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:38:11-49                  1561       3608    0.0    0.1     0.0    0.1
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1564       3608    0.0    0.0     0.0    0.0
+          get                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1562       3608    0.0    0.0     0.0    0.0
+          mu                                        Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1563       3608    0.0    0.0     0.0    0.0
+         isOutOfForest.phi                          Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:39:11-51                  1565       3586    0.0    0.1     0.0    0.1
+          get                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1566       7092    0.0    0.0     0.0    0.0
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1568       3586    0.0    0.0     0.0    0.0
+          phi                                       Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1567       3586    0.0    0.0     0.0    0.0
+        grow.forest'                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:48:17-70                     1569       2016    0.0    0.2     0.0    0.2
+         forest                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1570       2016    0.0    0.0     0.0    0.0
+        grow.phi                                    Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:46:7-35                      1571       2016    0.0    0.0     0.0    0.0
+         forest                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1572       2016    0.0    0.0     0.0    0.0
+         phi                                        Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1573       2016    0.0    0.0     0.0    0.0
+        grow.x                                      Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:45:7-47                      1574       2016    0.0    0.0     0.0    0.0
+        augment                                     Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(53,1)-(66,24)               1599       1592    0.0    0.1    62.9   75.4
+         augment.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:55:7-57                      1600       1592    0.0    0.0     1.9    3.7
+          pathToRoot                                Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(17,1)-(22,51)            1601       3184    0.0    0.1     1.9    3.7
+           takeWhileDifferent                       Util                                        src/Util.hs:(22,1)-(26,61)                                        1605      78970    0.6    1.2     0.6    1.2
+           pathToRoot.mu                            Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:21:11-49                  1607       3184    0.0    0.1     0.0    0.1
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1611       3184    0.0    0.0     0.0    0.0
+            mu                                      Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1610       3184    0.0    0.0     0.0    0.0
+           pathToRoot.phi                           Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:22:11-51                  1614       3038    0.0    0.1     0.0    0.1
+            forest                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1618       3038    0.0    0.0     0.0    0.0
+            phi                                     Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1617       3038    0.0    0.0     0.0    0.0
+           currentX                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1606       1592    0.0    0.0     0.0    0.0
+           currentY                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:36:22-29                            1620       1592    0.0    0.0     0.0    0.0
+           iterateEveryOther                        Util                                        src/Util.hs:(29,1)-(32,74)                                        1603          0    0.0    0.1     1.2    2.3
+            iterateEveryOther.iterateEveryOther'    Util                                        src/Util.hs:(31,5)-(32,74)                                        1604      82154    0.2    1.9     1.2    2.2
+             pathToRoot.mu                          Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:21:11-49                  1608          0    0.0    0.0     0.8    0.2
+              get                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1609      41077    0.8    0.2     0.8    0.2
+             pathToRoot.phi                         Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:22:11-51                  1615          0    0.0    0.0     0.2    0.2
+              get                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1616      37893    0.2    0.2     0.2    0.2
+         augment.isect                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:58:7-64                      1613       1592    0.8    3.1     0.8    3.1
+         augment.px                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:55:7-57                      1612       1592    0.0    0.0     0.0    0.0
+         augment.py                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:55:7-57                      1619       1592    0.0    0.0     0.0    0.0
+         shrink                                     Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(91,1)-(102,45)              1621       1568    0.4    0.2    60.0   68.4
+          shrink.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:94:7-78                      1661       1568    0.0    0.0     0.0    0.0
+           forest                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1662       3136    0.0    0.0     0.0    0.0
+           phi                                      Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1664       1568    0.0    0.0     0.0    0.0
+           ro                                       Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:13:46-47                     1663       1568    0.0    0.0     0.0    0.0
+          shrink.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:92:7-77                      1655       1568    0.0    0.0     0.0    0.0
+           currentX                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1656       1568    0.0    0.0     0.0    0.0
+           currentY                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:36:22-29                            1657       1568    0.0    0.0     0.0    0.0
+           vertices                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:31:22-29                            1692       1568    0.0    0.0     0.0    0.0
+          shrink.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:93:7-45                      1626       1568    0.0    0.0    13.5   10.6
+           getBlossom                               Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(76,1)-(88,25)               1627       1568    0.2    0.2    13.5   10.6
+            getBlossom.(...)                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:81:7-57                      1697       1568    0.4    2.7     0.4    2.7
+            getBlossom.(...)                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:77:7-70                      1681       1568    0.0    0.0     0.0    0.0
+             forest                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1682       3136    0.0    0.0     0.0    0.0
+             phi                                    Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1683       1568    0.0    0.0     0.0    0.0
+             ro                                     Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:13:46-47                     1685       1568    0.0    0.0     0.0    0.0
+            getBlossom.(...)                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:80:7-53                      1674       1568    0.0    0.0     0.2    1.1
+             takeUntil                              Util                                        src/Util.hs:(16,1)-(19,41)                                        1675      72896    0.2    1.1     0.2    1.1
+            getBlossom.(...)                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:78:7-61                      1632       1568    0.0    0.0     4.1    3.5
+             pathToRoot                             Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(17,1)-(22,51)            1633       3136    0.0    0.1     4.1    3.5
+              takeWhileDifferent                    Util                                        src/Util.hs:(22,1)-(26,61)                                        1636      73180    0.6    1.1     0.6    1.1
+              pathToRoot.mu                         Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:21:11-49                  1638       3136    0.0    0.1     0.0    0.1
+               forest                               Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1642       3136    0.0    0.0     0.0    0.0
+               mu                                   Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1641       3136    0.0    0.0     0.0    0.0
+              pathToRoot.phi                        Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:22:11-51                  1645       2916    0.0    0.1     0.0    0.1
+               forest                               Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1649       2916    0.0    0.0     0.0    0.0
+               phi                                  Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1648       2916    0.0    0.0     0.0    0.0
+              currentX                              Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1637       1568    0.0    0.0     0.0    0.0
+              currentY                              Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:36:22-29                            1644       1568    0.0    0.0     0.0    0.0
+              iterateEveryOther                     Util                                        src/Util.hs:(29,1)-(32,74)                                        1634          0    0.2    0.1     3.5    2.1
+               iterateEveryOther.iterateEveryOther' Util                                        src/Util.hs:(31,5)-(32,74)                                        1635      76316    0.8    1.8     3.3    2.0
+                pathToRoot.mu                       Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:21:11-49                  1639          0    0.0    0.0     1.7    0.1
+                 get                                Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1640      38158    1.7    0.1     1.7    0.1
+                pathToRoot.phi                      Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:22:11-51                  1646          0    0.0    0.0     0.8    0.1
+                 get                                Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1647      35022    0.8    0.1     0.8    0.1
+            getBlossom.filtered                     Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(86,7)-(87,73)               1677       1568    0.2    0.1     1.0    0.4
+             getBlossom.filtered.\                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:87:27-63                     1678      19189    0.4    0.1     0.8    0.3
+              get                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1679      38378    0.4    0.2     0.4    0.2
+              getBlossom.ro                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:77:7-70                      1684      19189    0.0    0.0     0.0    0.0
+            getBlossom.oddUnion                     Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(82,7)-(84,28)               1667       1568    0.0    0.1     1.0    1.2
+             getBlossom.oddUnion.(...)              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:83:13-35                     1668       1568    0.0    0.0     1.0    1.1
+              odds                                  Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:25:1-57                   1669       1568    0.0    0.0     1.0    1.1
+               every                                Util                                        src/Util.hs:(70,1)-(73,13)                                        1672      38016    1.0    1.1     1.0    1.1
+             getBlossom.oddUnion.ox                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:83:13-35                     1670       1568    0.0    0.0     0.0    0.0
+             getBlossom.oddUnion.oy                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:83:13-35                     1671       1568    0.0    0.0     0.0    0.0
+            getBlossom.phi                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:77:7-70                      1680       1568    0.0    0.0     0.0    0.0
+            getBlossom.px                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:78:7-61                      1631       1568    0.0    0.0     0.0    0.0
+            getBlossom.pxr                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:80:7-53                      1673       1568    0.0    0.0     0.0    0.0
+            getBlossom.py                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:78:7-61                      1643       1568    0.0    0.0     0.0    0.0
+            getBlossom.pyr                          Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:80:7-53                      1676       1568    0.0    0.0     0.0    0.0
+            getBlossom.r                            Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:79:7-38                      1628       1568    0.0    0.0     6.4    1.2
+             findR                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(69,1)-(73,54)               1629       1568    0.6    0.0     6.4    1.2
+              findR.\                               Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:73:29-47                     1650      32956    0.0    0.0     1.0    0.1
+               get                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1651      32956    1.0    0.1     1.0    0.1
+              findR.isect                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:71:7-36                      1630       1568    4.8    1.0     4.8    1.0
+              findR.ro                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:72:7-33                      1652       1568    0.0    0.0     0.0    0.0
+               forest                               Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1653       1568    0.0    0.0     0.0    0.0
+               ro                                   Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:13:46-47                     1654       1568    0.0    0.0     0.0    0.0
+            getBlossom.spxr                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:81:7-57                      1699       1568    0.0    0.0     0.0    0.0
+            getBlossom.spyr                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:81:7-57                      1698       1568    0.0    0.0     0.0    0.0
+            getBlossom.union                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:85:7-42                      1700       1568    0.0    0.2     0.0    0.2
+          shrink.filtered                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:93:7-45                      1689       1568    0.0    0.0     0.0    0.0
+          shrink.forest'                            Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:101:7-73                     1622       1568    0.0    0.0     0.0    0.0
+           forest                                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1623       1568    0.0    0.0     0.0    0.0
+          shrink.keys'                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:99:7-80                      1693       1568    3.1    6.0    28.8    7.8
+           shrink.keys'.\                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:99:44-76                     1694    1536640   12.0    0.0    25.7    1.9
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1695    1536640   13.7    1.9    13.7    1.9
+          shrink.phi                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:94:7-78                      1687       1568    0.0    0.0     0.0    0.0
+          shrink.phi'                               Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:97:7-51                      1665       1568    0.0    0.0     0.0    0.0
+           shrink.adjustPhi                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(95,7)-(96,71)               1666       1568    0.0    0.0     0.0    0.0
+            shrink.adjustPhi.\                      Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:96:30-63                     1730         20    0.0    0.0     0.0    0.0
+             get                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1731         20    0.0    0.0     0.0    0.0
+          shrink.phi''                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:98:7-70                      1624       1568    0.2    0.0     0.2    0.1
+           symmetricUpdate                          Util                                        src/Util.hs:(60,1)-(67,14)                                        1659       1568    0.0    0.1     0.0    0.1
+            get                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1660       1568    0.0    0.0     0.0    0.0
+            symmetricUpdate.xm                      Util                                        src/Util.hs:(61,7)-(64,16)                                        1690       1568    0.0    0.0     0.0    0.0
+             get                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1691       1568    0.0    0.0     0.0    0.0
+          shrink.r                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:93:7-45                      1625       1568    0.0    0.0     0.0    0.0
+          shrink.ro                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:94:7-78                      1686       1568    0.0    0.0     0.0    0.0
+          shrink.ro'                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:100:7-65                     1702       1568    1.7    8.5    17.2   49.7
+           insertList                               Util                                        src/Util.hs:38:1-49                                               1703       1568   15.5   41.2    15.5   41.2
+          shrink.union                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:93:7-45                      1696       1568    0.0    0.0     0.0    0.0
+          shrink.vs                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:92:7-77                      1701       1568    0.0    0.0     0.0    0.0
+          shrink.x                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:92:7-77                      1688       1568    0.0    0.0     0.0    0.0
+          shrink.y                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:92:7-77                      1658       1568    0.0    0.0     0.0    0.0
+         augment.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:54:7-47                      1726         24    0.0    0.0     0.0    0.0
+          currentX                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:35:22-29                            1729         24    0.0    0.0     0.0    0.0
+          currentY                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:36:22-29                            1727         24    0.0    0.0     0.0    0.0
+         augment.(...)                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:60:17-43                     1712         24    0.0    0.0     0.0    0.0
+          odds                                      Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:25:1-57                   1713         24    0.0    0.0     0.0    0.0
+           every                                    Util                                        src/Util.hs:(70,1)-(73,13)                                        1715        161    0.0    0.0     0.0    0.0
+         augment.graph'                             Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:64:17-46                     1704         24    0.0    0.0     0.0    0.0
+          resetForest                               Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(86,1)-(89,36)                      1705         24    0.0    0.0     0.0    0.0
+           resetForest.newForest'                   Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:87:9-34                             1706         24    0.0    0.0     0.0    0.0
+         augment.mu                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:56:7-33                      1707         24    0.0    0.0     0.0    0.0
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1708         24    0.0    0.0     0.0    0.0
+          mu                                        Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1709         24    0.0    0.0     0.0    0.0
+         augment.mu'                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:63:17-67                     1710         24    0.0    0.0     0.2    0.0
+          insertListSymmetric                       Util                                        src/Util.hs:(41,1)-(42,61)                                        1711         24    0.0    0.0     0.2    0.0
+           insertListSymmetric.\                    Util                                        src/Util.hs:42:23-55                                              1720        161    0.2    0.0     0.2    0.0
+         augment.oddpx                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:60:17-43                     1717         24    0.0    0.0     0.0    0.0
+         augment.oddpy                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:60:17-43                     1716         24    0.0    0.0     0.0    0.0
+         augment.phi                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:57:7-35                      1722         24    0.0    0.0     0.0    0.0
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1723         24    0.0    0.0     0.0    0.0
+          phi                                       Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1724         24    0.0    0.0     0.0    0.0
+         augment.pu                                 Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:62:17-74                     1718         24    0.0    0.0     0.0    0.0
+          augment.pu.\                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:62:43-68                     1719        113    0.0    0.0     0.0    0.0
+           get                                      Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1721        113    0.0    0.0     0.0    0.0
+         augment.u                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:61:17-43                     1714         24    0.0    0.0     0.0    0.0
+         augment.x                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:54:7-47                      1728         24    0.0    0.0     0.0    0.0
+         augment.y                                  Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:54:7-47                      1725         24    0.0    0.0     0.0    0.0
+       findNeighbour.scanned'                       Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:36:14-52                     1588       1779    0.0    0.1     0.0    0.1
+        scanned                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:34:22-28                            1589       1779    0.0    0.0     0.0    0.0
+       findNeighbour.pred                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:31:7-34                      1595          0    0.0    0.0     0.2    0.0
+        findNeighbour.pred'                         Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:29:7-47                      1596          0    0.0    0.0     0.2    0.0
+         findNeighbour.ro                           Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:41:5-43                      1597          0    0.0    0.0     0.2    0.0
+          get                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1598       4623    0.2    0.0     0.2    0.0
+      findRoot.mx                                   Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:20:7-77                      1524       1804    0.8    0.0    18.0   10.6
+       findRoot.mx.\                                Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:20:24-73                     1525     504274    3.5    0.9    17.2   10.6
+        isOuter                                     Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:(27,1)-(29,51)            1527     228668    3.1    0.0    13.7    9.6
+         isOuter.mu                                 Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:28:11-49                  1528     228668    2.7    5.5     6.4    6.4
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1531     228668    0.2    0.0     0.2    0.0
+          get                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1529     228668    3.3    0.9     3.3    0.9
+          mu                                        Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1530     228668    0.2    0.0     0.2    0.0
+         isOuter.phi                                Edmond.Algorithm.General.Helpers            src/Edmond/Algorithm/General/Helpers.hs:29:11-51                  1532     228610    1.7    3.2     4.1    3.2
+          forest                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1534     228610    0.0    0.0     0.0    0.0
+          get                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:92:1-38                             1535     228610    2.5    0.0     2.5    0.0
+          phi                                       Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:12:46-48                     1533     228610    0.0    0.0     0.0    0.0
+        scanned                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:34:22-28                            1526       1804    0.0    0.0     0.0    0.0
+      findRoot.vs                                   Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:25:5-23                      1522       1804    0.0    0.0     0.0    0.0
+       vertices                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:31:22-29                            1523       1804    0.0    0.0     0.0    0.0
+     runEdmonds.graph                               Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:106:7-34                     1493          1    0.0    0.0     0.0    0.4
+      initialize                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(41,1)-(54,12)                      1494          1    0.0    0.0     0.0    0.4
+       initialize.nv                                Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:44:9-28                             1496          1    0.0    0.0     0.0    0.0
+       initialize.toBackward                        Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:45:9-84                             1497          1    0.0    0.4     0.0    0.4
+        map                                         Protolude                                   src/Protolude.hs:379:1-10                                         1498          1    0.0    0.0     0.0    0.0
+       initialize.vertices                          Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:43:9-42                             1495          1    0.0    0.0     0.0    0.0
+     runEdmonds.graph'                              Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:112:7-46                     1513          1    0.0    0.0     0.0    0.1
+      loadMatching                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(57,1)-(59,55)                      1514          1    0.0    0.0     0.0    0.1
+       forest                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1515          1    0.0    0.0     0.0    0.0
+       loadMatching.mu'                             Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:58:9-67                             1516          1    0.0    0.0     0.0    0.1
+        forest                                      Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1517          1    0.0    0.0     0.0    0.0
+        insertListSymmetric                         Util                                        src/Util.hs:(41,1)-(42,61)                                        1519          1    0.0    0.0     0.0    0.1
+         insertListSymmetric.\                      Util                                        src/Util.hs:42:23-55                                              1520        466    0.0    0.1     0.0    0.1
+        mu                                          Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1518          1    0.0    0.0     0.0    0.0
+     runEdmonds.initMatching                        Edmond.Algorithm.General.Core               src/Edmond/Algorithm/General/Core.hs:(107,7)-(111,30)             1500          1    0.0    0.0     6.0    1.0
+      maximalMatching                               Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:10:1-42        1502          0    0.0    0.0     6.0    1.0
+       maximalMatching'                             Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:(13,1)-(22,24) 1503       1446    2.7    0.0     6.0    1.0
+        maximalMatching'.my                         Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:15:9-64        1504       1446    0.0    0.0     2.9    0.0
+         maximalMatching'.my.\                      Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:15:26-59       1509      16248    2.9    0.0     2.9    0.0
+        maximalMatching'.nbs                        Edmond.Algorithm.Heuristics.MaximalMatching src/Edmond/Algorithm/Heuristics/MaximalMatching.hs:14:9-32        1505       1446    0.0    0.1     0.4    1.0
+         neighbours                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(75,1)-(78,30)                      1506       1446    0.4    0.9     0.4    0.9
+          neighbours.forw                           Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:77:9-28                             1507       1446    0.0    0.0     0.0    0.0
+           forward                                  Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:29:22-28                            1508       1446    0.0    0.0     0.0    0.0
+          neighbours.backw                          Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:78:9-30                             1510        980    0.0    0.0     0.0    0.0
+           backward                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:30:22-29                            1511        980    0.0    0.0     0.0    0.0
+        vertices                                    Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:31:22-29                            1512        980    0.0    0.0     0.0    0.0
+     toMatching                                     Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:(81,1)-(83,37)                      1732          1    0.0    0.0     0.0    0.1
+      toMatching.mu                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:83:11-37                            1733          1    0.0    0.0     0.0    0.0
+       forest                                       Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:33:22-27                            1734          1    0.0    0.0     0.0    0.0
+       mu                                           Edmond.Data.AlternatingForest               src/Edmond/Data/AlternatingForest.hs:11:46-47                     1735          1    0.0    0.0     0.0    0.0
+      toMatching.xs                                 Edmond.Data.Graph.Core                      src/Edmond/Data/Graph/Core.hs:82:11-47                            1736          1    0.0    0.1     0.0    0.1
+   fileToGraph                                      Parser                                      src/Parser.hs:(50,1)-(57,32)                                      1410          0    0.0    0.0     1.2    2.6
+    fileToGraph.bounds                              Parser                                      src/Parser.hs:56:9-47                                             1477          1    0.0    0.0     0.0    0.0
+     nvertices                                      Parser                                      src/Parser.hs:12:37-45                                            1478          1    0.0    0.0     0.0    0.0
+    fileToGraph.dimacs                              Parser                                      src/Parser.hs:52:9-34                                             1458          1    0.2    0.2     0.4    1.2
+     parse                                          Parser                                      src/Parser.hs:(31,5)-(35,49)                                      1464       7228    0.0    0.1     0.2    1.0
+      ==                                            Data.Text                                   Data/Text.hs:(324,5)-(326,30)                                     1465      14456    0.0    0.0     0.0    0.0
+       aBA                                          Data.Text.Array                             Data/Text/Array.hs:84:7-9                                         1471      28912    0.0    0.0     0.0    0.0
+      textToInt                                     Parser                                      src/Parser.hs:(38,1)-(41,24)                                      1479      14455    0.0    0.0     0.2    0.9
+       decimal                                      Data.Text.Read                              Data/Text/Read.hs:(63,1)-(67,55)                                  1480      14455    0.2    0.7     0.2    0.9
+        decimal.go                                  Data.Text.Read                              Data/Text/Read.hs:67:9-55                                         1482      41828    0.0    0.2     0.0    0.2
+         digitToInt                                 Data.Text.Internal.Read                     Data/Text/Internal/Read.hs:62:1-30                                1483      41828    0.0    0.0     0.0    0.0
+        shiftR                                      Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1481      14455    0.0    0.0     0.0    0.0
+     map                                            Protolude                                   src/Protolude.hs:379:1-10                                         1459          1    0.0    0.0     0.0    0.0
+    fileToGraph.dimacsEdges                         Parser                                      src/Parser.hs:54:9-53                                             1484          1    0.0    0.1     0.0    0.1
+    fileToGraph.dimacsSize                          Parser                                      src/Parser.hs:53:9-80                                             1460          1    0.0    0.0     0.0    0.0
+     head                                           List                                        src/List.hs:24:1-39                                               1461          1    0.0    0.0     0.0    0.0
+      head.\                                        List                                        src/List.hs:24:23-30                                              1476          1    0.0    0.0     0.0    0.0
+    fileToGraph.edges                               Parser                                      src/Parser.hs:55:9-67                                             1489          1    0.0    0.2     0.0    0.2
+     fileToGraph.edges.\                            Parser                                      src/Parser.hs:55:49-54                                            1491       7227    0.0    0.0     0.0    0.0
+     map                                            Protolude                                   src/Protolude.hs:379:1-10                                         1490          1    0.0    0.0     0.0    0.0
+    parseFile                                       Parser                                      src/Parser.hs:47:1-62                                             1411          1    0.0    0.3     0.8    1.1
+     readFile                                       Data.Text.IO                                Data/Text/IO.hs:88:1-55                                           1412          1    0.0    0.0     0.6    0.1
+      hGetContents                                  Data.Text.IO                                Data/Text/IO.hs:(135,1)-(148,50)                                  1414          1    0.0    0.0     0.6    0.1
+       chooseGoodBuffering                          Data.Text.IO                                Data/Text/IO.hs:(156,1)-(165,18)                                  1415          1    0.0    0.0     0.0    0.0
+       hGetContents.readAll                         Data.Text.IO                                Data/Text/IO.hs:(139,3)-(148,50)                                  1416          1    0.0    0.0     0.6    0.1
+        concat                                      Data.Text                                   Data/Text.hs:(894,1)-(906,36)                                     1440          1    0.0    0.0     0.0    0.0
+         concat.go                                  Data.Text                                   Data/Text.hs:(902,5)-(906,36)                                     1442          1    0.0    0.0     0.0    0.0
+         concat.len                                 Data.Text                                   Data/Text.hs:900:5-48                                             1446          1    0.0    0.0     0.0    0.0
+          sumP                                      Data.Text                                   Data/Text.hs:(1724,1)-(1729,27)                                   1450          0    0.0    0.0     0.0    0.0
+           sumP.go                                  Data.Text                                   Data/Text.hs:(1725,9)-(1729,27)                                   1451         36    0.0    0.0     0.0    0.0
+            sumP.go.ax                              Data.Text                                   Data/Text.hs:1728:17-26                                           1452         35    0.0    0.0     0.0    0.0
+         concat.ts'                                 Data.Text                                   Data/Text.hs:899:5-34                                             1441          1    0.0    0.0     0.0    0.0
+         run                                        Data.Text.Array                             Data/Text/Array.hs:178:1-34                                       1443          1    0.0    0.0     0.0    0.0
+          concat.go                                 Data.Text                                   Data/Text.hs:(902,5)-(906,36)                                     1444          0    0.0    0.0     0.0    0.0
+           concat.go.step                           Data.Text                                   Data/Text.hs:(904,11)-(905,61)                                    1454         35    0.0    0.0     0.0    0.0
+            aBA                                     Data.Text.Array                             Data/Text/Array.hs:84:7-9                                         1456         35    0.0    0.0     0.0    0.0
+            concat.go.step.(...)                    Data.Text                                   Data/Text.hs:905:17-26                                            1455         35    0.0    0.0     0.0    0.0
+            maBA                                    Data.Text.Array                             Data/Text/Array.hs:92:7-10                                        1457         35    0.0    0.0     0.0    0.0
+           shiftL                                   Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1445          1    0.0    0.0     0.0    0.0
+           shiftR                                   Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1453          1    0.0    0.0     0.0    0.0
+        hGetContents.readAll.readChunks             Data.Text.IO                                Data/Text/IO.hs:(140,9)-(145,39)                                  1417          1    0.0    0.0     0.6    0.0
+         readChunk                                  Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:(156,1)-(163,10)                         1418         36    0.0    0.0     0.6    0.0
+          getSomeCharacters                         Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:(130,1)-(151,52)                         1419         36    0.0    0.0     0.2    0.0
+           readTextDevice                           Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:133:39-64                                1420         36    0.2    0.0     0.2    0.0
+            catchError                              Data.Text.IO                                Data/Text/IO.hs:(100,1)-(106,57)                                  1427          1    0.0    0.0     0.0    0.0
+          unpack                                    Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:(93,1)-(102,47)                          1421         35    0.0    0.0     0.4    0.0
+           unpack.go                                Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:(98,3)-(102,47)                          1422         35    0.4    0.0     0.4    0.0
+            unpack.go.next                          Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:(100,5)-(101,44)                         1425      70784    0.0    0.0     0.0    0.0
+             unpack.go.ix                           Data.Text.Internal.IO                       Data/Text/Internal/IO.hs:102:5-47                                 1426      70749    0.0    0.0     0.0    0.0
+            shiftL                                  Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:60:5-50                        1423         35    0.0    0.0     0.0    0.0
+            shiftR                                  Data.Text.Internal.Unsafe.Shift             Data/Text/Internal/Unsafe/Shift.hs:63:5-51                        1424         35    0.0    0.0     0.0    0.0
+     loadLines                                      Parser                                      src/Parser.hs:44:1-26                                             1439          0    0.2    0.7     0.2    0.7

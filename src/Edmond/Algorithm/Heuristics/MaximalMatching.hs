@@ -1,12 +1,10 @@
 
 module Edmond.Algorithm.Heuristics.MaximalMatching where
 
+import Prelude ()
+import Protolude
 import Edmond.Data.Graph.Core as Graph
 import Data.List as List
-
-import Protolude
-
-type Matching = [Edge]
 
 maximalMatching :: Graph -> Matching
 maximalMatching = maximalMatching' 1 [] []

@@ -66,6 +66,7 @@ executable edmonds-matching
     other-modules:      Edmond.Algorithm.General.Core,
                         Edmond.Algorithm.General.Helpers,
                         Edmond.Algorithm.Bipartite.Core,
+                        Edmond.Algorithm.Heuristics.Core,
                         Edmond.Algorithm.Heuristics.MaximalMatching,
                         Edmond.Algorithm.Heuristics.ExpandContract,
                         Edmond.Data.AlternatingForest,

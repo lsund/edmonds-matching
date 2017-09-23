@@ -22,6 +22,7 @@ import qualified Data.IntSet as Set
 
 type Vertex = Data.Graph.Vertex
 type Edge = Data.Graph.Edge
+type Matching = [Edge]
 type GraphRepresentation = Data.Graph.Graph
 type AlternatingForest = AF.AlternatingForest
 

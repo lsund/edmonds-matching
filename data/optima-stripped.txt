@@ -10,21 +10,20 @@ K4.dmx                         2
 peterson.dmx                   5
 bipartite.dmx                  4
 
-c lu980.dmx                    490
-c pbd984.dmx                   492
-c pma343.dmx                   171
-c queen10_10.dmx                50
-c queen11_11.dmx                60
-c queen16_16.dmx               128
-c queen27_27.dmx               364
-c queen4_4.dmx                   8
-c queen5_5.dmx                  12
-c queen6_6.dmx                  18
-c queen7_7.dmx                  24
-c queen8_8.dmx                  32
-c queen9_9.dmx                  40
+queen4_4.dmx                   8
+queen5_5.dmx                  12
+queen6_6.dmx                  18
+queen7_7.dmx                  24
+queen8_8.dmx                  32
+queen9_9.dmx                  40
+queen10_10.dmx                50
+queen11_11.dmx                60
+queen16_16.dmx               128
+queen27_27.dmx               364
+pma343.dmx                   171
+lu980.dmx                    490
+pbd984.dmx                   492
 
 c USA-road-d.FLA.dmx        507967
 c USA-road-d.USA.dmx      11325669
-c xqf131.dmx                    64
 

@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Generator where
 
+import Prelude ()
 import Data.Text as Text (append)
 import Protolude
 import Data.Graph
@@ -67,4 +68,3 @@ genRandomDir nv nfiles path = do
     mapM_ 
         (\ fname -> writeRandomGraph nv (path ++ "/" ++ fname)) 
         (genFilenames nfiles)
-

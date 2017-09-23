@@ -1,7 +1,9 @@
 module Edmond.Algorithm.General.Core where
 
 import Edmond.Algorithm.General.Helpers
+import Edmond.Algorithm.Heuristics.Core
 import Edmond.Algorithm.Heuristics.MaximalMatching
+import Edmond.Algorithm.Heuristics.ExpandContract
 import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Data.Graph.Core as Graph
 import Util
@@ -99,19 +101,13 @@ shrink graph =
       forest'              = (forest graph) {AF.phi = phi'', AF.ro = ro'}
   in findNeighbour $ graph {forest = forest'}
 
--- Uses a greedy initial matching
-edmondsHeuristic :: Data.Graph.Graph -> [Edge]
-edmondsHeuristic rep =
-  let init = Graph.initialize rep
-      matching = maximalMatching init
-      graph = loadMatching init matching
-      graph' = findRoot graph
-  in toMatching graph'
-
--- Starts with the empty mathching
-edmonds :: Data.Graph.Graph -> [Edge]
-edmonds rep =
-  let init = Graph.initialize rep
-      matching = maximalMatching init
-      graph' = findRoot init
-  in toMatching graph'
+runEdmonds :: Heuristic -> Data.Graph.Graph -> [Edge]
+runEdmonds heuristic rep =
+  let graph = Graph.initialize rep
+      initMatching =
+        case heuristic of
+          GreedyMaximal  -> maximalMatching graph
+          ExpandContract -> expandContract graph
+          None           -> []
+      graph' = loadMatching graph initMatching
+  in toMatching $ findRoot graph'

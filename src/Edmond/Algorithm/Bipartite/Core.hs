@@ -9,11 +9,6 @@ import qualified Edmond.Data.AlternatingForest as AF
 import Edmond.Algorithm.General.Helpers
 import qualified Data.IntMap as Map
 
-maximumMatching :: GraphRepresentation -> [Edge]
-maximumMatching rep =
-  let init = Graph.initialize rep
-  in toMatching $ findRoot init
-
 findRoot :: Graph -> Graph
 findRoot graph =
   let mx = find (\x -> x `Set.notMember` scanned graph && isOuter graph x) vs
@@ -25,11 +20,11 @@ findRoot graph =
 
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
-  let pred' = isOuter graph
-      pred'' = isOutOfForest graph
-      pred y = pred'' y || pred' y
+  let f' = isOuter graph
+      f'' = isOutOfForest graph
+      f y = f'' y || f' y
       nbs = neighbours graph x
-      found = find pred nbs
+      found = find f nbs
   in case found of
        Nothing ->
          let scanned' = Set.insert x $ scanned graph
@@ -37,7 +32,6 @@ findNeighbour graph =
        Just y -> grow (graph {currentY = y})
   where
     x = currentX graph
-    ro = Graph.get $ (AF.ro . forest) graph
 
 grow :: Graph -> Graph
 grow graph =
