@@ -9,7 +9,8 @@ import Util (oddElements)
 
 import qualified Data.Graph.Core as Graph
 import Data.Graph.Core (Graph, Vertex, Edge, Matching)
-import Algorithm.Edmonds.Bipartite.Core as BipartiteMaximumMatching
+
+import Algorithm.Edmonds.General.Core
 
 data Component = Path | EvenCycle | OddCycle deriving Eq
 type Tree = Tree.Tree
@@ -21,7 +22,7 @@ expandEdge maxVertex (v, w) = [(v, w + maxVertex), (w, v + maxVertex)]
 expand :: Graph -> Graph
 expand graph =
     let edges = concatMap (expandEdge maxVertex) es
-    in Graph.initialize $ Data.Graph.buildG (1, 2 * len) edges
+    in Graph.initialize $ (Data.Graph.buildG (1, 2 * len) edges, True)
         where
             vs = Graph.vertices graph
             es = Graph.edges graph
@@ -53,7 +54,7 @@ repair matching graph =
 
 expandContract :: Graph -> Matching
 expandContract graph =
-    let expandedGraph = BipartiteMaximumMatching.run $ expand graph
+    let expandedGraph = findRoot $ expand graph
         brokenMatching = contract expandedGraph
         repaired = repair brokenMatching graph
     in repaired

@@ -23,29 +23,32 @@ import qualified Data.IntSet as Set
 type Vertex = Data.Graph.Vertex
 type Edge = Data.Graph.Edge
 type Matching = [Edge]
-type GraphRepresentation = Data.Graph.Graph
+type GraphRepresentation = (Data.Graph.Graph, Bool)
 type AlternatingForest = AF.AlternatingForest
 
-data Graph = Graph { forward     :: !Data.Graph.Graph
-                   , backward    :: !Data.Graph.Graph
-                   , vertices    :: ![Vertex]
-                   , numVertices :: !Int
-                   , forest      :: !AlternatingForest
-                   , scanned     :: !IntSet
-                   , currentX    :: !Vertex
-                   , currentY    :: !Vertex }
+data Graph = Graph {
+     isBipartite :: Bool 
+   , forward     :: !Data.Graph.Graph
+   , backward    :: !Data.Graph.Graph
+   , vertices    :: ![Vertex]
+   , numVertices :: !Int
+   , forest      :: !AlternatingForest
+   , scanned     :: !IntSet
+   , currentX    :: !Vertex
+   , currentY    :: !Vertex }
 ----------------------------------------------------------------------------
 -- Initialize
 
 initialize :: GraphRepresentation -> Graph
-initialize rep =
+initialize (dat, bipartite) =
     let
-        vertices = Data.Graph.vertices rep
+        vertices = Data.Graph.vertices dat
         nv = length vertices
         toBackward rep = Data.Graph.buildG (1, nv) $ map swap (Data.Graph.edges rep)
     in Graph
-        rep
-        (toBackward rep)
+        bipartite
+        dat
+        (toBackward dat)
         vertices
         nv
         AF.initialize

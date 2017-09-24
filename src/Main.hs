@@ -13,13 +13,19 @@ import Algorithm.Heuristics.Core
 -- path = "data/graphs/OC5.dmx"
 -- path = "data/graphs/OC4.dmx"
 -- path = "data/graphs/pbd984.dmx"
-path = "data/graphs/lu980.dmx"
+-- path = "data/graphs/lu980.dmx"
 -- path = "data/graphs/ei8246.dmx"
 -- path = "data/graphs/peterson.dmx"
 -- path = "data/graphs/ar9152.dmx"
 -- path = "data/graphs/fixed.dmx"
 -- path = "data/graphs/random-graphs/haskell/dense/1000/001.dmx"
+-- path = "data/graphs/random-graphs/haskell/dense/1000"
 
 main :: IO ()
 main = do
-  run path None
+  (heuristic : path : _) <- getArgs
+  case heuristic of
+    "gm" -> run path GreedyMaximal
+    "ec" -> run path ExpandContract
+    _    -> run path None
+  

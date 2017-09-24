@@ -1,4 +1,4 @@
-module Algorithm.Edmonds.General.Core (findRoot, findNeighbour)
+module Algorithm.Edmonds.General.Core (findRoot)
 where
 
 import Algorithm.Edmonds.General.Helpers
@@ -43,7 +43,23 @@ grow graph =
   in if isOutOfForest graph y
        then let forest' = (forest graph) {AF.phi = Map.insert y x phi}
             in findNeighbour (graph {forest = forest'})
-       else augment graph
+       else if isBipartite graph
+            then bipartiteAugment graph
+            else augment graph
+
+bipartiteAugment :: Graph -> Graph
+bipartiteAugment graph =
+  let (x, y) = (currentX graph, currentY graph)
+      (px, py) = (pathToRoot graph X, pathToRoot graph Y)
+      mu = (AF.mu . forest) graph
+      phi = (AF.phi . forest) graph
+  in
+    let (oddpx, oddpy) = odds px py
+        u = oddpx `Set.union` oddpy
+        pu = Set.foldr (\x acc -> (x, Graph.get phi x) : acc) [] u
+        mu' = insertListSymmetric ((x, y) : (y, x) : pu) mu
+        graph' = resetForest graph mu'
+     in findRoot graph'
 
 augment :: Graph -> Graph
 augment graph =

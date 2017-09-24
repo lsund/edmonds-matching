@@ -5,6 +5,7 @@ profiling-commands
 cabal.sandbox.config
 third_party
 data/graphs/random-graphs/
+data/graphs/batch1
 data/testdata/
 .stack-work
 *~

@@ -11,8 +11,8 @@ import Data.Graph hiding (path, Edge)
 import qualified Parser
 
 findMatching :: Heuristic -> Data.Graph.Graph -> Matching
-findMatching heuristic rep =
-  let graph = Graph.initialize rep
+findMatching heuristic dat =
+  let graph = Graph.initialize (dat, False)
       initMatching =
         case heuristic of
           GreedyMaximal  -> maximalMatching graph
@@ -23,7 +23,7 @@ findMatching heuristic rep =
   
 run :: FilePath -> Heuristic -> IO ()
 run path heuristic = do
-    rep <- Parser.fileToGraph path
-    let es = findMatching heuristic rep
+    dat <- Parser.fileToGraph path
+    let es = findMatching heuristic dat
     putStrLn $ "Using: " ++ (show heuristic)
     print $ length es
