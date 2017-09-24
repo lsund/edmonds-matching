@@ -1,0 +1,15 @@
+( { $command "no" $dir$file; ls; } 2>&3; )  1.64s user 0.10s system 110% cpu 1.571 total
+( { $command "no" $dir$file; ls; } 2>&3; )  642.18s user 27.62s system 107% cpu 10:24.42 total
+( { $command "no" $dir$file; ls; } 2>&3; )  144.26s user 68.56s system 198% cpu 1:47.45 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.23s user 0.05s system 146% cpu 0.195 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.68s user 0.24s system 160% cpu 0.572 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.00s user 0.01s system 162% cpu 0.005 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.01s user 0.00s system 152% cpu 0.009 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.02s user 0.01s system 232% cpu 0.014 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.22s user 0.06s system 164% cpu 0.172 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.00s user 0.00s system 115% cpu 0.006 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.00s user 0.00s system 132% cpu 0.004 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.00s user 0.00s system 132% cpu 0.003 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.01s user 0.00s system 140% cpu 0.005 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.01s user 0.00s system 143% cpu 0.004 total
+( { $command "no" $dir$file; ls; } 2>&3; )  0.01s user 0.00s system 148% cpu 0.007 total

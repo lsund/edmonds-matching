@@ -1,0 +1,14 @@
+( { $command "ec" $dir$file; ls; } 2>&3; )  662.08s user 18.20s system 105% cpu 10:47.52 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  137.08s user 62.97s system 195% cpu 1:42.17 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.47s user 0.16s system 153% cpu 0.413 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.59s user 0.21s system 163% cpu 0.486 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.01s user 0.00s system 183% cpu 0.006 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.02s user 0.00s system 177% cpu 0.014 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.03s user 0.02s system 229% cpu 0.021 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.27s user 0.11s system 179% cpu 0.213 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.00s user 0.00s system 126% cpu 0.003 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.00s user 0.00s system 136% cpu 0.004 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.01s user 0.01s system 206% cpu 0.007 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.00s user 0.01s system 145% cpu 0.005 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.02s user 0.00s system 183% cpu 0.011 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  0.01s user 0.01s system 162% cpu 0.008 total

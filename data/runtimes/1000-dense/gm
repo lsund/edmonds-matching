@@ -1,0 +1,10 @@
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.44s user 0.29s system 193% cpu 0.891 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.58s user 0.49s system 200% cpu 1.033 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.10s user 0.52s system 177% cpu 0.913 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.27s user 0.33s system 177% cpu 0.907 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.19s user 0.41s system 176% cpu 0.901 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.43s user 0.35s system 191% cpu 0.931 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  0.83s user 0.32s system 173% cpu 0.660 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  1.03s user 0.30s system 183% cpu 0.724 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  0.91s user 0.22s system 172% cpu 0.651 total
+( { $command "gm" $dir$file; ls; } 2>&3; )  0.84s user 0.34s system 174% cpu 0.676 total

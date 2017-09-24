@@ -1,0 +1,10 @@
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.78s user 0.66s system 131% cpu 3.374 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.57s user 0.66s system 132% cpu 3.188 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.95s user 0.67s system 133% cpu 3.472 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.74s user 0.63s system 133% cpu 3.278 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.89s user 0.51s system 131% cpu 3.338 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.63s user 0.66s system 131% cpu 3.262 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.70s user 0.65s system 131% cpu 3.311 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.63s user 0.61s system 131% cpu 3.221 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  3.88s user 0.71s system 134% cpu 3.421 total
+( { $command "ec" $dir$file; ls; } 2>&3; )  4.34s user 0.74s system 139% cpu 3.636 total
