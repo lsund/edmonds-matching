@@ -11,14 +11,14 @@ data Heuristic = GreedyMaximal | ExpandContract | None deriving Show
 
 runMaximalMatching :: FilePath -> IO ()
 runMaximalMatching path = do
-  dat <- Parser.fileToGraph path
+  dat <- Parser.dimacsToGraph path
   let graph = Graph.initialize (dat, False)
       res = maximalMatching graph
   print $ "Maximal Matching:" ++ (show $ length res)
 
 runExpandContract :: FilePath -> IO ()
 runExpandContract path = do
-  dat <- Parser.fileToGraph path
+  dat <- Parser.dimacsToGraph path
   let graph = Graph.initialize (dat, False)
       res = expandContract graph
   print $  "Expand Contract:" ++ (show $ length res)

@@ -67,3 +67,4 @@ incorrect.
 As treversing, build the intersection as a hashtable.
 Finding ro(x) is done in constant time
 quering ro(x) on the intersection is then done in constant time
+** TODO Augment: I am generating p(x) and p(y)

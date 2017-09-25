@@ -10,3 +10,5 @@ data/testdata/
 .stack-work
 *~
 *#
+.#*
+data

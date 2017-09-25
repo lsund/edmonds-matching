@@ -1,17 +1,33 @@
-module Algorithm.Edmonds.General.Core (findRoot)
-where
+module Algorithm.Edmonds.General.Core (findRoot) where
 
-import Algorithm.Edmonds.General.Helpers
-import qualified Data.AlternatingForest as AF
-import Data.Graph.Core as Graph
+import Protolude
 import Util
+import Data.Graph.Core as Graph
+import Algorithm.Edmonds.General.Helpers
+import Data.Maybe
 
+import qualified Data.AlternatingForest as AF
 import qualified Data.IntMap as Map
 import qualified Data.IntSet as Set
 import qualified Data.List as List
-import Data.Maybe
-import Protolude
 
+--------------------------------------------------------------------------------
+-- Description
+--
+-- Implementation of Edmonds Cardinality Matching. It works by passing
+-- control between the functions findRoot, findNeighbour, grow,
+-- augment and shrink, and updating a state in form of a special graph.
+--
+-- The 5 functions directly corresponding to the
+-- lines 2-6 of the algorithm described on pages 224-225 in Korte,
+-- Vygen 2002.
+
+--------------------------------------------------------------------------------
+-- Implementation
+--
+-- Finds a vertex to start growing the alternating forest from. If no
+-- suitable vertex is found, then stop and return the graph of the
+-- current state. Else find a neighbour for this vertex.
 findRoot :: Graph -> Graph
 findRoot graph =
   let mx = find (\x -> x `Set.notMember` scanned graph && isOuter graph x) vs
@@ -21,6 +37,9 @@ findRoot graph =
   where
     vs = vertices graph
 
+
+-- Attempts to find a neighbour to create a new edge used to grow the alternating
+-- forest. If successful, grow the edge. Else, find a new root vertex.
 findNeighbour :: Graph -> Graph
 findNeighbour graph =
   let match y =
@@ -36,6 +55,9 @@ findNeighbour graph =
   where
     x = currentX graph
 
+
+-- Attempt to use the edge found to grow the alternating forest. If successful,
+-- augment the root path from this edge. Else, find another neighbour.
 grow :: Graph -> Graph
 grow graph =
   let (x, y) = (currentX graph, currentY graph)
@@ -47,6 +69,8 @@ grow graph =
             then bipartiteAugment graph
             else augment graph
 
+-- Augment the path from the last edge grown to the root, assuming a bipartite
+-- graph and no odd cycles. Then find a new root.
 bipartiteAugment :: Graph -> Graph
 bipartiteAugment graph =
   let (x, y) = (currentX graph, currentY graph)
@@ -61,6 +85,9 @@ bipartiteAugment graph =
         graph' = resetForest graph mu'
      in findRoot graph'
 
+-- Attempt to augment the path from the last edge grown to the root.
+-- If an odd cycle is found on the root-path, shrink this cycle. Else
+-- augment the path and find a new root.
 augment :: Graph -> Graph
 augment graph =
   let (x, y) = (currentX graph, currentY graph)
@@ -77,28 +104,8 @@ augment graph =
             in findRoot graph'
        else shrink graph
 
-findR :: Graph -> [Vertex] -> [Vertex] -> Int
-findR graph px py =
-  let (spx, spy) = (Set.fromList px, Set.fromList py)
-      isect = px `List.intersect` py
-      ro = (AF.ro . forest) graph
-  in fromJust $ find (\x -> Graph.get ro x == x) isect
-
-getBlossom :: Graph -> (Int, IntSet, IntSet)
-getBlossom graph =
-  let (phi, ro)    = ((AF.phi . forest) graph, (AF.ro . forest) graph)
-      (px, py)     = (pathToRoot graph X, pathToRoot graph Y)
-      r            = findR graph px py
-      (pxr, pyr)   = (takeUntil r px, takeUntil r py)
-      (spxr, spyr) = (Set.fromList pxr, Set.fromList pyr)
-      oddUnion     =
-        let (ox, oy) = odds pxr pyr
-        in ox `Set.union` oy
-      union        = spxr `Set.union` spyr
-      filtered     =
-        Set.filter (\v -> (Graph.get ro . Graph.get phi) v /= r) oddUnion
-  in (r, union, filtered)
-
+-- Shrink the odd cycle on the root-path from the current edge. Then find a new
+-- neighbour.
 shrink :: Graph -> Graph
 shrink graph =
   let (x, y, vs)           = (currentX graph, currentY graph, vertices graph)

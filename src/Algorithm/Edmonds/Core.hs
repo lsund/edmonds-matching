@@ -20,10 +20,13 @@ findMatching heuristic dat =
           None           -> []
       graph' = loadMatching graph initMatching
   in toMatching $ findRoot graph'
-  
+
+--------------------------------------------------------------------------------
+-- IO   
+
 run :: FilePath -> Heuristic -> IO ()
 run path heuristic = do
-    dat <- Parser.fileToGraph path
+    dat <- Parser.dimacsToGraph path
     let es = findMatching heuristic dat
     putStrLn $ "Using: " ++ (show heuristic)
     print $ length es
