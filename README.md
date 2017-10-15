@@ -33,4 +33,7 @@ the algorithm:
 
 ## Runtime Plots
 
-![alt text](images/vertices.png)
+![Graphs with different number of vertices](image/vertices.png)
+![Graphs with different number of edges](image/edges-1k-70k.png)
+![Graphs with different number of edges](image/edges-100-25k.png)
+![Heuristic matching size found](image/matching-found.png)
