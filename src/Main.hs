@@ -13,8 +13,10 @@ main = do
   if (length args) /= 2 then
     putStrLn ("Usage: ./edmonds-matching gm|ec|no PATH" :: [Char])
   else do
-    let (heuristic : path : []) = args
-    case heuristic of
-      "gm" -> run path GreedyMaximal
-      "ec" -> run path ExpandContract
-      _    -> run path None
+    let (method : path : []) = args
+    case method of
+      "gm"      -> run path GreedyMaximal
+      "ec"      -> run path ExpandContract
+      "only-gm" -> runMaximalMatching path
+      "only-ec" -> runExpandContract path
+      _         -> run path None

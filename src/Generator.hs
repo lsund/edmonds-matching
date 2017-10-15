@@ -7,7 +7,6 @@ import Protolude
 
 import Data.Text as Text (append)
 import Data.Graph
-import Data.List (nub)
 import Util
 
 import System.Random

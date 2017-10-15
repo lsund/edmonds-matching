@@ -63,8 +63,7 @@ executable edmonds-matching
                         ExtendedDefaultRules,
                         BangPatterns
 
-    other-modules:      Algorithm.Edmonds.Bipartite.Core,
-                        Algorithm.Edmonds.Core,
+    other-modules:      Algorithm.Edmonds.Core,
                         Algorithm.Edmonds.General.Core,
                         Algorithm.Edmonds.General.Helpers,
                         Algorithm.Heuristics.Core,
@@ -73,7 +72,9 @@ executable edmonds-matching
                         Data.AlternatingForest,
                         Data.Graph.Core,
                         Parser,
-                        Util
+                        Util,
+                        Generator,
+                        Analyzer
 
 
 test-suite edmonds-test
@@ -93,8 +94,7 @@ test-suite edmonds-test
                         vector,
                         HUnit
 
-    other-modules:      Algorithm.Edmonds.Bipartite.Core,
-                        Algorithm.Edmonds.Core,
+    other-modules:      Algorithm.Edmonds.Core,
                         Algorithm.Edmonds.General.Core,
                         Algorithm.Edmonds.General.Helpers,
                         Algorithm.Heuristics.Core,
