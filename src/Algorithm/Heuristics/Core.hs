@@ -15,11 +15,11 @@ runMaximalMatching path = do
   dat <- Parser.dimacsToGraph path
   let graph = Graph.initialize (dat, False)
       res = maximalMatching graph
-  putStr (show res :: Text)
+  putStrLn (show res :: Text)
 
 runExpandContract :: FilePath -> IO ()
 runExpandContract path = do
   dat <- Parser.dimacsToGraph path
   let graph = Graph.initialize (dat, False)
       res = expandContract graph
-  putStr (show res :: Text)
+  putStrLn (show res :: Text)
