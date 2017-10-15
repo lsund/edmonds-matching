@@ -13,8 +13,11 @@ heuristics.
 
 ## Running
 
-Do `stack setup && stack build && stack exec edmonds-matching` to run
-the program.
+Do `stack setup && stack build` to build the executable.
+The program is run by `stack exec edmonds-matching -- HEURISTIC FILE`
+where `HEURISTIC` is one if the strings `no|gm|ec` and `FILE` is the
+path to a DIMACS-formated file. See example of this in `graphs`.
+
 
 ## Description
 

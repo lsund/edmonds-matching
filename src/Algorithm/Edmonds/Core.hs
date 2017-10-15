@@ -28,4 +28,4 @@ run :: FilePath -> Heuristic -> IO ()
 run path heuristic = do
     dat <- Parser.dimacsToGraph path
     let es = findMatching heuristic dat
-    putStr $ (show $ length es :: Text)
+    putStrLn (show es :: Text)
