@@ -48,14 +48,14 @@ the algorithm:
 
 1. Greedy Maximal Matching: Traverse the graph and greedily add edges
    to the matching, as long as it's possible.
-   
-2. Expand-Contract: 
+
+2. Expand-Contract:
    * Expand the graph so that it becomes bipartite.
    * Find a maximum matching in the bipartite graph (which is much
-   easier than in general graphs). 
+   easier than in general graphs).
    * Contract the graph to it's original form.
    * Repair the resulting matching.
-   
+
 Edmonds Algorithm does not assume anything about the matching it starts
 with. We can thus try to find a matching with one of these heuristics,
 then load it into the algorithm and then start.
