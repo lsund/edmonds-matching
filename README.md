@@ -1,6 +1,8 @@
 
 # Edmonds Matching
 
+ (Not under development)
+
 This is an implementation of *Edmonds Maximum Unweighted Matching
 Algorithm in haskell*. The algorithm is also known as the Blossom
 Algorithm. The specifications of the algorithm can be 
