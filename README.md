@@ -4,12 +4,13 @@
  (Not under development)
 
 This is an implementation of *Edmonds Maximum Unweighted Matching
-Algorithm in haskell*. The algorithm is also known as the Blossom
+Algorithm in Haskell*. The algorithm is also known as the Blossom
 Algorithm. The specifications of the algorithm can be 
 found in Combinatorial Optimization 2002, by Korte, Vygen 2002,
 pages. 224-225.
 
-**DISCLAIMER** This is **not** a time-efficient implementation. It was
+**DISCLAIMER** The focus here is not to be time efficient, and this program should
+probably not be used for real problems. It was
 implemented in order to study the algorithm and compare some
 heuristics.
 
